@@ -1,10 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace GeneAutomate.Models
 {
     // Models used as parameters to AccountController actions.
+
+    public class AutomateObject
+    {
+        public List<Node> nodes { get; set; }
+        public List<Edge> edges { get; set; }
+    }
+
+    public class Node
+    {
+        public string id { get; set; }
+        public string label { get; set; }
+        public int? x { get; set; }
+        public int? y { get; set; }
+        public int size { get; set; }
+    }
+
+    public class Edge
+    {
+        public string id { get; set; }
+        public string source { get; set; }
+        public string target { get; set; }
+
+        public string type { get; set; }
+        public string color { get; set; }
+    }
 
     public class AddExternalLoginBindingModel
     {

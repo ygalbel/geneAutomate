@@ -1,0 +1,76 @@
+﻿<html>
+<head>
+    <style type="text/css">
+        #container {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
+    }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script src="../Scripts/jquery-1.10.2.js"></script>
+    <script src="../Scripts/Sigma/sigma.min.js"></script>
+    <script src="../Scripts/Sigma/plugins/sigma.parsers.json.min.js"></script>
+    <script src="../Scripts/Sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
+    <script src="../Scripts/Sigma/plugins/sigma.renderers.customEdgeShapes.min.js"></script>
+<script>
+    
+    colors = [
+     '#617db4',
+     '#668f3c',
+     '#c6583e',
+     '#b956af'
+    ];
+    
+    sigma.parsers.json('/api/automate?exampleName=toy', {
+        container: 'container',
+        renderer: {
+            container: document.getElementById('container'),
+            type: 'canvas'
+        },
+        settings: {
+            minNodeSize: 8,
+            maxNodeSize: 16
+        }
+    }, function (s) {
+        console.log('here');
+        s.graph.nodes().forEach(function (node, i, a) {
+            console.log(node, i, a);
+            node.x = Math.random();
+            node.y = Math.random();
+      //      node.size = Math.random();
+            node.color = 
+                colors[Math.floor(Math.random() * colors.length)];
+        });
+
+
+        s.graph.edges()
+            .forEach(function(edge, i, a) {
+            //    edge.type = "tapered";
+                    /*[
+                    'line',
+                    'curve',
+                    'arrow',
+                    'curvedArrow',
+                    'dashed',
+                    'dotted',
+                    'parallel',
+                    'tapered'
+                ][Math.round(Math.random() * 8)];*/
+                edge.size = 2;
+            });
+
+
+        // Start the layout:
+        //  s.startForceAtlas2();
+
+    });
+
+
+</script>
+</body>
+</html>
