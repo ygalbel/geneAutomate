@@ -12,6 +12,13 @@ namespace GeneAutomate.Parser
     {
         public FileParsingResult ParseFiles(string netPath, string specPath)
         {
+            var links = GeneLinks(netPath);
+
+            return new FileParsingResult() {GeneLinks = links};
+        }
+
+        private List<GeneLink> GeneLinks(string netPath)
+        {
             var lines = File.ReadAllLines(netPath).ToList();
 
             lines = lines.SkipWhile(a => a.StartsWith("directive")).ToList();
@@ -19,8 +26,7 @@ namespace GeneAutomate.Parser
             lines = lines.Skip(1).ToList(); // skip rules line
 
             var links = lines.Select(l => CreateLinkFromLine(l)).ToList();
-
-            return new FileParsingResult() {GeneLinks = links};
+            return links;
         }
 
         private GeneLink CreateLinkFromLine(string s)

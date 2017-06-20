@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneAutomate.Parser", "Gene
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneAutomate.Models", "GeneAutomate.Models\GeneAutomate.Models.csproj", "{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneAutomate.ParserTests", "GeneAutomate.ParserTests\GeneAutomate.ParserTests.csproj", "{B6944649-EE89-4723-BAF8-8F9BE01DD81C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6944649-EE89-4723-BAF8-8F9BE01DD81C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6944649-EE89-4723-BAF8-8F9BE01DD81C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6944649-EE89-4723-BAF8-8F9BE01DD81C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6944649-EE89-4723-BAF8-8F9BE01DD81C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
