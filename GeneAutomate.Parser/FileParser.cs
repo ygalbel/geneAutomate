@@ -14,7 +14,9 @@ namespace GeneAutomate.Parser
         {
             var links = GeneLinks(netPath);
 
-            return new FileParsingResult() {GeneLinks = links};
+            var conditionAndExperiments = new RuleFileParser().ParseRules(specPath, links.GetAllNodes());
+
+            return new FileParsingResult() {GeneLinks = links, Conditions = conditionAndExperiments.Conditions, Experiments = conditionAndExperiments.Experiments};
         }
 
         private List<GeneLink> GeneLinks(string netPath)
@@ -44,6 +46,14 @@ namespace GeneAutomate.Parser
             }
 
             return result;
+        }
+    }
+
+    public static class GeneLinkHelper
+    {
+        public static List<string> GetAllNodes(this List<GeneLink>  t)
+        {
+            return t.Select(a => a.From).Union(t.Select(a => a.To)).Distinct().ToList();
         }
     }
 }

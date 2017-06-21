@@ -40,7 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Condition.cs" />
+    <Compile Include="Experiment.cs" />
+    <Compile Include="FileParsingResult.cs" />
     <Compile Include="GeneLink.cs" />
+    <Compile Include="ParseRuleResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

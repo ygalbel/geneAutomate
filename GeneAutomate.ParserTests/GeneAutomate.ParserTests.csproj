@@ -55,6 +55,10 @@
     <Compile Include="RuleFileParserTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeneAutomate.Models\GeneAutomate.Models.csproj">
+      <Project>{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}</Project>
+      <Name>GeneAutomate.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Parser\GeneAutomate.Parser.csproj">
       <Project>{FAEDE5AE-4C20-4991-AB85-8AAFBA4E5210}</Project>
       <Name>GeneAutomate.Parser</Name>

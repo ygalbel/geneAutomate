@@ -17,12 +17,13 @@ namespace GeneAutomate.Controllers
         {
             var parser = new FileParser();
 
-            var res = parser.ParseFiles($"{HttpRuntime.AppDomainAppPath}/Examples/{exampleName}.net", null);
+            var res = parser.ParseFiles($"{HttpRuntime.AppDomainAppPath}/Examples/{exampleName}.net", $"{HttpRuntime.AppDomainAppPath}/Examples/{exampleName}.spec");
 
             var convertedResult = CreateAutomateViewObject(res);
 
             return Ok(convertedResult);
         }
+        
 
         private AutomateObject CreateAutomateViewObject(FileParsingResult data)
         {

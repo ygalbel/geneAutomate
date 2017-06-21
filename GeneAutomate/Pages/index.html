@@ -2,75 +2,169 @@
 <head>
     <style type="text/css">
         #container {
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      position: absolute;
-    }
+            top: 0;
+            bottom: 100;
+            left: 300;
+            right: 0;
+            position: absolute;
+            border: blue;
+            border-width: 2px;
+            border-style: solid;
+        }
+
+        table {
+            color: #333;
+            font-family: Helvetica, Arial, sans-serif;
+            width: 200px;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        td, th {
+            border: 1px solid transparent; /* No more visible border */
+            height: 30px;
+            transition: all 0.3s; /* Simple transition for hover effect */
+        }
+
+        th {
+            background: #DFDFDF; /* Darken header a bit */
+            font-weight: bold;
+        }
+
+        td {
+            background: #FAFAFA;
+            text-align: center;
+        }
+
+        /* Cells in even rows (2,4,6...) are one color */
+        tr:nth-child(even) td {
+            background: #F1F1F1;
+        }
+
+        /* Cells in odd rows (1,3,5...) are another (excludes header cells)  */
+        tr:nth-child(odd) td {
+            background: #FEFEFE;
+        }
+
+        tr td:hover {
+            background: #666;
+            color: #FFF;
+        }
+        /* Hover cell effect! */
     </style>
 </head>
 <body>
+    <div id="experiments"></div>
     <div id="container"></div>
     <script src="../Scripts/jquery-1.10.2.js"></script>
     <script src="../Scripts/Sigma/sigma.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.parsers.json.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.renderers.customEdgeShapes.min.js"></script>
-<script>
-    
-    colors = [
-     '#617db4',
-     '#668f3c',
-     '#c6583e',
-     '#b956af'
-    ];
-    
-    sigma.parsers.json('/api/automate?exampleName=toy', {
-        container: 'container',
-        renderer: {
-            container: document.getElementById('container'),
-            type: 'canvas'
-        },
-        settings: {
-            minNodeSize: 8,
-            maxNodeSize: 16
-        }
-    }, function (s) {
-        console.log('here');
-        s.graph.nodes().forEach(function (node, i, a) {
-            console.log(node, i, a);
-            node.x = Math.random();
-            node.y = Math.random();
-      //      node.size = Math.random();
-            node.color = 
-                colors[Math.floor(Math.random() * colors.length)];
-        });
+    <script>
+
+        $.ajax('/api/experiment?exampleName=toy')
+            .success(function (data) {
+                var experiments = Object.keys(data.Experiments);
+
+                for (var i = 0; i < experiments.length; i++) {
+                    var currentExp = data.Experiments[experiments[i]];
+
+                    var conditions = currentExp.Conditions;
+                    var times = Object.keys(conditions);
+
+                    var keys = Object.keys(conditions[times[0]]);
+
+                    var headTxt = '<th></th>';
+                    keys.forEach(function (d) { headTxt += '<th>' + d + '</th>' });
+
+                    console.log(headTxt);
 
 
-        s.graph.edges()
-            .forEach(function(edge, i, a) {
-            //    edge.type = "tapered";
-                    /*[
-                    'line',
-                    'curve',
-                    'arrow',
-                    'curvedArrow',
-                    'dashed',
-                    'dotted',
-                    'parallel',
-                    'tapered'
-                ][Math.round(Math.random() * 8)];*/
-                edge.size = 2;
+                    var tableBody = '';
+
+                    times.forEach(function (c) {
+                        var htmlRow = '<tr> <td>' + c + '</td>';
+                        var currentRow = conditions[c];
+                     
+                        keys.forEach(function (k) {
+                            htmlRow += '<td>' +
+                                currentRow[k] +
+                                '</td>';
+                        });
+
+                        htmlRow += '</tr>';
+
+                        tableBody += htmlRow;
+                    });
+
+                    $("#experiments").append('<h3 class="experimentLable" id="' + experiments[i] + '">' + experiments[i] + '</h3>' +
+                                                '<table class="experimenTable"><thead>' + headTxt + '</thead><tbody>' +
+                                                        tableBody +
+                                              '</tbody></table>');
+
+
+                }
+
+                //   var variables = experiments[0].
+
+                //data.Experiments;
+            });
+
+        colors = [
+            '#617db4',
+            '#668f3c',
+            '#c6583e',
+            '#b956af'
+        ];
+
+        sigma.parsers.json('/api/automate?exampleName=toy',
+            {
+                container: 'container',
+                renderer: {
+                    container: document.getElementById('container'),
+                    type: 'canvas'
+                },
+                settings: {
+                    minNodeSize: 8,
+                    maxNodeSize: 16
+                }
+            },
+            function (s) {
+                console.log('here');
+                s.graph.nodes()
+                    .forEach(function (node, i, a) {
+                        console.log(node, i, a);
+                            node.x = 2 *  Math.cos(Math.PI * 2 * i / a.length);
+                            node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
+                        node.color =
+                            colors[Math.floor(Math.random() * colors.length)];
+                    });
+
+
+                s.graph.edges()
+                    .forEach(function (edge, i, a) {
+                        //    edge.type = "tapered";
+                        /*[
+                        'line',
+                        'curve',
+                        'arrow',
+                        'curvedArrow',
+                        'dashed',
+                        'dotted',
+                        'parallel',
+                        'tapered'
+                    ][Math.round(Math.random() * 8)];*/
+                        edge.size = 2;
+                    });
+
+                s.refresh();
+                // Start the layout:
+                //  s.startForceAtlas2();
+
             });
 
 
-        // Start the layout:
-        //  s.startForceAtlas2();
-
-    });
-
-
-</script>
+    </script>
 </body>
 </html>

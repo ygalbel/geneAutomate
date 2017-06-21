@@ -234,6 +234,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ExperimentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AutomateController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -282,6 +283,10 @@
     </Content>
     <Content Include="Examples\toy.net" />
     <Content Include="Examples\toy.spec" />
+    <Content Include="Examples\pluripotency.net" />
+    <Content Include="Examples\pluripotency.spec" />
+    <Content Include="Examples\yeast.net" />
+    <Content Include="Examples\yeast.spec" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

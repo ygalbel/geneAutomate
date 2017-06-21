@@ -4,15 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeneAutomate.Models;
 
 namespace GeneAutomate.Parser
 {
-    public class ParseRuleResponse
-    {
-        public Dictionary<string, Condition> Conditions = new Dictionary<string, Condition>();
-        public Dictionary<string, Experiment> Experiments = new Dictionary<string, Experiment>();
-    }
-
     public class RuleFileParser
     {
         public ParseRuleResponse ParseRules(string path, List<string> variables)
@@ -44,23 +39,25 @@ namespace GeneAutomate.Parser
         private void HandleExperiments(string line, Dictionary<string, Experiment> experiment, Dictionary<string, Condition> conditions)
         {
             var trim = line.Trim();
-            if (trim.StartsWith("#")) // experiment
-            {
-                PasreExperimentLine(trim, experiment, conditions);
-            }
 
             if (trim.StartsWith("fixpoint"))
             {
                 ParseFixPoint(trim, experiment);
             }
+            else if (trim.StartsWith("#")) // experiment
+            {
+                PasreExperimentLine(trim, experiment, conditions);
+            }
+
+            
 
         }
 
         private void ParseFixPoint(string trim, Dictionary<string, Experiment> experiments)
         {
-
-            var name = trim.Split('$')[0].Split('[')[0];
-            var experimentTime = Int32.Parse(trim.Split('[')[0].Split(']')[0]);
+            //fixpoint(#Experiment1[18])
+            var name = trim.Split('#')[1].Split('[')[0];
+            var experimentTime = Int32.Parse(trim.Split('[')[1].Split(']')[0]);
 
             if (!experiments.ContainsKey(name))
             {
@@ -118,7 +115,7 @@ namespace GeneAutomate.Parser
         private void PasreExperimentLine(string line, Dictionary<string, Experiment> experiments, Dictionary<string, Condition> conditions)
         {
             var experimentName = line.Split('[')[0].Substring(1); //#ExperimentOne[0]
-            var experimentTime = Int32.Parse(line.Split('[')[0].Split(']')[0]);
+            var experimentTime = Int32.Parse(line.Split('[')[1].Split(']')[0]);
             var value = line.Split(' ').ToList().First(a => a.StartsWith("$")).Substring(1);
 
 
@@ -138,11 +135,37 @@ namespace GeneAutomate.Parser
             }
             else // existing only OR
             {
-                var conditionToAdd = currentCondition.Where(a => a.Value == true);
+                var conditionToAdd = currentCondition;//.Where(a => a.Value == true);
 
                 conditionToAdd.ToList().ForEach(c =>
                 {
-                    currentExperiment.Conditions[experimentTime][c.Key] = c.Value;
+                    if (!currentExperiment.Conditions[experimentTime].ContainsKey(c.Key))
+                    {
+                        currentExperiment.Conditions[experimentTime][c.Key] = c.Value;
+                    }
+                    else
+                    {
+
+                        var currentValue = currentExperiment.Conditions[experimentTime][c.Key];
+
+
+                        bool? newValue;
+
+                        if (!currentValue.HasValue)
+                        {
+                            newValue = c.Value;
+                        }
+                        else if (!c.Value.HasValue)
+                        {
+                            newValue = currentValue.Value;
+                        }
+                        else // both have values make OR
+                        {
+                            newValue = currentValue.Value | c.Value.Value;
+                        }
+
+                        currentExperiment.Conditions[experimentTime][c.Key] = newValue;
+                    }
                 });
             }
         }
@@ -168,26 +191,5 @@ namespace GeneAutomate.Parser
 
             return row;
         }
-    }
-
-    public class Condition : Dictionary<string, bool?>
-    {
-        public string Name { get; set; }
-
-        public bool IsFixedPoint { get; set; }
-    }
-
-
-    public class Experiment
-    {
-        public string Name { get; set; }
-
-        public Dictionary<int, Condition> Conditions;
-
-        public Experiment()
-        {
-            Conditions = new Dictionary<int, Condition>();
-        }
-
     }
 }
