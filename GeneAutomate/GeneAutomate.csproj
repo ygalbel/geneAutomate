@@ -347,12 +347,16 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeneAutomate.BusinessLogic\GeneAutomate.BusinessLogic.csproj">
+      <Project>{a5750481-47b8-42ec-9069-67681d210194}</Project>
+      <Name>GeneAutomate.BusinessLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Models\GeneAutomate.Models.csproj">
-      <Project>{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}</Project>
+      <Project>{63af470e-a7ef-4f5f-a6bb-9d18909bdebb}</Project>
       <Name>GeneAutomate.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Parser\GeneAutomate.Parser.csproj">
-      <Project>{FAEDE5AE-4C20-4991-AB85-8AAFBA4E5210}</Project>
+      <Project>{faede5ae-4c20-4991-ab85-8aafba4e5210}</Project>
       <Name>GeneAutomate.Parser</Name>
     </ProjectReference>
   </ItemGroup>

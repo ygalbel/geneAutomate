@@ -43,6 +43,7 @@
     <Compile Include="Condition.cs" />
     <Compile Include="Experiment.cs" />
     <Compile Include="FileParsingResult.cs" />
+    <Compile Include="GeneAutomata.cs" />
     <Compile Include="GeneLink.cs" />
     <Compile Include="ParseRuleResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

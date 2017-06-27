@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B6944649-EE89-4723-BAF8-8F9BE01DD81C}</ProjectGuid>
+    <ProjectGuid>{5B4BF9D5-A66B-4A85-94B0-B3A861C3D69A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GeneAutomate.ParserTests</RootNamespace>
-    <AssemblyName>GeneAutomate.ParserTests</AssemblyName>
+    <RootNamespace>GeneAutomate.BusinessLogicTests</RootNamespace>
+    <AssemblyName>GeneAutomate.BusinessLogicTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -51,17 +51,17 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BooleanNetworkValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RuleFileParserTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeneAutomate.BusinessLogic\GeneAutomate.BusinessLogic.csproj">
+      <Project>{a5750481-47b8-42ec-9069-67681d210194}</Project>
+      <Name>GeneAutomate.BusinessLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Models\GeneAutomate.Models.csproj">
       <Project>{63af470e-a7ef-4f5f-a6bb-9d18909bdebb}</Project>
       <Name>GeneAutomate.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GeneAutomate.Parser\GeneAutomate.Parser.csproj">
-      <Project>{faede5ae-4c20-4991-ab85-8aafba4e5210}</Project>
-      <Name>GeneAutomate.Parser</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
