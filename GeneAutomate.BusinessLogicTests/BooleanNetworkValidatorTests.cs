@@ -36,7 +36,6 @@ namespace GeneAutomate.BusinessLogic.Tests
             Assert.IsTrue(res);
         }
 
-
         [TestMethod()]
         public void TestValidAutomataSimplePathIsTrue()
         {
@@ -167,10 +166,6 @@ namespace GeneAutomate.BusinessLogic.Tests
             Assert.IsTrue(res);
         }
 
-
-
-
-
         [TestMethod()]
         public void TestValidAutomataSimplePathWithFalseRules()
         {
@@ -212,6 +207,52 @@ namespace GeneAutomate.BusinessLogic.Tests
             var res = validator.IsValidAutomata(automata, null, booleanNetwork);
 
             Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestValidAutomataWithLoop()
+        {
+            BooleanNetworkValidator validator = new BooleanNetworkValidator();
+
+
+            var automata = new GeneNode()
+            {
+                NodeName = "a",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Condition = new Condition() { { "A", true}, { "B" , true}, {"C", true} },
+                        Node = new GeneNode()
+                        {
+                            NodeName = "b",
+                            Transitions = new List<GeneTransition>()
+                            {
+                                new GeneTransition()
+                                {
+                                    Condition = new Condition() { {"A" , true}, {"B", true} , {"C", true} },
+                                    Node = null
+                                }
+                            }
+                        }
+                    }
+                }
+
+            };
+
+            // set the loop
+            automata.Transitions.First().Node = automata;
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() { From  = "A", To = "B", IsPositive = true},
+                new GeneLink() { From = "A", To = "C", IsPositive = true }
+            }
+            ;
+
+            var res = validator.IsValidAutomata(automata, null, booleanNetwork);
+
+            Assert.IsTrue(res);
         }
     }
 }
