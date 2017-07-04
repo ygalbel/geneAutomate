@@ -9,15 +9,30 @@ namespace GeneAutomate.BusinessLogic
 {
     public class BooleanNetworkValidator
     {
-        public bool IsValidAutomata(GeneNode automata, Condition currentStatus, List<GeneLink> booleanNetwok)
+
+        public bool IsValidAutomata(GeneNode automata, Condition currentStatus, List<GeneLink> booleanNetwok, HashSet<GeneNode> alreayViewedNodes= null)
         {
             if (automata == null || automata.Transitions == null || !automata.Transitions.Any())
             {
                 return true;
             }
 
+            if (alreayViewedNodes == null)
+            {
+                alreayViewedNodes = new HashSet<GeneNode>();
+            }
+
+            // handle case of loop in first node
+            if (currentStatus != null)
+            {
+                
+                alreayViewedNodes.Add(automata);
+            }
+
             var isValid = automata.Transitions.All(t => 
-            IsValidTransition(currentStatus, t.Condition, booleanNetwok) && IsValidAutomata(t.Node, t.Condition, booleanNetwok));
+            IsValidTransition(currentStatus, t.Condition, booleanNetwok) && 
+                    (alreayViewedNodes.Contains(t.Node) || 
+                    IsValidAutomata(t.Node, t.Condition, booleanNetwok, alreayViewedNodes)));
 
             return isValid;
         }
