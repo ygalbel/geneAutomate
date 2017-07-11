@@ -40,6 +40,11 @@ namespace GeneAutomate.Parser
         {
             var trim = line.Trim();
 
+            //if (string.IsNullOrWhiteSpace(trim))
+            //{
+            //    return;
+            //}
+
             if (trim.StartsWith("fixpoint"))
             {
                 ParseFixPoint(trim, experiment);

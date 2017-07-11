@@ -75,12 +75,12 @@ namespace GeneAutomate.Parser.Tests
         {
             var parser = new RuleFileParser();
 
-            var res = parser.ParseRules(@"C:\Users\ygalbe\Dropbox\Automate\pluripotency.spec", new List<string>() { "LIF" });
+            var res = parser.ParseRules(@"C:\dev\Automate\GeneAutomate\GeneAutomate\Examples\pluripotency.spec", new List<string>() { "LIF" });
 
             var condition = res.Conditions;
             var exp = res.Experiments;
 
-            Assert.AreEqual(exp.Count, 23);
+            Assert.AreEqual(23, exp.Count);
             Assert.IsTrue(exp.ContainsKey("ExperimentOne"));
             Assert.IsTrue(exp.ContainsKey("ExperimentTwo"));
             Assert.IsTrue(exp.ContainsKey("ExperimentThree"));

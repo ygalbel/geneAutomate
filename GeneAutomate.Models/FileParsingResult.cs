@@ -8,5 +8,7 @@ namespace GeneAutomate.Models
 
         public Dictionary<string, Condition> Conditions { get; set; } 
         public Dictionary<string, Experiment> Experiments { get; set; }
+        public Dictionary<string,AutomateObject> Automates { get; set; }
+        public List<GeneNode> Merges { get; set; }
     }
 }

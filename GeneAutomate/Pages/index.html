@@ -4,9 +4,20 @@
         #container {
             top: 0;
             bottom: 100;
-            left: 300;
+            left: 25%;
             right: 0;
             position: absolute;
+            border: blue;
+            border-width: 2px;
+            border-style: solid;
+        }
+
+        .automata-experiment {
+            top: 0;
+            height: 500;
+            bottom: 100;
+            right: 0;
+            position: relative;
             border: blue;
             border-width: 2px;
             border-style: solid;
@@ -51,11 +62,49 @@
             color: #FFF;
         }
         /* Hover cell effect! */
+
+        .bar-item {
+            display: block;
+            padding: 10px;
+        }
+
+        .bar-selected {
+            border-bottom: grey 2px solid;
+            border-top: grey 2px solid;
+        }
+
+        .container {
+            top: 0px;
+            position: absolute;
+        }
+
+        .sidebar {
+            position: fixed;
+        }
     </style>
 </head>
 <body>
-    <div id="experiments"></div>
-    <div id="container"></div>
+    <div class="sidebar bar-block" style="width:25%">
+        <a lookup="container" class="bar-item button bar-selected">Specs</a>
+        <a lookup="experiments" class="bar-item button">Experiments</a>
+        <a lookup="automata" class="bar-item button">Automata</a>
+        <a lookup="merges" class="bar-item button">Merges</a>
+    </div>
+    <div style="margin-left:25%">
+
+        <div id="experiments" class="container">
+            <h1>Experiments</h1>
+        </div>
+        <div id="container" class="container">
+            <h1>Container</h1>
+        </div>
+        <div id="automata" class="container">
+            <h1>Automata</h1>
+        </div>
+        <div id="merges" class="container">
+            <h1>Merges</h1>
+        </div>
+    </div>
     <script src="../Scripts/jquery-1.10.2.js"></script>
     <script src="../Scripts/Sigma/sigma.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.parsers.json.min.js"></script>
@@ -63,8 +112,21 @@
     <script src="../Scripts/Sigma/plugins/sigma.renderers.customEdgeShapes.min.js"></script>
     <script>
 
-        $.ajax('/api/experiment?exampleName=toy')
+        $(".bar-item").click(function () {
+
+            $(".bar-item").removeClass('bar-selected');
+            $(this).addClass('bar-selected');
+
+            $(".container").hide();
+            var idToShow = $(this).attr('lookup');
+
+            $("#" + idToShow).show();
+        })
+
+        $.ajax('/api/experiment?exampleName=pluripotency')
             .success(function (data) {
+
+                console.log(data);
                 var experiments = Object.keys(data.Experiments);
 
                 for (var i = 0; i < experiments.length; i++) {
@@ -86,7 +148,7 @@
                     times.forEach(function (c) {
                         var htmlRow = '<tr> <td>' + c + '</td>';
                         var currentRow = conditions[c];
-                     
+
                         keys.forEach(function (k) {
                             htmlRow += '<td>' +
                                 currentRow[k] +
@@ -98,11 +160,20 @@
                         tableBody += htmlRow;
                     });
 
-                    $("#experiments").append('<h3 class="experimentLable" id="' + experiments[i] + '">' + experiments[i] + '</h3>' +
-                                                '<table class="experimenTable"><thead>' + headTxt + '</thead><tbody>' +
-                                                        tableBody +
-                                              '</tbody></table>');
+                    $("#experiments")
+                        .append('<h3 class="experimentLable" id="' +
+                            experiments[i] +
+                            '">' +
+                            experiments[i] +
+                            '</h3>' +
+                            '<table class="experimenTable"><thead>' +
+                            headTxt +
+                            '</thead><tbody>' +
+                            tableBody +
+                            '</tbody></table>' +
+                            '<div class="automata-experiment" id="container_' + experiments[i] + '"></div>');
 
+                    createAutomata("container_" + experiments[i], data.Automates[experiments[i]]);
 
                 }
 
@@ -118,7 +189,7 @@
             '#b956af'
         ];
 
-        sigma.parsers.json('/api/automate?exampleName=toy',
+        sigma.parsers.json('/api/automate?exampleName=pluripotency',
             {
                 container: 'container',
                 renderer: {
@@ -135,8 +206,8 @@
                 s.graph.nodes()
                     .forEach(function (node, i, a) {
                         console.log(node, i, a);
-                            node.x = 2 *  Math.cos(Math.PI * 2 * i / a.length);
-                            node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
+                        node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
+                        node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
                         node.color =
                             colors[Math.floor(Math.random() * colors.length)];
                     });
@@ -144,26 +215,49 @@
 
                 s.graph.edges()
                     .forEach(function (edge, i, a) {
-                        //    edge.type = "tapered";
-                        /*[
-                        'line',
-                        'curve',
-                        'arrow',
-                        'curvedArrow',
-                        'dashed',
-                        'dotted',
-                        'parallel',
-                        'tapered'
-                    ][Math.round(Math.random() * 8)];*/
                         edge.size = 2;
                     });
 
                 s.refresh();
-                // Start the layout:
-                //  s.startForceAtlas2();
-
             });
 
+
+        function createAutomata(containerId, g) {
+            g.nodes
+                        .forEach(function (node, i, a) {
+                            console.log(node, i, a);
+                            node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
+                            node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
+                            node.color =
+                                colors[Math.floor(Math.random() * colors.length)];
+                        });
+
+
+            g.edges
+                .forEach(function (edge, i, a) {
+                    edge.size = 2;
+                });
+
+            //g.refresh();
+
+            new sigma(
+                {
+                    graph: g,
+                    container: containerId,
+                    renderer: {
+                        container: document.getElementById(containerId),
+                        type: 'canvas'
+                    },
+                    settings: {
+                        minNodeSize: 8,
+                        maxNodeSize: 16
+                    }
+                },
+                function (s) {
+                    console.log('bbbbbbbbbbbbbbbbbb');
+
+                });
+        }
 
     </script>
 </body>

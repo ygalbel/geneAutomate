@@ -16,6 +16,16 @@ namespace GeneAutomate.Models
         {
             get { return 1 + ((Transitions != null) ? Transitions.First().Node.NodeLength : 0); }
         }
+
+        public void Visit(Action<GeneNode> function)
+        {
+            function.Invoke(this);
+
+            if (Transitions != null && Transitions.Any())
+            {
+                Transitions.ForEach(d => d.Node.Visit(function));
+            }
+        }
     }
 
     public class GeneTransition
