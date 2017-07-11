@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomataFromExperimentCreator.cs" />
+    <Compile Include="AutomateViewHelper.cs" />
     <Compile Include="BooleanNetworkValidator.cs" />
     <Compile Include="MergeLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

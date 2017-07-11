@@ -21,6 +21,16 @@ namespace GeneAutomate.BusinessLogic
             return possibleMerges;
         }
 
+        public List<GeneNode> GetMerges(List<GeneNode> nodes)
+        {
+            var merges = from n1 in nodes
+                from n2 in nodes
+                where n1 != n2
+                select GetMerges(n1, n2);
+
+            return merges.SelectMany(a => a).ToList();
+        }
+
         public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2)
         {
             var possibleMerges = new List<GeneNode>();

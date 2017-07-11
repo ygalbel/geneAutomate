@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
 
 namespace GeneAutomate.Parser
@@ -16,7 +17,21 @@ namespace GeneAutomate.Parser
 
             var conditionAndExperiments = new RuleFileParser().ParseRules(specPath, links.GetAllNodes());
 
-            return new FileParsingResult() {GeneLinks = links, Conditions = conditionAndExperiments.Conditions, Experiments = conditionAndExperiments.Experiments};
+            var automates =
+                conditionAndExperiments.Experiments.ToDictionary(s => s.Key,
+                    s =>  new AutomataFromExperimentCreator().CreateAutomata(s.Value));
+
+            var merges = new AutomataMergeLogic().GetMerges(automates.Select(a => a.Value).ToList());
+
+            var automatesView = automates.ToDictionary(a => a.Key, a => a.Value.ToViewAutomata());
+            return new FileParsingResult()
+            {
+                GeneLinks = links,
+                Conditions = conditionAndExperiments.Conditions,
+                Experiments = conditionAndExperiments.Experiments,
+                Automates = automatesView,
+                Merges = merges
+            };
         }
 
         private List<GeneLink> GeneLinks(string netPath)
