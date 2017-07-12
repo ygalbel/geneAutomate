@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -177,6 +178,7 @@ namespace GeneAutomate.Parser
 
         private Condition CreateConditionFromSingleLine(string line, List<string> variables)
         {
+            Trace.WriteLine(line);
             var splitted = line.Split(':');
             var conditionName = splitted[0].Trim().Substring(1); // line is like $Conditions1 so i skip $
             splitted = splitted[1].Split('{')[1].Split('}'); // todo: change to regex;
@@ -188,10 +190,17 @@ namespace GeneAutomate.Parser
 
             rules.ForEach(r =>
             {
-                var s = r.Split('=');
-                var name = s[0].Trim();
-                var value = s[1].Trim() == "1";
-                row[name] = value;
+                if (!string.IsNullOrWhiteSpace(r))
+                {
+                    var s = r.Split('=');
+                    var name = s[0].Trim();
+                    var value = s[1].Trim() == "1";
+                    row[name] = value;
+                }
+                else
+                {
+                    Trace.WriteLine("Skip " + conditionName);
+                }
             });
 
             return row;

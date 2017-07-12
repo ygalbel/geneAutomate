@@ -7,7 +7,6 @@
             left: 25%;
             right: 0;
             position: absolute;
-            border: blue;
             border-width: 2px;
             border-style: solid;
         }
@@ -17,10 +16,12 @@
             height: 500;
             bottom: 100;
             right: 0;
+            min-width: 1000;
             position: relative;
-            border: blue;
             border-width: 2px;
             border-style: solid;
+            padding-bottom: 20px;
+            padding-top: 20px;
         }
 
         table {
@@ -71,6 +72,7 @@
         .bar-selected {
             border-bottom: grey 2px solid;
             border-top: grey 2px solid;
+            margin-right: 24px;
         }
 
         .container {
@@ -92,16 +94,16 @@
     </div>
     <div style="margin-left:25%">
 
-        <div id="experiments" class="container">
-            <h1>Experiments</h1>
-        </div>
         <div id="container" class="container">
             <h1>Container</h1>
         </div>
-        <div id="automata" class="container">
+        <div id="experiments" style="display:none" class="container">
+            <h1>Experiments</h1>
+        </div>
+        <div id="automata" style="display:none" class="container">
             <h1>Automata</h1>
         </div>
-        <div id="merges" class="container">
+        <div id="merges" style="display:none" class="container">
             <h1>Merges</h1>
         </div>
     </div>
@@ -110,7 +112,11 @@
     <script src="../Scripts/Sigma/plugins/sigma.parsers.json.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.renderers.customEdgeShapes.min.js"></script>
+    <script src="../Scripts/Sigma/plugins/sigma.renderers.edgeLabels.min.js"></script>
     <script>
+
+        var currentExperimentName = getParameterByName('name');
+        var graphs = [];
 
         $(".bar-item").click(function () {
 
@@ -121,9 +127,17 @@
             var idToShow = $(this).attr('lookup');
 
             $("#" + idToShow).show();
+
+            if (graphs[idToShow]) {
+                graphs[idToShow].forEach(function (g) {
+                    g.refresh();
+                    g.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1.2 });
+                });
+            }
+
         })
 
-        $.ajax('/api/experiment?exampleName=pluripotency')
+        $.ajax('/api/experiment?exampleName=' + currentExperimentName)
             .success(function (data) {
 
                 console.log(data);
@@ -173,9 +187,37 @@
                             '</tbody></table>' +
                             '<div class="automata-experiment" id="container_' + experiments[i] + '"></div>');
 
-                    createAutomata("container_" + experiments[i], data.Automates[experiments[i]]);
+                    var u = createAutomata("container_" + experiments[i], data.Automates[experiments[i]]);
+
+                    if (!graphs["experiments"]) {
+                        graphs["experiments"] = [];
+                    }
+
+                    graphs["experiments"].push(u);
+
+
 
                 }
+
+                data.Merges.forEach(function (m, i) {
+                    $("#merges")
+                       .append('<h3 class="mergeItem" id="merge' +
+                           i +
+                           '"> Merge' +
+                           i +
+                           '</h3>' +
+                           '<div class="automata-experiment" id="merge_container_' + i + '"></div>');
+
+                    var u = createAutomata("merge_container_" + i, m);
+
+
+                    if (!graphs["merges"]) {
+                        graphs["merges"] = [];
+                    }
+
+                    graphs["merges"].push(u);
+                })
+
 
                 //   var variables = experiments[0].
 
@@ -189,7 +231,7 @@
             '#b956af'
         ];
 
-        sigma.parsers.json('/api/automate?exampleName=pluripotency',
+        sigma.parsers.json('/api/automate?exampleName=' + currentExperimentName,
             {
                 container: 'container',
                 renderer: {
@@ -218,19 +260,24 @@
                         edge.size = 2;
                     });
 
+                s.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1.2 });
                 s.refresh();
+
+                graphs["container"] = [];
+                graphs.container.push(s);
+
             });
 
 
         function createAutomata(containerId, g) {
             g.nodes
-                        .forEach(function (node, i, a) {
-                            console.log(node, i, a);
-                            node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
-                            node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
-                            node.color =
-                                colors[Math.floor(Math.random() * colors.length)];
-                        });
+                  .forEach(function (node, i, a) {
+                      console.log(node, i, a);
+                      node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
+                      node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
+                      node.color =
+                          colors[Math.floor(Math.random() * colors.length)];
+                  });
 
 
             g.edges
@@ -240,7 +287,7 @@
 
             //g.refresh();
 
-            new sigma(
+            var u = new sigma(
                 {
                     graph: g,
                     container: containerId,
@@ -257,8 +304,21 @@
                     console.log('bbbbbbbbbbbbbbbbbb');
 
                 });
+
+            u.refresh();
+            return u;
         }
 
+        // from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
     </script>
 </body>
 </html>
