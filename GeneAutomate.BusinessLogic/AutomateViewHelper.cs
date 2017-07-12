@@ -30,7 +30,11 @@ namespace GeneAutomate.BusinessLogic
             {
                 if (g.Transitions != null && g.Transitions.Any())
                 {
-                    g.Transitions.ForEach(f => trans.Add(new Edge {source = g.NodeName, target = f.Node.NodeName}));
+                    g.Transitions.ForEach(f => trans.Add(new Edge {
+                        source = g.NodeName,
+                        target = f.Node.NodeName,
+                        label = CreateLabel(f)
+                    }));
                 }
             });
 
@@ -43,10 +47,27 @@ namespace GeneAutomate.BusinessLogic
                     target = d.target,
                     color =  "#3300ff",
                     type = "arrow",
+                    label = d.label
                 })
                     .ToList();
 
             return res;
+        }
+
+        private static string CreateLabel(GeneTransition f)
+        {
+            var label = "";
+
+            if (f.Condition.Any())
+            {
+                label = string.Join(",", f.Condition.Select(a => $"{a.Key}:{a.Value}"));
+            }
+            else
+            {
+                label = "?";
+            }
+
+            return label;
         }
 
 
