@@ -23,7 +23,7 @@ namespace GeneAutomate.BusinessLogic
                 tempNode = new GeneNode()
                 {
                     NodeName = exp.Name + "_" + i,
-                    
+                    CurrentCondition = GetConditionForThisIndex(exp, i)
 
                 };
 

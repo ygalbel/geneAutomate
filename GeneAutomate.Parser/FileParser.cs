@@ -21,7 +21,10 @@ namespace GeneAutomate.Parser
                 conditionAndExperiments.Experiments.ToDictionary(s => s.Key,
                     s =>  new AutomataFromExperimentCreator().CreateAutomata(s.Value));
 
-            var merges = new AutomataMergeLogic().GetMerges(automates.Select(a => a.Value).ToList()).Take(100).Select(a => a.ToViewAutomata()).ToList();
+            var merges = new AutomataMergeLogic().GetMerges(automates.Select(a => a.Value).ToList())
+                .Take(100)
+                .Select(a => a.ToViewAutomata())
+                .ToList();
 
             
 

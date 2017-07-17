@@ -250,6 +250,7 @@
                         console.log(node, i, a);
                         node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
                         node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
+                        node.size = 7;
                         node.color =
                             colors[Math.floor(Math.random() * colors.length)];
                     });
@@ -261,7 +262,11 @@
                     });
 
                 s.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1.2 });
-                s.refresh();
+
+                setTimeout(function() {
+                        s.refresh();
+                    },
+                    300);
 
                 graphs["container"] = [];
                 graphs.container.push(s);
@@ -275,6 +280,7 @@
                       console.log(node, i, a);
                       node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
                       node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
+                      node.size = 7;
                       node.color =
                           colors[Math.floor(Math.random() * colors.length)];
                   });
@@ -301,11 +307,14 @@
                     }
                 },
                 function (s) {
-                    console.log('bbbbbbbbbbbbbbbbbb');
 
                 });
 
-            u.refresh();
+            setTimeout(function() {
+                    u.refresh();
+                },
+                300);
+
             return u;
         }
 
