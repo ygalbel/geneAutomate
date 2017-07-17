@@ -21,6 +21,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneAutomate.BDDTests", "Ge
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{25070E39-11B4-4210-9A55-7752335C911D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalPackages", "ExternalPackages", "{06BB40D3-8CA8-461F-A48A-23782A0829A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PAT", "PAT", "{5578F806-EC04-45A5-B3C2-8CAA03DB78A3}"
+	ProjectSection(SolutionItems) = preProject
+		External Packages\PAT BDD Lib Public\dll\CUDDHelper 64.dll = External Packages\PAT BDD Lib Public\dll\CUDDHelper 64.dll
+		External Packages\PAT BDD Lib Public\dll\CUDDHelper.dll = External Packages\PAT BDD Lib Public\dll\CUDDHelper.dll
+		External Packages\PAT BDD Lib Public\dll\CUDDHelper_32.dll = External Packages\PAT BDD Lib Public\dll\CUDDHelper_32.dll
+		External Packages\PAT BDD Lib Public\dll\PAT.BDD.dll = External Packages\PAT BDD Lib Public\dll\PAT.BDD.dll
+		External Packages\PAT BDD Lib Public\dll\PAT.BDD.pdb = External Packages\PAT BDD Lib Public\dll\PAT.BDD.pdb
+		External Packages\PAT BDD Lib Public\dll\PAT.BDD.XML = External Packages\PAT BDD Lib Public\dll\PAT.BDD.XML
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,5 +79,6 @@ Global
 		{B6944649-EE89-4723-BAF8-8F9BE01DD81C} = {25070E39-11B4-4210-9A55-7752335C911D}
 		{5B4BF9D5-A66B-4A85-94B0-B3A861C3D69A} = {25070E39-11B4-4210-9A55-7752335C911D}
 		{7AE1A29C-606E-4BF2-8543-0928CF16F6DC} = {25070E39-11B4-4210-9A55-7752335C911D}
+		{5578F806-EC04-45A5-B3C2-8CAA03DB78A3} = {06BB40D3-8CA8-461F-A48A-23782A0829A9}
 	EndGlobalSection
 EndGlobal

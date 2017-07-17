@@ -1,0 +1,2548 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PAT.BDD</name>
+    </assembly>
+    <members>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDD">
+            <summary>
+            CUDD library in C# code
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.CUDDLib.CUDD.ZERO">
+            <summary>
+            Return zero constant node, remember to call Reference
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.CUDDLib.CUDD.ONE">
+            <summary>
+            Return 1 constant node, remember to call Reference
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.CUDDLib.CUDD.PLUS_INFINITY">
+            <summary>
+            Return plus infinity constant node, remember to call Reference
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.CUDDLib.CUDD.MINUS_INFINITY">
+            <summary>
+            Return minus infinity constant node, remember to call Reference
+            </summary>
+        </member>
+        <member name="P:PAT.Common.Classes.CUDDLib.CUDD.Manager">
+            <summary>
+            Manager the CUDD library
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.IsConstant(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Check whether a node is a constant
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetIndex(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the index of the given node
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetReference(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the reference count
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetValue(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the value of the given constant node
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetThen(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the Then node of the given node
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetElse(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the Else node of the given node
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.AllocateNodes(System.Int32)">
+            <summary>
+            Allocate an array of n DdNodes and return the pointer
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.SetElement(System.IntPtr,System.IntPtr,System.Int32)">
+            <summary>
+            Assign the ith DdNode of array
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.FreeArray(System.IntPtr)">
+            <summary>
+            Free the array of DdNodes
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.InitialiseCUDD(System.Int32,System.Int32,System.Int32,System.Double)">
+            <summary>
+            Create CUDD with maxMemory in MB
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.SetCUDDMaxMem(System.Int32)">
+            <summary>
+            Set the maximum memory of CUDD in MB
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+            <param name="maxMemory"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.SetCUDDEpsilon(System.Double)">
+            <summary>
+            Sets the epsilon parameter of the manager
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.CloseDownCUDD">
+            <summary>
+            Close down the CUDD package
+            Deletes resources associated with a DD manager
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Ref(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Increases the reference count of a node, if it is not saturated
+            [ REFS: dd, DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Ref(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Ref all dd in list
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Ref(PAT.Common.Classes.CUDDLib.CUDDNode[])">
+            <summary>
+            Ref all dd in dds
+            </summary>
+            <param name="dds"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Ref(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}[])">
+            <summary>
+            Ref all dd in dds
+            </summary>
+            <param name="dds"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Deref(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Decreases the reference count of node
+            [ REFS: 'none', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Deref(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Deref all dd in dds
+            </summary>
+            <param name="dds"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Deref(PAT.Common.Classes.CUDDLib.CUDDNode[])">
+            <summary>
+            Deref all dd in dds
+            </summary>
+            <param name="dds"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Deref(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}[])">
+            <summary>
+            Deref all dd in dds
+            </summary>
+            <param name="dds"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Create">
+            <summary>
+            Create a new dd, initial value is Zero
+            Careful to use with the default value 0
+            Working with vector, should not use, should set vector default value is -infinity
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Constant(System.Double)">
+            <summary>
+            Return a constant
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.PlusInfinity">
+            <summary>
+            Return the plus infinity constant
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.MinusInfinity">
+            <summary>
+            Return the minus infinity constant
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Var(System.Int32)">
+            <summary>
+            Get the ith variable, if not exist then create it
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.FindMin(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return min of ADD
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.FindMinThreshold(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            Return min of ADD but must be not less than a threshold
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.FindMax(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return max of ADD
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.FindMaxThreshold(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            Return max of ADD but must not be greater than a threshold
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.RestrictToFirst(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Return the first cube making the ADD not 0
+            [ REFS: 'result', DEREFS: 'dd' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetNumNodes(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return number of nodes
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetNumTerminals(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return number of terminals
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetNumMinterms(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            Return number of minterm which made the ADD != 0
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetNumPaths(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            returns number of paths in dd
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.GetSupport(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Finds the variables on which a DD depends.
+            Returns a ADD consisting of the product of the variables.
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.MinTermToInt(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Return the int value corresponding the binary representation of the current minterm
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.IsSubSet(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Check whether subSet is a subset of set
+            [ REFS: '', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.ReadMemoryInUse">
+            <summary>
+            Returns the memory in use by the manager measured in bytes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.ReadPerm(System.Int32)">
+            <summary>
+            return the position in the order of the ith variable.
+            </summary>
+            <param name="i">The variable to get the position of</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.ReadInvPerm(System.Int32)">
+            <summary>
+            return the variable index of the variable currently at position pos
+            </summary>
+            <param name="i">The position of the varaible index to get</param>
+            <returns></returns>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDD.Abstract">
+            <summary>
+            Support all functions related with the Abstract a boolean expression
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Abstract.ThereExists(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Or Abstract variables in vars, dd must be 0-1 ADD.
+            result will not contain boolean variables in vars
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Abstract.ThereExists(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Or Abstract variables in vars, dd must be 0-1 ADD.
+            result will not contain boolean variables in vars
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Abstract.ForAll(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Universal Abstract (ie. product, *) variables in vars
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Abstract.SumAbstract(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Sum (ie. +) Abstract variables in vars
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Abstract.ProductAbstract(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Universal Abstract (ie. product, *) variables in vars, the same with ForAll
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Abstract.AndExists(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Return (f and g) abstract vars
+            [ REFS: 'result', DEREFS: f, g ]
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDD.Convert">
+            <summary>
+            Convert all kinds of conversion from ADD to BDD
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Convert.GreaterThan(PAT.Common.Classes.CUDDLib.CUDDNode,System.Double)">
+            <summary>
+            Convert ADD to 0-1 ADD based on the interval (threshold, +inf)
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Convert.GreaterThanEquals(PAT.Common.Classes.CUDDLib.CUDDNode,System.Double)">
+            <summary>
+            Convert ADD to 0-1 ADD based on the interval [threshold, +inf)
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Convert.LessThan(PAT.Common.Classes.CUDDLib.CUDDNode,System.Double)">
+            <summary>
+            Convert ADD to 0-1 ADD based on the interval (-inf, threshold)
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Convert.LessThanEquals(PAT.Common.Classes.CUDDLib.CUDDNode,System.Double)">
+            <summary>
+            Convert ADD to 0-1 ADD based on the interval (-inf, threshold]
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Convert.Equals(PAT.Common.Classes.CUDDLib.CUDDNode,System.Double)">
+            <summary>
+            Convert ADD to 0-1 ADD based on the interval [threshold, threshold]
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Convert.Interval(PAT.Common.Classes.CUDDLib.CUDDNode,System.Double,System.Double)">
+            <summary>
+            Convert ADD to 0-1 ADD based on the interval [lower, upper]
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDD.Debug">
+            <summary>
+            Support functions to debug
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Debug.CheckKeys">
+            <summary>
+            Used when CUDD reports that during garbage collection the number of nodes actually deleted from the unique table is
+            different from the count of dead nodes kept by the manager.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.CUDDLib.CUDD.Debug.CheckZeroRef" -->
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Debug.DebugCheck">
+            <summary>
+            Used when CUDD reports that during garbage collection the number of nodes actually deleted from the unique table is
+            different from the count of dead nodes kept by the manager.
+            Returns 0 if no inconsistencies are found; DD_OUT_OF_MEM if there is not enough memory; 1 otherwise.
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Debug.Debugs">
+            <summary>
+            Call all debug functions to test reference numver
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDD.Function">
+            <summary>
+            Suport functions in BDD and ADD including logic and arithmetic functions
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Not(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the complement of node
+            [ REFS: 'result', DEREFS: 'dd' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Not(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Return the complement of dds
+            [ REFS: 'result', DEREFS: 'dds' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Or(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Or 0-1 ADDs, difficult to know the result if not 0-1 ADDs, refer the C++ code
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Or(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Or all CUDDNode in dds
+            [ REFS: 'result', DEREFS: dds ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.And(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            And 0-1 ADDs, difficult to know the result if not 0-1 ADDs, refer the C++ code
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.And(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            list1, list 2 are 2 list of nodes. These nodes are Or-explicit
+            Return (list1 and list2)
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.CUDDLib.CUDD.Function.And(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})" -->
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.CUDDLib.CUDD.Function.And(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},PAT.Common.Classes.CUDDLib.CUDDNode)" -->
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Different(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            return 1 if node1 is 1 and node2 is 0, others return 0.
+             belong dd1 but not belong dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Xor(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Xor 0-1 ADDs, difficult to know the result if not 0-1 ADDs, refer the C++ code
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Implies(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Imply 0-1 ADDs, difficult to know the result if not 0-1 ADDs, refer the C++ code
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Plus(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the sum ADD of dd1, dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Minus(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the remain ADD of dd1, dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Times(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the product ADD of dd1, dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Divide(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the ratio ADD of dd1, dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.BitwiseAnd(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the ratio ADD of dd1, dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.BitwiseOr(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return the ratio ADD of dd1, dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Minimum(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return min(dd1, dd2)
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Maximum(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return max(dd1, dd2)
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Agreement(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return dd1 if dd1 == dd2; 0 if dd1 != dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Diff(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return plusinfinity if dd1 == dd2; min(dd1, dd2) if dd1 != dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Equal(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return 1 if dd1 == dd2; 0 if dd1 != dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.NotEqual(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return 1 if dd1 != dd2; 0 if dd1 == dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Greater(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return 1 if dd1 > dd2; 0 otherwise
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.GreaterEqual(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return 1 if dd1 >= dd2; 0 otherwise
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.CUDDLib.CUDD.Function.Less(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)" -->
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.CUDDLib.CUDD.Function.LessEqual(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)" -->
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.SetNZ(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, sets dd1 to the value of dd2 wherever dd2 != 0
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.CUDDLib.CUDD.Function.Threshold(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)" -->
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Log(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Natural logarithm of an ADD
+            [ REFS: 'result', DEREFS: dd]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Restrict(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Restrict a node according to the cube of variables.
+            [ REFS: 'result', DEREFS: dd, cube ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.ITE(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Create node with root node dd1, its then node is dd2 and its else node is dd3.
+            This procedure assumes that dd1 is a 0-1 ADD.
+            [ REFS: 'result', DEREFS: dd1, dd2, dd3 ].
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.Modulo(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return dd1 % dd2
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.ModuloNonNegative(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            At each terminal, return dd1 % dd2, non-negative when dd2 > 0
+            [ REFS: 'result', DEREFS: dd1, dd2 ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Function.RoundOff(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            Rounds off the discriminants of an ADD. The discriminants are rounded off to N digits after the decimal.
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDD.Matrix">
+            <summary>
+            Matrix in BDD
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Matrix.SetVectorElement(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32,System.Double)">
+            <summary>
+            Set the value of i.th element in vector. i is allowed to be negative. -1 is the last element.
+            [ REFS: 'result', DEREFS: 'dd' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Matrix.SetMatrixElement(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32,System.Int32,System.Double)">
+            <summary>
+            Sets element in matrix dd
+            [ REFS: 'result', DEREFS: 'dd' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Matrix.Set3DMatrixElement(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32,System.Int32,System.Int32,System.Double)">
+            <summary>
+            // sets element in 3d matrix dd
+            [ REFS: 'result', DEREFS: 'dd' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Matrix.GetVectorElement(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32)">
+            <summary>
+            Get element in vector dd
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Matrix.Identity(PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Generates 0-1 ADD for the function x = y
+            where x, y are num_vars-bit numbers encoded by variables x_vars, y_vars
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Matrix.Transpose(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Returns transpose of matrix dd
+            [ REFS: 'result', DEREFS: 'dd' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Matrix.MatrixMultiply(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32)">
+            <summary>
+            Returns matrix multiplication of matrices dd1 and dd2
+             [ REFS: 'result', DEREFS: 'dd1, dd2' ]
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDD.Print">
+            <summary>
+            Print a boolean expression to the output mean
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintCacheInfo">
+            <summary>
+            Print the cache information
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintInfo(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            Print about number of nodes, terminals, minterms
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintInfoBrief(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            Print about number of nodes, terminals, minterms
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.GetInfoString(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            Return string of number of nodes, terminals, minterms
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.GetInfoBriefString(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            Return string of number of nodes, terminals, minterms
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintSupport(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Print the variables on which a DD depends.
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintVector(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32)">
+            <summary>
+            Print vector dd, suppos that all variables supporting dd belong to vars
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintVector(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Print vector dd, suppos that all variables supporting dd belong to vars
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintMatrix(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32,System.Int32)">
+            <summary>
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintVectorFiltered(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,System.Int32,System.Int32)">
+            <summary>
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintMinterm(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintMinterm(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintTerminals(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Print terminals of DD
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintTerminalsAndNumbers(PAT.Common.Classes.CUDDLib.CUDDNode,System.Int32)">
+            <summary>
+            [ REFS: 'none', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Print.PrintInfo(System.String)">
+            <summary>
+            Print all information to file
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDD.Variable">
+            <summary>
+            Support funtions related with the boolean variables
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Variable.PermuteVariables(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Permute variables (i.e. x_i -> y_i) of a node
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Variable.SwapVariables(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Swap variables (i.e. x_i -> y_i and y_i -> x_i) of a node.
+            [ REFS: 'result', DEREFS: dd ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Variable.SwapVariables(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Swap variables (i.e. x_i -> y_i and y_i -> x_i) of a node.
+            [ REFS: 'result', DEREFS: dds ]
+            </summary>
+            <param name="dds"></param>
+            <param name="oldVars"></param>
+            <param name="newVars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Variable.VariablesGreaterThan(PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Generates BDD for the function x > y
+            where x, y are num_vars-bit numbers encoded by variables x_vars, y_vars
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Variable.VariablesGreaterThanEquals(PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Generates BDD for the function x >= y
+            where x, y are num_vars-bit numbers encoded by variables x_vars, y_vars
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.CUDDLib.CUDD.Variable.VariablesLessThan(PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)" -->
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.CUDDLib.CUDD.Variable.VariablesLessThanEquals(PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)" -->
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDD.Variable.VariablesEquals(PAT.Common.Classes.CUDDLib.CUDDVars,PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Generates BDD for the function x = y
+            where x, y are num_vars-bit numbers encoded by variables x_vars, y_vars
+            [ REFS: 'result', DEREFS: 'none' ]
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDDNode">
+            <summary>
+            Wrapper of a boolean expression
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDDNode.IsConstant">
+            <summary>
+            Check whether the represented boolean expression is actually a constant
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDDNode.Equals(System.Object)">
+            <summary>
+            Use to check 2 CUDDNode are the same. Often used to check a node is a Zero or One
+            [ REFS: 'none', DEREFS: 'none']
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.CUDDVars">
+            <summary>
+            Wrapper of variables. Each variables is represented as a list of CUDDNode where each node is a boolean variable
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.CUDDLib.CUDDVars.vars">
+            <summary>
+            Array of boolean variables representing the variable
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.CUDDLib.CUDDVars.ptr">
+            <summary>
+            Pointer to the array of boolean variables
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDDVars.AddVar(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Add new boolean variable to encode variable
+            </summary>
+            <param name="var"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDDVars.AddVars(PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Add boolean variables from ddv
+            </summary>
+            <param name="ddv"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDDVars.RemoveVars(PAT.Common.Classes.CUDDLib.CUDDVars)">
+            <summary>
+            Remove boolean variables in ddv
+            </summary>
+            <param name="ddv"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDDVars.GetArrayPointer">
+            <summary>
+            Return the pointer address of the array of boolean variables in the memory
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDDVars.GetNumVars">
+            <summary>
+            Return number of boolean variables
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.CUDDVars.BuildArray">
+            <summary>
+            Create array of boolean variables in memory
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.PlatformInvoke">
+            <summary>
+            Interface of CUDD in C#
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.CUDDLib.VariableList">
+            <summary>
+            Manage variables and their lower-bound and upper-bound value
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.VariableList.GetVarLow(System.String)">
+            <summary>
+            Get lower-bound of a variable
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.VariableList.GetVarHigh(System.String)">
+            <summary>
+            Get upper_bound value of a variable
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.VariableList.GetVarName(System.Int32)">
+            <summary>
+            Return variable's name based its index
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.VariableList.GetNumberOfBits(System.String)">
+            <summary>
+            Return number of bits used to represent this variable
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.VariableList.GetVarIndex(System.String)">
+            <summary>
+            Return variable's index based on variable's name
+            </summary>
+            <param name="varName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.VariableList.AddNewVariable(System.String,System.Int32,System.Int32)">
+            <summary>
+            Add new variable to the list
+            </summary>
+            <param name="name">Variable's name</param>
+            <param name="low">Variable's lower-bound value</param>
+            <param name="high">Variable's upper-bound value</param>
+        </member>
+        <member name="M:PAT.Common.Classes.CUDDLib.VariableList.ContainsVar(System.String)">
+            <summary>
+            Check whether a variable exists
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Assignment.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return only guards for complete boolean expression, no expression
+            Use this when we want to encode a single assignment or the assignment does not depend other assignments.
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Assignment.TranslateStatementToBDD(PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return the variable values after the assignment based on the current variable values in resultBefore
+            [ REFS: 'result', DEREFS: 'resultBefore' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Assignment.IsComplexUpdate(System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32})">
+            <summary>
+            a = 1; a = a + 1;
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.Expressions.ExpressionClass.BoolConstant.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)" -->
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.BoolConstant.TranslateIntExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            
+            <summary>
+            Use when the boolen constant is used as expression: a = true
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.BoolConstant.TranslateStatementToBDD(PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Used as a special statement which does nothing
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding">
+            <summary>
+            ExpressionBDDEncoding to suport array expression.
+            For example: a[i] then the GuardDDs will contains condition of value of i, i = 0, i = 1,...,
+            ExpressionDDs will contain the corresponding expression of a[i], a[0], a[1], a[2]...
+            After finishing encoding a boolean expresion which does not consist of any ADD, then only need to use GuarDDS
+            Then just get the GuardDDs[0]
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding.GuardDDs">
+            <summary>
+            BDD
+            When ExpressionBDDEncoding is a result of an complete expression, GuardDDs only contains 1 elements
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding.ExpressionDDs">
+            <summary>
+            ADD
+            When ExpressionBDDEncoding is a result of an incomplete expression, ExpressionDDs is not empty
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding.Count">
+            <summary>
+            Some expression we only care with guard, not expression  like boolean expression.
+            In such cases, expression is empty. So size should get from guards
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding.AddNodeToGuard(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            [ REFS: 'none', DEREFS: 'dd if failed to add' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding.AddNodeToGuard(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            [ REFS: 'none', DEREFS: 'dd if failed to add' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Expression.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode a boolean expression
+            [ REFS: 'result', DEREFS: '' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Expression.TranslateIntExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode an arithmetic expression
+            [ REFS: 'result', DEREFS: '' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Expression.TranslateStatementToBDD(PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            For Update, If While, Sequence. Based on the current variable values in resultBefore, return the variable values after the statement is executed
+            [ REFS: 'result', DEREFS: 'resultBefore' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Expression.CombineGuard(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression)">
+            <summary>
+            Return guard1 and guard2
+            </summary>
+            <param name="guard1"></param>
+            <param name="guard2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Expression.CombineProgramBlock(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression)">
+            <summary>
+            Return block1;block2
+            </summary>
+            <param name="block1"></param>
+            <param name="block2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.If.#ctor(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression)">
+            <summary>
+            If then else expression
+            </summary>
+            <param name="c"></param>
+            <param name="t"></param>
+            <param name="e">Give null if the else part does not exist</param>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.If.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode the If as a single statement
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.If.TranslateStatementToBDD(PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return variable values after the If statement is executed based on resultBefore
+            [ REFS: 'result', DEREFS: 'resultBefore' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.IntConstant.TranslateIntExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return the encoding of the integer value
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.Expressions.ExpressionClass.PrimitiveApplication.ARRAY">
+            <summary>
+            To get an element i.th in an array A, we create new expression PrimitiveApplication(ARRAY, new Variable(A), new Variable(i))
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.PrimitiveApplication.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode boolean expression
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.PrimitiveApplication.TranslateIntExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode arithmetic expression whose returned value is integer
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.PrimitiveApplication.TranslateArrayExpression(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Can support array of array
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.PropertyAssignment.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode this assignment as a single statement
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.PropertyAssignment.TranslateStatementToBDD(PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode this assignment in a sequence of statements. Return variable values after this assignment based on the current value in resultBefore
+            [ REFS: 'result', DEREFS: 'resultBefore' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Sequence.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            A sequence, containing some statement, must be encoded in TranslateStatementToBDD mode
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Sequence.TranslateStatementToBDD(PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            [ REFS: 'result', DEREFS: 'resultBefore' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Variable.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode as booleane expression, check whether the variable is true
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.Variable.TranslateIntExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return variable expression
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.Expressions.ExpressionClass.VariablePrime">
+            <summary>
+            This class is used for BDD to encode new variable value after transition
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.VariablePrime.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Encode as booleane expression, check whether the variable is true
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.VariablePrime.TranslateIntExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return variable expression
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.While.TranslateStatementToBDD(PAT.Common.Classes.Expressions.ExpressionClass.ExpressionBDDEncoding,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            [ REFS: 'result', DEREFS: 'resultBefore' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Expressions.ExpressionClass.WildConstant.TranslateBoolExpToBDD(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Only 1 expression of constant, guard ONE
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.transitionBDD">
+            <summary>
+            Event-based transitions
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.channelInTransitionBDD">
+            <summary>
+            Sync Channel-in-based transitions
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.prioritychannelIns">
+            <summary>
+            Sync Channel-in-based transitions
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.channelOutTransitionBDD">
+            <summary>
+            Sync Channel-out-based transitions
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.prioritychannelOuts">
+            <summary>
+            Sync Channel-in-based transitions
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Ticks">
+            <summary>
+            Tick transition
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.initExpression">
+            <summary>
+            Initial state of the AutomataBDD in expression representation
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.variableIndex">
+            <summary>
+            Variables beside global varialbes used in this AutomataBDD including controling state variables and local variables
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.newLocalVarName">
+            <summary>
+            Use this property to store new local varaible name
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.PrintTransition">
+            <summary>
+            Print the transition for debug
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.GetInitInColumn(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Returned the initialization of this process (in the form of update statements)
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ChannelInputPrefixing(System.String,System.Int32,PAT.Common.Classes.Expressions.ExpressionClass.Expression,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return the AutomataBDD of the Channel Input
+            Currently Channel Input is translated as assginment, not guard. We don't support using channel input to expect a certain value
+            </summary>
+            <param name="channelName">Channel's name</param>
+            <param name="channelEventIndex"></param>
+            <param name="guard">Guard expression of the channel input</param>
+            <param name="exps">List of input expression to the channel</param>
+            <param name="assignmetExp"></param>
+            <param name="P1">AutomataBDD of process P1 after the channel input</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ChannelInputEncodeTransition(System.String,System.Int32,PAT.Common.Classes.Expressions.ExpressionClass.Expression,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            
+            </summary>
+            <param name="channelName">The channel Name</param>
+            <param name="channelEventIndex"></param>
+            <param name="guard">If no guard, give BoolConstant(true)</param>
+            <param name="exps">List of expressions of channel out</param>
+            <param name="assignmentExp">If no guard, give BoolConstant(true)</param>
+            <param name="P1">Process after channel in</param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.GetGuardUpdateOfChannelInput(System.String,PAT.Common.Classes.Expressions.ExpressionClass.Expression,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return guard, update of channel input
+            guard: not empty and same size (buffer and received) and guard and expected value in buffer
+            update: received = buffer and length of buffer - 1
+            Does not include the update of Event
+            </summary>
+            <param name="channelName"></param>
+            <param name="guard"></param>
+            <param name="exps"></param>
+            <param name="assignmentExp">null if does not exist</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ChannelOutputPrefixing(System.String,System.Int32,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)" -->
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ChannelOutputEncodeTransition(System.String,System.Int32,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            
+            </summary>
+            <param name="channelName">The channel Name</param>
+            <param name="channelEventIndex"></param>
+            <param name="exps">List of expressions of channel in</param>
+            <param name="P1">Process after channel in</param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.GetGuardUpdateOfChannelOutput(System.String,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return guard, update of channel output
+            guard: buffer not full
+            update: buffer = sender and update size of message and update length of buffer and update top of buffer
+            Does not include update Model.Event_Name
+            </summary>
+            <param name="channelName"></param>
+            <param name="exps"></param>
+            <param name="assignmentExp">null if not exist</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Choice(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the process which is composed of some choices
+            This is a randome choice resolved by any (visible/invisible tau) event
+            </summary>
+            <param name="choices">List of AutomataBDD of choices</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ChoiceSetVariable(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : [∪ {i = 1..n}Pi.var] ∪ {temp}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ChoiceSetInit(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init : ∧{i = 1..n}Pi.init ∧ temp in Range[0, n-1]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ChoiceEncodeTransition(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            (temp = i ∧ Pi.transition ∧ temp' = i)
+            </summary>
+            <param name="choices"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.EventPrefix(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the not tau event prefix process with guard [b] e -> P1
+            </summary>
+            <param name="guard">Guard of this event to happen</param>
+            <param name="updateOfEvent">Update command happening with the event</param>
+            <param name="P1">AutomataBDD of the process P1 engaging after the event</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.EventPrefixSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : P1.var ∪ {temp}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.EventPrefixSetInit(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init: !temp '
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.EventPrefixEncodeTransition(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            
+            </summary>
+            <param name="guard">If null, give BoolConstant(true)</param>
+            <param name="updateOfEvent">If null, give BoolConstant(true)</param>
+            <param name="P1"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.EventPrefixTransitition(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            (!temp ∧ guard∧ ∧ update ∧ temp ' ∧ P1.init)
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.CopyTransitionAfterEventChannel(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            (temp ∧ P1.Trans/In/Out ∧ temp') 
+            [ REFS: '', DEREFS: 'P1']
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ExternalChoice(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the process which is composed of some choices
+            Choice is not resolved until not tau transition happens
+            </summary>
+            <param name="choices">List of AutomataBDD of choices</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ExternalChoiceSetVariable(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : [∪ {i = 1..n}Pi.var] ∪ {temp}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ExternalChoiceSetInit(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init : ∧{i = 1..n}Pi.init and temp = -1
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ExternalChoiceEncodeTransition(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            Tau transition ∧ ((temp = -1 and temp' = -1 and other unchanged) or (temp = i and temp' = i)
+            (temp = i or temp = -1) and Not Tau Transition ∧ temp' = i;
+            If Tau transitions happens first then temp still not initialized.
+            After Not Tau Transition happen, then temp is initialize. Later although Tau transition can happen, this selection is not changed.
+            [ REFS: 'none', DEREFS: 'choices, tauEvent' ]
+            </summary>
+            <param name="choices"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Guard(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the guard process
+            </summary>
+            <param name="guard">The guard expression of the process P1</param>
+            <param name="P1">AutomataBDD of the process P1</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.GuardSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : P1.var
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.GuardSetInit(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)" -->
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.GuardEncodeTransition(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            [ REFS: '', DEREFS: 'P1']
+            </summary>
+            <param name="b"></param>
+            <param name="P1"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Interleave(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of Interleave process
+            </summary>
+            <param name="processes">List of AutomataBDD of interleaving processes</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InterleaveSetVariable(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            ∪ Pi.var
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InterleaveSetInit(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            ∧ Pi.init
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InterleaveEncodeTransition(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+             ∨ (Pi.transition ∧ unchanged.i)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InterleaveCopyTransition(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)" -->
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SyncTerminateTrans(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            [ REFS: '', DEREFS: 'processes.transitionBDD']
+            </summary>
+            <param name="processes"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InterleaveGetChannelTransition(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            Get new Transition from Channel input, channel ouput of sub processes
+            [ REFS: '', DEREFS: 'processes.channelInTransitionBDD, channelOutTransitionBDD']
+            </summary>
+            <param name="processes"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InternalChoice(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the process which is composed of some choices
+            Having tau transition to resolve the choice
+            </summary>
+            <param name="choices">List of AutomataBDD of choices</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InternalChoiceSetVariable(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : [∪ {i = 1..n}Pi.var] ∪ {temp}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InternalChoiceSetInit(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init : ∧{i = 1..n}Pi.init and temp = -1 
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InternalChoiceEncodeTransition(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            (temp = -1 and tau and temp' in [0, n-1])
+            (temp = i ∧ Pi.transition ∧ temp' = i)
+            </summary>
+            <param name="choices"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Interrupt(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of interrupt process
+            </summary>
+            <param name="P1">AutomataBDD of interrupted process</param>
+            <param name="P2">AutomataBDD of interrupting process</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InterruptSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : P1.var ∪ : P2.var ∪{isInterrupted}
+            isInterrupted = 0: not interrupted.
+            isInterrupted = 1: P1 terminates
+            isInterrupted = 2: P2 interrupts
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InterruptSetInit(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)" -->
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.InterruptEncodeTransition(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            tau transition in process 2 does not resolve
+            [ REFS: '', DEREFS: 'P1, P2'] 
+            </summary>
+            <param name="P1"></param>
+            <param name="P2"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.IntersectionGeneralAutomata(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            General algorithm of the intersection of 2 automata
+            Follow the algorithm in Linear Temporal Logic Symbolic Model Checking at http://ti.arc.nasa.gov/m/profile/kyrozier/papers/COSREV_62.pdf page 23
+            [ REFS: 'result', DEREFS:'automata1, automata2' ]
+            </summary>
+            <param name="automata1"></param>
+            <param name="automata2"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Intersection(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return the intersection of model and negation of LTL
+            Note that all of the state of model are the accepting state
+            [ REFS: 'result', DEREFS:'automata1, automata2' ]
+            </summary>
+            <param name="system"></param>
+            <param name="negationLTL"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Parallel(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of Parallel process.
+            Note: synchronized is created by AND of transition of 2 participant process a time. Therefore this only happens when the transition does not change any global variable
+            because when encoding transition, each transition will make variable unchanged if it is not updated in that transition. This synchronization is similar to 
+            Explicit model checking when does not allow synchronized transition having program block.
+            </summary>
+            <param name="processes">List of AutomataBDD of parallel processes</param>
+            <param name="alphabets">alphabet of each process if provided. Give True if not provided</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ParallelSetVariable(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            ∪ Pi.var
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ParallelSetInit(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            ∧ Pi.init
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.ParallelEncodeTransition(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            syncTransition = P1.transition ∧ P2.transition
+            syncEvent: formula of synchronized events
+            P.transition = syncTransition ∨ (Pi.transition ∧ !syncEvent ∧ unchanged.i)
+            Applied this formula for each pair of process: P1 || P2 || P3 = (P1 || P2) || P3
+            [ REFS: '', DEREFS: 'processes[i].transitionBDD, alphabet']
+            </summary>
+            <param name="processes"></param>
+            <param name="alphabets">alphabet of each process if provided. Give True if not provided</param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Sequence(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of Sequence process
+            </summary>
+            <param name="P1">AutomataBDD of the first process</param>
+            <param name="P2">AutomataBDD of the second process</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SequenceSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : P1.var ∪ P2.var ∪{isP1Terminate}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SequenceSetInit(System.String,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init: P1.init ∧ !isP1Terminate'
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SequenceEncodeTransition(System.String,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            [ REFS: '', DEREFS: 'P1, P2']
+            </summary>
+            <param name="isP1Terminate"></param>
+            <param name="P1"></param>
+            <param name="P2"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Skip(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the Skip process
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SkipSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var = {temp}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SkipSetInit(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init: !temp'
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SkipEncodeTransition(PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            (!temp ∧ event ' = terminate ∧ temp ')
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.Stop">
+            <summary>
+            Return AutomataBDD of Stop process
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SyncChannelInputPrefixing(System.Int32,PAT.Common.Classes.Expressions.ExpressionClass.Expression,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return the AutomataBDD of the Sync Channel Input. Encode this as event c?a.b.c and put it to ChannelInputTransition
+            Currently Channel Input is translated as assginment, not guard. We don't support using channel input to expect a certain value
+            </summary>
+            <param name="channelEventIndex"></param>
+            <param name="guard">Guard expression of the channel input</param>
+            <param name="exps">List of input expression to the channel</param>
+            <param name="P1">AutomataBDD of process P1 after the channel input</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SyncChannelInputEncodeTransition(System.Int32,PAT.Common.Classes.Expressions.ExpressionClass.Expression,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            
+            </summary>
+            <param name="channelEventIndex"></param>
+            <param name="guard">If no guard, give BoolConstant(true)</param>
+            <param name="exps">List of expressions of channel in</param>
+            <param name="P1">Process after channel in</param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SyncChannelOutputPrefixing(System.Int32,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return the AutomataBDD of the Sync Channel Input. Encode this as event c!a.b.c and put it to ChannelIOutTransition
+            </summary>
+            <param name="channelEventIndex"></param>
+            <param name="exps">List of output expressions of the channel</param>
+            <param name="P1">AutomataBDD of process P1 after the channel input</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD.SyncChannelOutputEncodeTransition(System.Int32,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            
+            </summary>
+            <param name="channelEventIndex"></param>
+            <param name="exps">List of expressions of channel in</param>
+            <param name="P1">Process after channel in</param>
+            <param name="model">Process after channel in</param>
+            <param name="result"></param>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder.allEventIndex">
+            <summary>
+            Used to trace back the event name. All events of the system are encode in 1 BDD variable
+            event name.number of parameters.corresponding index
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder.stateIndexOfCurrentProcess">
+            <summary>
+            Mapping state to the int index of the current encoded process
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder.GetEventIndex(System.String,System.Int32)" -->
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder.GetEventExpression(PAT.Common.Classes.LTS.Event)">
+            <summary>
+            Return the update event expression when the Event is an Event object
+            </summary>
+            <param name="Event"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder.GetParaExpInEvent(PAT.Common.Classes.LTS.Event)">
+            <summary>
+            Get the expression list from event.
+            Event.a.b return [a, b]
+            Event.1.2 return [1, 2]
+            </summary>
+            <param name="Event"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder.#ctor">
+            <summary>
+            Add global variables and environment variables
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder.EventChannelInfo.name">
+            <summary>
+            Name of event or channel
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder.EventChannelInfo.numberOfParameters">
+            <summary>
+            Used for only event, later get parameters value from event#0, event#1...
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.SemanticModels.LTS.BDD.Model">
+            <summary>
+            Manage the modelling process
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.Successors(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            P ◦ R is the set of all successors of states in the set P
+            [ REFS: 'result', DEREFS:states]
+            </summary>
+            <param name="states"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.TransitionsBySourceStates(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            Return transition where source states are in states
+            [ REFS: 'result', DEREFS:states]
+            </summary>
+            <param name="states">source state of transition</param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.SuccessorsStart(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            return all states reachable from start and Start
+            P ◦ R*
+            [ REFS: 'result', DEREFS:start]
+            </summary>
+            <param name="start"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.SuccessorsPlus(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            return all states reachable from start
+            P ◦ R+
+            [ REFS: 'result', DEREFS:start]
+            </summary>
+            <param name="start"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.Predecessors(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            R ◦ P is the set of all predecessors of states in the set P
+            [ REFS: 'result', DEREFS:states]
+            </summary>
+            <param name="states"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.TransitionsByTargetStates(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            Return transition whose target states in states
+            [ REFS: 'result', DEREFS:states]
+            </summary>
+            <param name="states">In column form</param>
+            <param name="transitions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PredecessorsStart(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            return all states reachable from start and start
+            P ◦ R*
+            [ REFS: 'result', DEREFS:start]
+            </summary>
+            <param name="start"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PredecessorsPlus(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            return all states reachable to start
+            P ◦ R+
+            [ REFS: 'result', DEREFS:start]
+            </summary>
+            <param name="start"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.Path(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.Boolean)">
+            <summary>
+            Return the path from source to destination. 
+            If reachable, return true and path contains the path from source to destination
+            Serach from two direction: forward and backward
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <param name="model"></param>
+            <param name="path">not include the init state</param>
+            <param name="isEmptyPathAllowed">if false, then the path must be not empty though the source satisfies the destination</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetNextStep(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Return 1 if the next step is forward
+            Return -1 if the next step is forward
+            Return 0 if the next step is both forward and backward
+            </summary>
+            <param name="forwardSteps"></param>
+            <param name="numberOfForwardNodes"></param>
+            <param name="backwardSteps"></param>
+            <param name="numberOfBackwardNodes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.Path(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            Check whether destination is reachable from source
+            Serach from two direction: forward and backward
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PathBackWard(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.Boolean)">
+            <summary>
+            Return the path from source to destination. If reachable, return true and path contains the path from source to destination
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <param name="model"></param>
+            <param name="path">not include the init state</param>
+            <param name="isEmptyPathAllowed">if false, then the path must be not empty though the source satisfies the destination</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PathBackWard(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            Return the path from source to destination. If reachable, return true and path contains the path from source to destination
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PathForward(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.Boolean)">
+            <summary>
+            Return the path from source to destination. If reachable, return true and path contains the path from source to destination
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <param name="model"></param>
+            <param name="path">not include the init state</param>
+            <param name="isEmptyPathAllowed">if false, then the path must be not empty though the source satisfies the destination</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PathForward(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}})">
+            <summary>
+            Forward search, check destination is reachable from source
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.Path(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode}},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.String,System.Boolean)">
+            <summary>
+            Check whether destination is reachable from source. If it is reachable, the path to destination is added at the end of path variable
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="transitions">transitions[0]: normal transitions, transitions[1]: priority transition</param>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.Successors(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            P ◦ R is the set of all successors of states in the set P
+            [ REFS: 'result', DEREFS:states]
+            </summary>
+            <param name="states"></param>
+            <param name="transitions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.SuccessorsStart(PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            return all states reachable from start and Start
+            P ◦ R*
+            [ REFS: 'result', DEREFS:start]
+            </summary>
+            <param name="start"></param>
+            <param name="transition"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PathForward1(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Forward search, check destination is reachable from source
+            Store all reachable states and check fix point
+            At step t, find all reachable states after t time units
+            Fix point: rechable(0, t) == rechable(0, t + 1)
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="discreteTransitions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PathForward2(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Forward search, check destination is reachable from source
+            NOT store all reachable states, use some special condition to terminate
+            At step t, find all reachable states after t time units
+            Fix point when rechable(t1 + a, t1 + a) is a subset of rechable(t1, t1)
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="discreteTransitions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PathForward3(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Forward search, check destination is reachable from source
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="transitions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.PathForward4(PAT.Common.Classes.CUDDLib.CUDDNode,PAT.Common.Classes.CUDDLib.CUDDNode,System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Forward search, check destination is reachable from source
+            Store all reachable states and check fix point
+            At step t, get rechable(1, k)
+            check reachable(0, t) == rechable(0, t + 1) where reachable(a, b) is the rechable states from time a to time b
+            [ REFS: '', DEREFS:]
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="discreteTransitions"></param>
+            <returns></returns>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.NAME_SEPERATOR">
+            <summary>
+            For any array element A[i], its corresponding name is "A + NAME_SEPERATOR + i"
+            For each event parameter i.th, its corresponding name is "EVENT_NAME + NAME_SEPERATOR + i"
+            
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.variableRanges">
+            <summary>
+            Store as AND-explicit
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.rowVars">
+            <summary>
+            Seperate each row variable in one vector CUDDVars
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.colVars">
+            <summary>
+            Seperate each column variable in one vector CUDDVars
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GlobalVarIndex">
+            <summary>
+            List of global variables' indexes
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.AllRowVars">
+            <summary>
+            Collect all row variables in one vector
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.AllColVars">
+            <summary>
+            Collect all column variables in one vector
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.varIdentities">
+            <summary>
+            list of variable unchanged x' = x
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.eventParameterVariables">
+            <summary>
+            List of variables to manage the event parameter values
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetArrayRange(System.String)">
+            <summary>
+            Return List of lower bound and upper bound of the array
+            </summary>
+            <param name="name">Name of the array</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.Close">
+            <summary>
+            Close the model, dereference variables
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.AddLocalVar(System.String,System.Int32,System.Int32)">
+            <summary>
+            Add new local variable
+            </summary>
+            <param name="name"></param>
+            <param name="lower"></param>
+            <param name="upper"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.AddSingleCopyVar(System.String,System.Int32,System.Int32)">
+            <summary>
+            Add new not-global variable where row- and column- boolean variable are the same.
+            This function is used to add BDD variables to encode event names
+            </summary>
+            <param name="name"></param>
+            <param name="lower"></param>
+            <param name="upper"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.FilterVariableInRange(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Remove transition of variable in out of range
+            [ REFS: 'result', DEREFS: 'transition' ]
+            </summary>
+            <param name="transition"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.FilterVariableInRange(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Remove state of variable in out of range
+            [ REFS: 'result', DEREFS: 'state' ]
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.AddGlobalVar(System.String,System.Int32,System.Int32)">
+            <summary>
+            Add new global variable. Only add global variable at the beginning.
+            If add later, earlier transitions will not guarantee the unchange condition.
+            </summary>
+            <param name="name"></param>
+            <param name="lower"></param>
+            <param name="upper"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.AddGlobalArray(System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Add new global array variable. Only add global variable at the beginning.
+            If add later, earlier transitions will not guarantee the unchange condition.
+            </summary>
+            <param name="name"></param>
+            <param name="lower"></param>
+            <param name="upper"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.AddLocalArray(System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Add new local array variable
+            </summary>
+            <param name="name"></param>
+            <param name="lower"></param>
+            <param name="upper"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetRowSupportedVars(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Return row variables used in the dd
+            [ REFS: '', DEREFS: '' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetColSupportedVars(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            return colomn variables used in the dd
+            [ REFS: '', DEREFS: '' ]
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.CreateTemporaryVar">
+            <summary>
+            For the case t = t + 1. We need change to temp = t + 1; t = temp
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetRowVarValue(PAT.Common.Classes.CUDDLib.CUDDNode,System.String)">
+            <summary>
+            Get the row variable value (before transition) from BDD configuration. This value must be added with Lowerbound value. See the Variable Expression
+            implementation
+            [ REFS: '', DEREFS: '']
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetColVarValue(PAT.Common.Classes.CUDDLib.CUDDNode,System.String)">
+            <summary>
+            Get the column variable value (after transition) from BDD configuration. This value must be added with Lowerbound value. See the Variable Expression
+            implementation
+            [ REFS: '', DEREFS: '']
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.IsUnchangedVariable(System.Int32,System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Check whether variable is updated in the transtion by its index
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.EncodeTransition(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Encode transition with guard, update and unchangedVariables must be set as unchanged if they are not set in update.
+            [ REFS: 'result', DEREFS: '']
+            </summary>
+            <param name="guard">Guard of the transition</param>
+            <param name="update">Update command of the transition</param>
+            <param name="unchangedVariables">Set of variable which are needed to set unchanged if actually unchanged in the transition</param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.AddVarUnchangedConstraint(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},System.Collections.Generic.List{System.Int32})">
+            <summary>
+            For each transition, check if the unchangedVariables is not updated in the transition
+            then add the unchanged constraint to that transition
+            [ REFS: 'result', DEREFS: 'transitions']
+            </summary>
+            <param name="unchangedVariables">indexes of unchanged variables</param>
+            <returns>New list of transitions</returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetNewTempVarName">
+            <summary>
+            Return a unique temproary variable name
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetVarLowerBound(System.String)">
+            <summary>
+            Get lower-bound of a variable
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetVarUpperBound(System.String)">
+            <summary>
+            Get upper_bound value of a variable
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetVarName(System.Int32)">
+            <summary>
+            Return variable's name based its index
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetVarIndex(System.String)">
+            <summary>
+            Return variable's index based on variable's name
+            </summary>
+            <param name="varName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.ContainsVar(System.String)">
+            <summary>
+            Check whether a variable exists
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetRowVars(System.Int32)">
+            <summary>
+            Return the corresponding Row CUDDVars of i.th variable
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetRowVars(System.String)">
+            <summary>
+            Return the corresponding Row CUDDVars based on variable name
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetColVars(System.Int32)">
+            <summary>
+            Return the corresponding Column CUDDVars of i.th variable
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetColVars(System.String)">
+            <summary>
+            Return the corresponding Column CUDDVars of based on variable name
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetNumberOfVars">
+            <summary>
+            Return number of variable declared in the model
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.GetEventIndex">
+            <summary>
+            Return list of index of event information (event name + para)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.SwapRowColVars(PAT.Common.Classes.CUDDLib.CUDDNode)">
+            <summary>
+            Swap row and column variables
+            [ REFS: 'result', DEREFS: 'dd']
+            </summary>
+            <param name="dd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Model.SwapRowColVars(System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode})">
+            <summary>
+            Swap row and column variables
+            [ REFS: 'result', DEREFS: 'dds']
+            </summary>
+            <param name="dds"></param>
+            <returns></returns>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.State.ID">
+            <summary>
+            Integer type
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.SemanticModels.LTS.BDD.SymbolicLTS.Parameters">
+            <summary>
+            Parameter information is used to add new boolean variables. UpperBound, LowerBound and Arguments are used to identify the parameter ranges.
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.SymbolicLTS.Encode(PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder)">
+            <summary>
+            Encode the graph
+            make sure that the local variables' names are unique.
+            </summary>
+            <param name="encoder"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.SymbolicLTS.AddLocalVariables(PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder)">
+            <summary>
+            Add local variable including state, and parameters
+            Return the variable name encoding states
+            </summary>
+            <param name="encoder"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.SymbolicLTS.RenameLocalVars">
+            <summary>
+            Rename local variable to be unique
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.SymbolicLTS.RemoveUnreachableStates">
+            <summary>
+            Remove unreachable states and useful transitions
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.SymbolicLTS.RemoveTransition(PAT.Common.Classes.SemanticModels.LTS.BDD.Transition)">
+            <summary>
+            Remove transition for list and its source state's outgoing list
+            </summary>
+            <param name="toRemove"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.SymbolicLTS.RemoveState(PAT.Common.Classes.SemanticModels.LTS.BDD.State)">
+            <summary>
+            Remove state from list
+            Remove its outgoing transition from list
+            </summary>
+            <param name="toRemove"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Transition.Encode(PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder,System.String,System.Collections.Generic.List{System.Int32},System.Boolean)">
+            <summary>
+            Encode transition, if it is synchronized, then we don't add constraint of unchanged global variables
+            Parallel process only synchorinize event which does not change global variable or each transition changes same to global variables
+            3 kinds of transition: normal event, async channel input and async channel output
+            </summary>
+            <param name="encoder"></param>
+            <param name="processVariableName"></param>
+            <param name="localVars">Local of the current SymbolicLTS is unchanged</param>
+            <param name="isSynchronized"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Transition.EncodeSyncChannelInTransition(PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder,System.String,System.Collections.Generic.List{System.Int32})">
+            <summary>
+            
+            </summary>
+            <param name="encoder"></param>
+            <param name="processVariableName"></param>
+            <param name="localVars">Local of the current SymbolicLTS is unchanged</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.LTS.BDD.Transition.EncodeSyncChannelOutTransition(PAT.Common.Classes.SemanticModels.LTS.BDD.BDDEncoder,System.String,System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Encode sync channel out transition as event!a.b.c
+            </summary>
+            <param name="encoder"></param>
+            <param name="processVariableName"></param>
+            <param name="localVars">Local of the current SymbolicLTS is unchanged</param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.ChannelInputPrefixing(System.String,System.Int32,PAT.Common.Classes.Expressions.ExpressionClass.Expression,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return the AutomataBDD of the Channel Input
+            </summary>
+            <param name="channelName">Channel's name</param>
+            <param name="channelEventIndex"></param>
+            <param name="guard">Guard expression of the channel input</param>
+            <param name="exps">List of input expression to the channel</param>
+            <param name="guardOfTick"></param>
+            <param name="P1">AutomataBDD of process P1 after the channel input</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.ChannelOutputPrefixing(System.String,System.Int32,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)" -->
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Choice(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the process which is composed of some choices
+            This is a randome choice resolved by any (visible/invisible) event
+            all choices do not need to take time transition
+            the choice takes tick transition and idle there
+            </summary>
+            <param name="choices">List of AutomataBDD of choices</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.ChoiceEncodeTick(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            [ REFS: '', DEREFS: 'choices.Ticks']
+            </summary>
+            <param name="choices"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.ResolvedChoiceEncodeTick(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            choice = i and Tick.i and choice' = i
+            </summary>
+            <param name="choices"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.DeadlineSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,System.Int32,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : m0 ∪ {clk}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.DeadlineSetInit(System.String,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init: m0.init ^ clk = 0
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.EventPrefix(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the not tau event prefix process with guard [b] e -> P1
+            </summary>
+            <param name="guard"></param>
+            <param name="updateOfEvent">Update command happening with the event</param>
+            <param name="guardOfTick">Guard of the tick before engaging the event</param>
+            <param name="P1">AutomataBDD of the process P1 engaging after the event</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.EventPrefixEncodeTick(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            Tick transition if done is false, don't need to add unchanged condition of other local variables.
+            They will be updated after the event becomes true
+            use the tick transition of P1 if done is true
+            </summary>
+            <param name="P1"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.ExternalChoice(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the process which is composed of some choices
+            tick transition could not resolve the choice
+            </summary>
+            <param name="choices">List of AutomataBDD of choices</param>
+            <param name="tauEvent">Event' = Tau Event Index</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.ExternalChoiceEncodeTick(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            [ REFS: '', DEREFS: '']
+            </summary>
+            <param name="choices"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Guard(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the guard process
+            </summary>
+            <param name="guard">The guard expression of the process P1</param>
+            <param name="P1">AutomataBDD of the process P1</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.GuardEncodeTick(PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            Note that this is different from EventPrefixEncodeTick because it need to make sure local variable unchanged
+            </summary>
+            <param name="P1"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.IndexChoice(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the process which is composed of some choices
+            tick transition could not resolve the choice
+            </summary>
+            <param name="choices">List of AutomataBDD of choices</param>
+            <param name="tauEvent">Event' = Tau Event Index</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.IndexChoiceEncodeTick(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            [ REFS: '', DEREFS: '']
+            </summary>
+            <param name="choices"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Interleave(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of Interleave process
+            </summary>
+            <param name="processes">List of AutomataBDD of interleaving processes</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.InternalChoice(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the process which is composed of some choices
+            </summary>
+            <param name="choices">List of AutomataBDD of choices</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Interrupt(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of interrupt process
+            </summary>
+            <param name="P1">AutomataBDD of interrupted process</param>
+            <param name="P2">AutomataBDD of interrupting process</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.InterruptEncodeTick(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            1. Interrupt is not resolved, time evolution is synchronized
+            2. P1 terminate, or P2 interrupt, not need synchronization
+            </summary>
+            <param name="P1"></param>
+            <param name="P2"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Parallel(System.Collections.Generic.List{PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD},System.Collections.Generic.List{PAT.Common.Classes.CUDDLib.CUDDNode},PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of Parallel process.
+            Note: synchronized is created by AND of transition of participant process. Therefore this only happens when the transition does not change any global variable
+            because when encoding transition, each transition will make variable unchanged if it is not updated in that transition. This synchronization is similar to 
+            Explicit model checking when does not allow synchronized transition having program block.
+            </summary>
+            <param name="processes">List of AutomataBDD of parallel processes</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Sequence(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of Sequence process
+            </summary>
+            <param name="P1">AutomataBDD of the first process</param>
+            <param name="P2">AutomataBDD of the second process</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.SequenceEncodeTick(System.String,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            [ REFS: 'result', DEREFS: 'P1.Trans, P1.Ticks, P2.Ticks']
+            </summary>
+            <param name="isP1Terminate"></param>
+            <param name="P1"></param>
+            <param name="P2"></param>
+            <param name="model"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Skip(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of the Skip process
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Stop(PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return AutomataBDD of Stop process
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.SyncChannelInputPrefixing(System.Int32,PAT.Common.Classes.Expressions.ExpressionClass.Expression,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Return the AutomataBDD of the Channel Input
+            </summary>
+            <param name="channelName">Channel's name</param>
+            <param name="channelEventIndex"></param>
+            <param name="guard">Guard expression of the channel input</param>
+            <param name="exps">List of input expression to the channel</param>
+            <param name="guardOfTick"></param>
+            <param name="P1">AutomataBDD of process P1 after the channel input</param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.SyncChannelOutputPrefixing(System.Int32,System.Collections.Generic.List{PAT.Common.Classes.Expressions.ExpressionClass.Expression},PAT.Common.Classes.Expressions.ExpressionClass.Expression,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)" -->
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.TimeInterruptSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,System.Int32,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : m0 ∪ m1 ∪ {clk}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.TimeInterruptSetInit(System.String,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init: m0.init ^ clk = 0
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.TimeoutSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,System.Int32,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : m0 ∪ m1 ∪ {clk}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.TimeoutSetInit(System.String,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init: m0.init ^ clk = 0
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.Wait(System.Int32,PAT.Common.Classes.SemanticModels.LTS.BDD.Model)">
+            <summary>
+            Delays the system execution for a period of t time units then terminates.
+            </summary>
+            <param name="t"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.WaitSetVariable(System.Int32,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)" -->
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.WaitSetInit(System.String,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init: state = 0
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.WithinSetVariable(PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,System.Int32,PAT.Common.Classes.SemanticModels.LTS.BDD.Model,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.var : m0 ∪ {clk}
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.SemanticModels.TTS.TimeBehaviors.WithinSetInit(System.String,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD,PAT.Common.Classes.SemanticModels.LTS.BDD.AutomataBDD)">
+            <summary>
+            P.init: m0.init ^ clk = 0
+            </summary>
+        </member>
+        <member name="T:PAT.Common.Classes.LTS.Event">
+            <summary>
+            Event class for all event prefixing and Data operations constructs
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.LTS.Event.BaseName">
+            <summary>
+            Basic event name
+            </summary>
+        </member>
+        <member name="F:PAT.Common.Classes.LTS.Event.ExpressionList">
+            <summary>
+            Expression List in the compound event
+            </summary>
+        </member>
+        <member name="M:PAT.Common.Classes.Ultility.Ultility.Union``1(System.Collections.Generic.List{``0},System.Collections.Generic.List{``0})">
+            <summary>
+            return the union of the two lists: add the new elements into list1.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list1"></param>
+            <param name="list2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Ultility.Ultility.Substract``1(System.Collections.Generic.List{``0},System.Collections.Generic.List{``0})">
+            <summary>
+            return the union of the two lists: add the new elements into list1.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list1"></param>
+            <param name="list2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PAT.Common.Classes.Ultility.Ultility.AddList``1(System.Collections.Generic.List{``0},System.Collections.Generic.List{``0})">
+            <summary>
+            add list2 into list1 with no duplication
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list1"></param>
+            <param name="list2"></param>
+        </member>
+    </members>
+</doc>
