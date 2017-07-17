@@ -234,6 +234,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BDDController.cs" />
     <Compile Include="Controllers\ExperimentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AutomateController.cs" />
@@ -356,6 +357,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeneAutomate.BDD\GeneAutomate.BDD.csproj">
+      <Project>{C53A919A-A33D-46D8-B2C3-D52373A97366}</Project>
+      <Name>GeneAutomate.BDD</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.BusinessLogic\GeneAutomate.BusinessLogic.csproj">
       <Project>{a5750481-47b8-42ec-9069-67681d210194}</Project>
       <Name>GeneAutomate.BusinessLogic</Name>

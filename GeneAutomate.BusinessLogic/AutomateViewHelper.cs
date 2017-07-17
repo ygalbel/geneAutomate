@@ -26,19 +26,26 @@ namespace GeneAutomate.BusinessLogic
 
             var trans = new List<Edge>();
 
+            
             node.Visit((g) =>
             {
                 if (g.Transitions != null && g.Transitions.Any())
                 {
-                    g.Transitions.ForEach(f => trans.Add(new Edge {
-                        source = g.NodeName,
-                        target = f.Node.NodeName,
-                        label = CreateLabel(f)
-                    }));
+                    g.Transitions.ForEach(f =>
+                    {
+                        trans.Add(new Edge
+                        {
+                            source = g.NodeName,
+                            target = f.Node.NodeName,
+                        });
+
+                    });
                 }
             });
 
-            res.nodes = nodes.Select(a => new Node() { id = a.NodeName, label = a.NodeName, size = 3 }).ToList();
+            res.nodes = nodes
+                .Select(a => new Node() { id = a.NodeName,
+                    label = FormatNodeLabel(a), size = 3 }).ToList();
             res.edges =
                 trans.Select(d => new Edge()
                 {
@@ -47,24 +54,36 @@ namespace GeneAutomate.BusinessLogic
                     target = d.target,
                     color =  "#3300ff",
                     type = "arrow",
-                    label = d.label
+                    label = d.label //+ " " + CreateLabel(d)
                 })
                     .ToList();
 
             return res;
         }
 
+        private static string FormatNodeLabel(GeneNode a)
+        {
+            return a.NodeName + " " +  CreateLabel(a.CurrentCondition);
+        }
+
         private static string CreateLabel(GeneTransition f)
         {
             var label = "";
 
-            if (f.Condition.Any())
+            var fCondition = f.Condition;
+            return CreateLabel(fCondition);
+        }
+
+        private static string CreateLabel(Condition fCondition)
+        {
+            string label;
+            if (fCondition.Any())
             {
-                label = string.Join(",", f.Condition.Select(a => $"{a.Key}:{a.Value}"));
+                label = string.Join(",", fCondition.Select(a => $"{a.Key}:{a.Value}"));
             }
             else
             {
-                label = "?";
+                label = string.Empty;
             }
 
             return label;

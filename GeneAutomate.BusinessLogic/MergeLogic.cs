@@ -71,8 +71,8 @@ namespace GeneAutomate.BusinessLogic
             var t2 = node2;
             while (t1.Transitions != null && t1.Transitions.Any() &&  t2.Transitions != null && t2.Transitions.Any())
             {
-                var newCondition = CreateMergedCondition(t1.Transitions.First().Condition,
-                    t2.Transitions.First().Condition);
+                var newCondition = CreateMergedCondition(t1.CurrentCondition,
+                    t2.CurrentCondition);
 
                 if (newCondition == null)
                 {
@@ -81,7 +81,7 @@ namespace GeneAutomate.BusinessLogic
 
                 t1.Transitions.First().Condition = newCondition;
                 t1.NodeName = t1.NodeName + " merged " + t2.NodeName;
-
+                t1.CurrentCondition = newCondition;
                 t1 = t1.Transitions.First().Node;
                 t2 = t2.Transitions.First().Node;
             }

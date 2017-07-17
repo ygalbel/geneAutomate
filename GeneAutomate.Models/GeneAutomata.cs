@@ -12,6 +12,9 @@ namespace GeneAutomate.Models
 
         public List<GeneTransition> Transitions { get; set; }
 
+        public Condition CurrentCondition { get; set; }
+
+
         public int NodeLength
         {
             get { return 1 + ((Transitions != null) ? Transitions.First().Node.NodeLength : 0); }
