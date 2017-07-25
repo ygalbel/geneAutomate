@@ -12,9 +12,9 @@ namespace GeneAutomate.Controllers
     {
         public IHttpActionResult GetData()
         {
-            var msg=  BDDSolver.Test1();
+            //var msg=  BDDSolver.Test1();
 
-            return Ok(new {message = msg});
+            return Ok(new {message = ""});
         }
 
     }

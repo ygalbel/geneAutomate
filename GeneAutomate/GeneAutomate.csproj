@@ -358,7 +358,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeneAutomate.BDD\GeneAutomate.BDD.csproj">
-      <Project>{C53A919A-A33D-46D8-B2C3-D52373A97366}</Project>
+      <Project>{c53a919a-a33d-46d8-b2c3-d52373a97366}</Project>
       <Name>GeneAutomate.BDD</Name>
     </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.BusinessLogic\GeneAutomate.BusinessLogic.csproj">

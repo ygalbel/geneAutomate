@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeneAutomate.Models;
 using PAT.Common.Classes.CUDDLib;
 using PAT.Common.Classes.Expressions.ExpressionClass;
 using PAT.Common.Classes.LTS;
@@ -60,19 +61,19 @@ namespace GeneAutomate.BDD.Tests
             }
              */
             var primitiveApplication = new Sequence(primitiveApplication1, primitiveApplication2);
-                
-                /*PrimitiveApplication.CombineProgramBlock(
-                primitiveApplication1,
-                primitiveApplication2);*/
 
+            /*PrimitiveApplication.CombineProgramBlock(
+            primitiveApplication1,
+            primitiveApplication2);*/
+            Trace.WriteLine(primitiveApplication);
 
             Transition trans1 = new Transition(new Event("a"), null,
-               primitiveApplication1,
+               primitiveApplication,
                state1,
                state2);
 
-            Expression assignment = new Assignment(varX, new PrimitiveApplication(PrimitiveApplication.PLUS, 
-                new Variable(varX), 
+            Expression assignment = new Assignment(varX, new PrimitiveApplication(PrimitiveApplication.PLUS,
+                new Variable(varX),
                 new IntConstant(2)));
 
             var secAssignment = new Assignment(varY, new PrimitiveApplication(PrimitiveApplication.PLUS, new Variable(varY), new WildConstant()));
@@ -80,8 +81,8 @@ namespace GeneAutomate.BDD.Tests
 
 
             Transition trans2 = new Transition(new Event("b"), null,
-                primitiveApplication, 
-                state2, 
+                primitiveApplication,
+                state2,
                 state3);
 
             Transition trans3 = new Transition(new Event("c"), null,
@@ -96,9 +97,9 @@ namespace GeneAutomate.BDD.Tests
             AutomataBDD systemBDD = lts.Encode(encoder);
 
             //Variable x is initialised to 1
-            systemBDD.initExpression = new PrimitiveApplication(PrimitiveApplication.AND, 
+            systemBDD.initExpression = new PrimitiveApplication(PrimitiveApplication.AND,
                                                                 systemBDD.initExpression,
-                                                                 new PrimitiveApplication(PrimitiveApplication.EQUAL, 
+                                                                 new PrimitiveApplication(PrimitiveApplication.EQUAL,
                                                                  new Variable(varX), new IntConstant(1)));
 
             systemBDD.initExpression = new PrimitiveApplication(PrimitiveApplication.AND,
@@ -108,6 +109,8 @@ namespace GeneAutomate.BDD.Tests
 
             CUDDNode initDD = CUDD.Function.Or(systemBDD.initExpression.TranslateBoolExpToBDD(encoder.model).GuardDDs);
 
+            Trace.WriteLine("init: " + systemBDD.initExpression);
+
             var u = 1;
 
             for (; u < 2; u++)
@@ -115,11 +118,13 @@ namespace GeneAutomate.BDD.Tests
                 Trace.WriteLine($"U is {u}");
                 //Define 2 goals
                 Expression goal1 = new PrimitiveApplication(PrimitiveApplication.EQUAL,
-                        new Variable(varX), new IntConstant(4));
+                        new Variable(varX), new IntConstant(3));
 
+                goal1 = new PrimitiveApplication(PrimitiveApplication.AND, goal1, new PrimitiveApplication(PrimitiveApplication.EQUAL,new Variable(varY), new IntConstant(9)));
 
                 //Encode 2 goals to BDD
                 CUDDNode goal1DD = CUDD.Function.Or(goal1.TranslateBoolExpToBDD(encoder.model).GuardDDs);
+                Trace.WriteLine("Goal: " + goal1);
 
                 List<CUDDNode> path = new List<CUDDNode>();
 
@@ -132,8 +137,11 @@ namespace GeneAutomate.BDD.Tests
                 if (reach1)
                 {
                     sb.AppendLine("goal1 is reachable");
+
                     foreach (var cuddNode in path)
                     {
+                        encoder.model.PrintAllVariableValue(cuddNode);
+                        Trace.WriteLine("after");
                         CUDD.Print.PrintMinterm(cuddNode);
                         //     CUDD.Print.PrintBDDTree(path);
                         int valueOfX = encoder.model.GetRowVarValue(cuddNode, varX);
@@ -174,5 +182,165 @@ namespace GeneAutomate.BDD.Tests
             encoder.model.Close();
 
         }
+
+
+        [TestMethod]
+        public void TestSimpleCaseNegativeFromTrueToFalseBDDSolver()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", true } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", false}},
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = false}
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestSimpleCaseNegativeFromFalseToTrueBDDSolver()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", false } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true}},
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = false}
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsTrue(res);
+        }
+
+
+        [TestMethod]
+        public void TestSimpleCasePositiveBDDSolver()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", true } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true}},
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = true}
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestSCaseWithTwoParametersBDDSolver()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", true }, {"b", false} },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true}, {"b", true} },
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "b", IsPositive = true}
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestSCaseWithTwoParametersAndTwoRulesBDDSolver()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", true }, { "b", false } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", false}, {"b", true} },
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = false},
+                new GeneLink() {From = "b", To = "b", IsPositive = false}
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsTrue(res);
+        }
     }
+
 }
+
