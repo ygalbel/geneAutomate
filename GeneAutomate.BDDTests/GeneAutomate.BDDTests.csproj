@@ -36,10 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PAT.BDD, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External Packages\PAT BDD Lib Public\dll\PAT.BDD.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -59,9 +55,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\External Packages\PAT BDD Lib Public\Source\PAT.BDD\PAT.BDD.csproj">
+      <Project>{ebb3ad28-953a-4c12-add4-4a6752628280}</Project>
+      <Name>PAT.BDD</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.BDD\GeneAutomate.BDD.csproj">
       <Project>{C53A919A-A33D-46D8-B2C3-D52373A97366}</Project>
       <Name>GeneAutomate.BDD</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeneAutomate.Models\GeneAutomate.Models.csproj">
+      <Project>{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}</Project>
+      <Name>GeneAutomate.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

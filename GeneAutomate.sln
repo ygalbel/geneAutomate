@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PAT", "PAT", "{5578F806-EC0
 		External Packages\PAT BDD Lib Public\dll\PAT.BDD.XML = External Packages\PAT BDD Lib Public\dll\PAT.BDD.XML
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAT.BDD", "..\External Packages\PAT BDD Lib Public\Source\PAT.BDD\PAT.BDD.csproj", "{EBB3AD28-953A-4C12-ADD4-4A6752628280}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{7AE1A29C-606E-4BF2-8543-0928CF16F6DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AE1A29C-606E-4BF2-8543-0928CF16F6DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AE1A29C-606E-4BF2-8543-0928CF16F6DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBB3AD28-953A-4C12-ADD4-4A6752628280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBB3AD28-953A-4C12-ADD4-4A6752628280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBB3AD28-953A-4C12-ADD4-4A6752628280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBB3AD28-953A-4C12-ADD4-4A6752628280}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

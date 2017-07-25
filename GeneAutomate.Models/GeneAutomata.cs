@@ -20,6 +20,27 @@ namespace GeneAutomate.Models
             get { return 1 + ((Transitions != null) ? Transitions.First().Node.NodeLength : 0); }
         }
 
+        /// <summary>
+        /// Don't work with loops!!
+        /// </summary>
+        /// <param name="letters"></param>
+        public void GetAllConditionLetters(List<string> letters)
+        {
+            var keys = CurrentCondition.Keys;
+
+            foreach (var key in keys)
+            {
+                if (!letters.Contains(key))
+                {
+                    letters.Add(key);
+                }
+            }
+
+            Transitions?.ForEach(f => f.Node.GetAllConditionLetters(letters));
+
+
+        }
+
         public void Visit(Action<GeneNode> function)
         {
             function.Invoke(this);
