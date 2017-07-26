@@ -25,12 +25,12 @@ namespace GeneAutomate.BDD
 
 
             //Set number of action names, 2 for a, b
-            Model.NUMBER_OF_EVENT = automata.NodeLength;
+            Model.NUMBER_OF_EVENT = automata.NodeLength+1;
             Model.MAX_NUMBER_EVENT_PARAMETERS = 0;
 
             BDDEncoder encoder = new BDDEncoder();
 
-            letters.ForEach(l => encoder.model.AddGlobalVar(l, 0, 1));
+            letters.Distinct().ToList().ForEach(l => encoder.model.AddGlobalVar(l, 0, 1));
 
             Trace.WriteLine(string.Join(",", letters));
 
@@ -38,7 +38,7 @@ namespace GeneAutomate.BDD
 
             List<State> states = new List<State>();
 
-            for (int i = 0; i < automata.NodeLength; i++)
+            for (int i = 0; i < automata.NodeLength+1; i++)
             {
                 var state = lts.AddState();
                 states.Add(state);
@@ -138,7 +138,7 @@ namespace GeneAutomate.BDD
                     f =>
                     {
                         var primitiveApplication = new PrimitiveApplication(PrimitiveApplication.EQUAL, new Variable(f.Key),
-                            new IntConstant(f.Value.Value ? 1 : 0));
+                            new BoolConstant(f.Value.Value));
                         if (goal1 == null)
                         {
                             goal1 = primitiveApplication;
@@ -229,10 +229,9 @@ namespace GeneAutomate.BDD
             }
             else
             {
-                ass = new Assignment(b.To,
+                ass = new Assignment(b.To, 
                     new PrimitiveApplication(
-                        nOT,
-                        new Variable(b.From)));
+                        PrimitiveApplication.AND, new PrimitiveApplication(nOT,new Variable(b.From))));
             }
             return ass;
         }

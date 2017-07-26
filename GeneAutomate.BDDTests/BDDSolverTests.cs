@@ -222,7 +222,7 @@ namespace GeneAutomate.BDD.Tests
 
             var automata = new GeneNode()
             {
-                CurrentCondition = new Condition() { { "a", false } },
+                CurrentCondition = new Condition() { { "a", false }, {"b", false} },
                 NodeName = "n0",
                 Transitions = new List<GeneTransition>()
                 {
@@ -230,7 +230,7 @@ namespace GeneAutomate.BDD.Tests
                     {
                         Node = new GeneNode()
                         {
-                            CurrentCondition = new Condition() {{"a", true}},
+                            CurrentCondition = new Condition() {{"a", true}, {"b", false} },
                             NodeName = "n1"
                         }
                     }
@@ -239,7 +239,7 @@ namespace GeneAutomate.BDD.Tests
 
             var booleanNetwork = new List<GeneLink>()
             {
-                new GeneLink() {From = "a", To = "a", IsPositive = false}
+                new GeneLink() {From = "b", To = "a", IsPositive = false}
             };
 
             var res = solver.IsValidPath(automata, booleanNetwork);
@@ -335,6 +335,38 @@ namespace GeneAutomate.BDD.Tests
             {
                 new GeneLink() {From = "a", To = "a", IsPositive = false},
                 new GeneLink() {From = "b", To = "b", IsPositive = false}
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestNotOperatorIWorking()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", false }, { "b", true } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true}, {"b", false} },
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "b", To = "b", IsPositive = false},
+                new GeneLink() {From = "a", To = "a", IsPositive = false}
             };
 
             var res = solver.IsValidPath(automata, booleanNetwork);
