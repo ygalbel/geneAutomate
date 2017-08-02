@@ -21,16 +21,20 @@ namespace GeneAutomate.BDD
             var sb = new StringBuilder();
 
             var letters = new List<string>();
-            automata.GetAllConditionLetters(letters);
 
+            automata.GetAllConditionLetters(letters);
+          //  letters.Add("Time");
 
             //Set number of action names, 2 for a, b
-            Model.NUMBER_OF_EVENT = automata.NodeLength+1;
+
+            Trace.WriteLine(automata.NodeLength + 1);
+            Model.NUMBER_OF_EVENT = automata.NodeLength + 2;
             Model.MAX_NUMBER_EVENT_PARAMETERS = 0;
 
             BDDEncoder encoder = new BDDEncoder();
 
-            letters.Distinct().ToList().ForEach(l => encoder.model.AddGlobalVar(l, 0, 1));
+            letters.Distinct().ToList().ForEach(l => encoder.model.AddLocalVar(l, 0, 1));
+            encoder.model.AddLocalVar("Time", 0 ,automata.NodeLength +1);
 
             Trace.WriteLine(string.Join(",", letters));
 
@@ -38,7 +42,7 @@ namespace GeneAutomate.BDD
 
             List<State> states = new List<State>();
 
-            for (int i = 0; i < automata.NodeLength+1; i++)
+            for (int i = 0; i < automata.NodeLength + 2; i++)
             {
                 var state = lts.AddState();
                 states.Add(state);
@@ -46,7 +50,57 @@ namespace GeneAutomate.BDD
 
             lts.InitialState = states[0];
 
+            var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok);
 
+            Trace.WriteLine("Assignments: " + seq);
+
+
+            for (int i = 0; i < states.Count - 1; i++)
+            {
+                var trans1 = new Transition(new Event("a" + i), null, seq, states[i], states[i + 1]);
+                lts.Transitions.Add(trans1);
+            }
+
+            Trace.WriteLine(lts);
+            AutomataBDD systemBDD = lts.Encode(encoder);
+
+            // init is time 0
+
+            CUDDNode initDD = CUDD.Function.Or(systemBDD.initExpression.TranslateBoolExpToBDD(encoder.model).GuardDDs);
+
+            bool reach1 = true;
+            var path = new List<CUDDNode>();
+            var geneTransition = automata;
+            int n = 0;
+            Expression goal1;
+
+            while (geneTransition != null && reach1)
+            {
+                if (geneTransition == null || geneTransition.Transitions == null || !geneTransition.Transitions.Any())
+                {
+                    break;
+                }
+
+                Trace.WriteLine("Start step " + n);
+
+                //systemBDD = lts.Encode(encoder);
+                InitInitialState(geneTransition.CurrentCondition, systemBDD, n);
+                goal1 = SetGoalsBasedOnAutomataNextTransition(geneTransition, n+1);
+                path = IsExistPath(goal1, encoder, path, initDD, systemBDD, ref reach1);
+                geneTransition = geneTransition.Transitions?.First()?.Node;
+                n++;
+            }
+
+
+            path.Clear();
+            Trace.WriteLine(sb);
+            encoder.model.Close();
+            return reach1;
+
+        }
+
+        private static Expression CreateExpressionsFromBooleanNetwork(List<GeneLink> booleanNetwok)
+        {
             Expression seq = null;
             booleanNetwok.ForEach(b =>
             {
@@ -58,78 +112,72 @@ namespace GeneAutomate.BDD
                 }
                 else
                 {
-                    seq = new Sequence( seq,
+                    seq = new Sequence(seq,
                         ass);
                 }
             });
 
-            Trace.WriteLine("Assingments: " + seq);
+            seq = new Sequence(seq, new Assignment("Time", new PrimitiveApplication(PrimitiveApplication.PLUS,
+                new Variable("Time"),
+                new IntConstant(1))));
+            return seq;
+        }
 
-            
-            for (int i = 0; i < states.Count - 1; i++)
+        private static List<CUDDNode> IsExistPath(Expression goal1, BDDEncoder encoder, List<CUDDNode> path, CUDDNode initDD, AutomataBDD systemBDD,
+            ref bool reach1)
+        {
+            CUDDNode goal1DD;
+            goal1DD = CUDD.Function.Or(goal1.TranslateBoolExpToBDD(encoder.model).GuardDDs);
+
+            path = new List<CUDDNode>();
+
+            reach1 = encoder.model.PathForward(initDD, goal1DD, new List<List<CUDDNode>>()
             {
-                var trans1 = new Transition(new Event("a" + i), null, seq, states[i], states[i + 1]);
-                lts.Transitions.Add(trans1);
+                systemBDD.transitionBDD
+            }, path, false);
+
+
+            Trace.WriteLine("Finish run. Result is " + reach1);
+
+            return path;
+        }
+
+        private static void InitInitialState(Condition automataCurrentCondition, AutomataBDD systemBDD, int time)
+        {
+            if (automataCurrentCondition == null)
+            {
+                return;
             }
+            systemBDD.initExpression =  new PrimitiveApplication(PrimitiveApplication.EQUAL,
+                        new Variable("#state#0"), new IntConstant(0));
 
-            Trace.WriteLine(lts);
-            /*
-            Transition trans1 = new Transition(new Event("a"), null,
-               primitiveApplication1,
-               state1,
-               state2);
-
-            Expression assignment = new Assignment(varX, new PrimitiveApplication(PrimitiveApplication.PLUS,
-                new Variable(varX),
-                new IntConstant(2)));
-
-            var secAssignment = new Assignment(varY, new PrimitiveApplication(PrimitiveApplication.PLUS, new Variable(varY), new WildConstant()));
-            
-
-
-            Transition trans2 = new Transition(new Event("b"), null,
-                assignment,
-                state2,
-                state3);
-
-            Transition trans3 = new Transition(new Event("c"), null,
-              primitiveApplication,
-                state3,
-                state4);
-
-            lts.AddTransition(trans1);
-            lts.AddTransition(trans2);
-            lts.AddTransition(trans3);
-
-            */
-            AutomataBDD systemBDD = lts.Encode(encoder);
-
-            // init is time 0
-
-            automata.CurrentCondition.ToList().Where(f => f.Value.HasValue).ToList().ForEach(f =>
+            automataCurrentCondition.ToList().Where(f => f.Value.HasValue).ToList().ForEach(f =>
             {
                 Expression value = Value(f);
-                ;
+                    
                 systemBDD.initExpression = new PrimitiveApplication(PrimitiveApplication.AND,
                     systemBDD.initExpression,
                     new PrimitiveApplication(PrimitiveApplication.EQUAL,
                         new Variable(f.Key), value));
-
             });
 
-            Trace.WriteLine("init: " + systemBDD.initExpression);
-            /*
             systemBDD.initExpression = new PrimitiveApplication(PrimitiveApplication.AND,
-                                                                systemBDD.initExpression,
-                                                                 new PrimitiveApplication(PrimitiveApplication.EQUAL,
-                                                                 new Variable(varY), new IntConstant(1)));
-                                                                 */
-            CUDDNode initDD = CUDD.Function.Or(systemBDD.initExpression.TranslateBoolExpToBDD(encoder.model).GuardDDs);
+                systemBDD.initExpression,
+                new PrimitiveApplication(PrimitiveApplication.EQUAL,
+                    new Variable("Time"), new IntConstant(time)));
 
-            var u = 1;
+            Trace.WriteLine("init: " + systemBDD.initExpression);
+        }
 
-            //Define 2 goals
+        private static Expression SetGoalsBasedOnAutomataNextTransition(GeneNode automata, int time)
+        {
             Expression goal1 = null;
+
+            if (automata == null || automata.Transitions == null || !automata.Transitions.Any())
+            {
+                return null;
+            }
+
 
             automata.Transitions.First()
                 .Node.CurrentCondition.Where(f => f.Value.HasValue)
@@ -146,76 +194,40 @@ namespace GeneAutomate.BDD
                         else
                         {
                             goal1 = new PrimitiveApplication(PrimitiveApplication.AND,
-                                                             goal1,
-                                                             primitiveApplication);
+                                goal1,
+                                primitiveApplication);
                         }
-
                     });
-
-            //new PrimitiveApplication(PrimitiveApplication.EQUAL,
-            //    new Variable(varX), new IntConstant(5));
-
-
-            Trace.WriteLine("Goal: "  +goal1);
-            //Encode 2 goals to BDD
-            CUDDNode goal1DD = CUDD.Function.Or(goal1.TranslateBoolExpToBDD(encoder.model).GuardDDs);
-
-            List<CUDDNode> path = new List<CUDDNode>();
-
-            bool reach1 = encoder.model.PathForward(initDD, goal1DD, new List<List<CUDDNode>>()
+            if (goal1 != null)
             {
-                systemBDD.transitionBDD
-            }, path, false);
-
-
-            if (reach1)
-            {
-                sb.AppendLine("goal1 is reachable");
-                foreach (var cuddNode in path)
-                {
-                    CUDD.Print.PrintMinterm(cuddNode);
-                    //     CUDD.Print.PrintBDDTree(path);
-
-                    encoder.model.PrintAllVariableValue(cuddNode);
-                    letters.ForEach(l =>
-                        {
-                            int valueOfX = encoder.model.GetRowVarValue(cuddNode, l);
-                            sb.AppendLine(l + " = " + valueOfX);
-                        }
-                    );
-
-                }
-            }
-            else
-            {
-                sb.AppendLine("goal1 is unreachable");
+                goal1 = new PrimitiveApplication(PrimitiveApplication.AND,
+                    goal1,
+                    new PrimitiveApplication(PrimitiveApplication.EQUAL,
+                        new Variable("Time"),
+                        new IntConstant(time))
+                );
             }
 
-            path.Clear();
+            Trace.WriteLine("Goal: " + goal1);
+            return goal1;
+        }
 
-
-
-
-            /*
-            bool reach2 = encoder.model.PathForward(initDD, goal2DD, new List<List<CUDDNode>>() { systemBDD.transitionBDD }, path, true);
-            if (reach2)
+        private static void PrintResult(StringBuilder sb, List<CUDDNode> path, BDDEncoder encoder, List<string> letters)
+        {
+            sb.AppendLine("goal1 is reachable");
+            foreach (var cuddNode in path)
             {
-                sb.AppendLine("goal2 is reachable");
-                foreach (var cuddNode in path)
-                {
-                    int valueOfX = encoder.model.GetRowVarValue(cuddNode, varX);
-                    sb.AppendLine(varX + " = " + valueOfX);
-                }
-            }
-            else
-            {
-                sb.AppendLine("goal2 is unreachable");
-            }
-            */
-            Trace.WriteLine(sb);
-            encoder.model.Close();
-            return reach1;
+                CUDD.Print.PrintMinterm(cuddNode);
+                //     CUDD.Print.PrintBDDTree(path);
 
+                encoder.model.PrintAllVariableValue(cuddNode);
+                letters.ForEach(l =>
+                    {
+                        int valueOfX = encoder.model.GetRowVarValue(cuddNode, l);
+                        sb.AppendLine(l + " = " + valueOfX);
+                    }
+                );
+            }
         }
 
         private static Assignment CreateAssignment(GeneLink b)
@@ -224,14 +236,18 @@ namespace GeneAutomate.BDD
 
             if (b.IsPositive)
             {
+                //ass = new Assignment(b.To,
+                //    new Variable(b.From));
+
                 ass = new Assignment(b.To,
-                    new Variable(b.From));
+                   new PrimitiveApplication(
+                       PrimitiveApplication.AND, new Variable(b.From)));
             }
             else
             {
-                ass = new Assignment(b.To, 
+                ass = new Assignment(b.To,
                     new PrimitiveApplication(
-                        PrimitiveApplication.AND, new PrimitiveApplication(nOT,new Variable(b.From))));
+                        PrimitiveApplication.AND, new PrimitiveApplication(nOT, new Variable(b.From))));
             }
             return ass;
         }
