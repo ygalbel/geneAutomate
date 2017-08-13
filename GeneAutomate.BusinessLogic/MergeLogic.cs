@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Models;
 using Newtonsoft.Json;
+using GeneAutomate.BDD;
 
 namespace GeneAutomate.BusinessLogic
 {
@@ -16,9 +18,33 @@ namespace GeneAutomate.BusinessLogic
         {
             var possibleMerges = GetMerges(automata1, automata2);
 
-            possibleMerges = possibleMerges.Where(m => validator.IsValidAutomata(m, null, booleanNetwok)).ToList();
+            Trace.WriteLine($"All merge (include invalids) is {possibleMerges.Count}");
 
-            return possibleMerges;
+            var validMerges = new List<GeneNode>();
+
+            possibleMerges.ForEach(m =>
+                {
+                    if (validator.IsValidAutomata(m, null, booleanNetwok) && IsBddValid(m, booleanNetwok))
+                    {
+                        Trace.WriteLine($"Merge for {m.NodeName} is valid");
+                        validMerges.Add(m);
+                    }
+                    else
+                    {
+                        Trace.WriteLine($"Merge for {m.NodeName} is not valid");
+                    }
+
+                });
+
+            Trace.WriteLine($"Valid merges are {validMerges.Count}");
+
+
+            return validMerges;
+        }
+
+        private bool IsBddValid(GeneNode geneNode, List<GeneLink> booleanNetwok)
+        {
+            return new BDDSolver().IsValidPath(geneNode, booleanNetwok);
         }
 
         public List<GeneNode> GetMerges(List<GeneNode> nodes)
@@ -27,6 +53,17 @@ namespace GeneAutomate.BusinessLogic
                 from n2 in nodes
                 where n1 != n2
                 select GetMerges(n1, n2);
+
+            return merges.SelectMany(a => a).ToList();
+        }
+
+
+        public List<GeneNode> GetValidMerges(List<GeneNode> nodes, List<GeneLink> booleanNetwok)
+        {
+            var merges = from n1 in nodes
+                         from n2 in nodes
+                         where n1 != n2
+                         select GetValidMerges(n1, n2, booleanNetwok);
 
             return merges.SelectMany(a => a).ToList();
         }

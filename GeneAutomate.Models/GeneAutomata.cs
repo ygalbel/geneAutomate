@@ -37,8 +37,6 @@ namespace GeneAutomate.Models
             }
 
             Transitions?.ForEach(f => f.Node.GetAllConditionLetters(letters));
-
-
         }
 
         public void Visit(Action<GeneNode> function)

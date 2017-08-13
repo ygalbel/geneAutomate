@@ -101,10 +101,10 @@
             <h1>Experiments</h1>
         </div>
         <div id="automata" style="display:none" class="container">
-            <h1>Automata</h1>
+            <h1>All Merges</h1>
         </div>
         <div id="merges" style="display:none" class="container">
-            <h1>Merges</h1>
+            <h1>Valid Merges</h1>
         </div>
     </div>
     <script src="../Scripts/jquery-1.10.2.js"></script>
@@ -199,14 +199,16 @@
 
                 }
 
-                data.Merges.forEach(function (m, i) {
+                data.Merges.forEach(function(m, i) {
                     $("#merges")
-                       .append('<h3 class="mergeItem" id="merge' +
-                           i +
-                           '"> Merge' +
-                           i +
-                           '</h3>' +
-                           '<div class="automata-experiment" id="merge_container_' + i + '"></div>');
+                        .append('<h3 class="mergeItem" id="merge' +
+                            i +
+                            '"> Merge' +
+                            i +
+                            '</h3>' +
+                            '<div class="automata-experiment" id="merge_container_' +
+                            i +
+                            '"></div>');
 
                     var u = createAutomata("merge_container_" + i, m);
 
@@ -216,8 +218,29 @@
                     }
 
                     graphs["merges"].push(u);
-                })
+                });
 
+
+                data.AllMerges.forEach(function (m, i) {
+                    $("#automata")
+                        .append('<h3 class="mergeItem" id="merge' +
+                            i +
+                            '"> Merge' +
+                            i +
+                            '</h3>' +
+                            '<div class="automata-experiment" id="merge_container_' +
+                            i +
+                            '"></div>');
+
+                    var u = createAutomata("merge_container_" + i, m);
+
+
+                    if (!graphs["merges"]) {
+                        graphs["merges"] = [];
+                    }
+
+                    graphs["merges"].push(u);
+                });
 
                 //   var variables = experiments[0].
 

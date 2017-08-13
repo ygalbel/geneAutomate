@@ -124,6 +124,11 @@ namespace GeneAutomate.Parser
             var experimentTime = Int32.Parse(line.Split('[')[1].Split(']')[0]);
             var value = line.Split(' ').ToList().First(a => a.StartsWith("$")).Substring(1);
 
+            if (value.EndsWith(";"))
+            {
+                // can be buggy here, if ; is multiple times in var names.
+                value = value.Replace(";", "");
+            }
 
             var currentCondition = conditions[value];
 

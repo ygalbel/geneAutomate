@@ -17,10 +17,9 @@ namespace GeneAutomate.Controllers
         {
             var parser = new FileParser();
 
-            var res = parser.ParseFiles($"{HttpRuntime.AppDomainAppPath}/Examples/{exampleName}.net", $"{HttpRuntime.AppDomainAppPath}/Examples/{exampleName}.spec");
+            var res = parser.ParseFiles(PathHelper.GetExamplePath(exampleName), PathHelper.GetSpecPath(exampleName));
 
             return Ok(res);
         }
-
     }
 }

@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using GeneAutomate.BDD;
+using GeneAutomate.BusinessLogic;
+using GeneAutomate.Parser;
 
 namespace GeneAutomate.Controllers
 {
@@ -12,9 +14,20 @@ namespace GeneAutomate.Controllers
     {
         public IHttpActionResult GetData()
         {
-            //var msg=  BDDSolver.Test1();
+            var solver = new BDDSolver();
 
-            return Ok(new {message = ""});
+            var parser = new FileParser();
+
+            var data = new ParseRuleResponse();
+            var res = parser.GetConditionAndExperiments(PathHelper.GetExamplePath("toy"), PathHelper.GetSpecPath("toy"), out data);
+
+            var automates =
+                data.Experiments.ToDictionary(s => s.Key,
+                    s => new AutomataFromExperimentCreator().CreateAutomata(s.Value));
+
+            var sos = solver.IsValidPath(automates.First().Value, res);
+
+            return Ok(new {message = sos});
         }
 
     }

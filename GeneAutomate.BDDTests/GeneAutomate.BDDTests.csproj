@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="BDDSolverTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealCaseBDDSolverTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\External Packages\PAT BDD Lib Public\Source\PAT.BDD\PAT.BDD.csproj">
@@ -63,10 +64,38 @@
       <Project>{C53A919A-A33D-46D8-B2C3-D52373A97366}</Project>
       <Name>GeneAutomate.BDD</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GeneAutomate.BusinessLogic\GeneAutomate.BusinessLogic.csproj">
+      <Project>{A5750481-47B8-42EC-9069-67681D210194}</Project>
+      <Name>GeneAutomate.BusinessLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Models\GeneAutomate.Models.csproj">
       <Project>{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}</Project>
       <Name>GeneAutomate.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GeneAutomate.Parser\GeneAutomate.Parser.csproj">
+      <Project>{FAEDE5AE-4C20-4991-AB85-8AAFBA4E5210}</Project>
+      <Name>GeneAutomate.Parser</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="toy.net">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="toy.spec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="herrmann.net">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="herrmann.spec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
