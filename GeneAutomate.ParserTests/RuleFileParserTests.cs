@@ -16,7 +16,7 @@ namespace GeneAutomate.Parser.Tests
         {
             var parser = new RuleFileParser();
 
-            var res = parser.ParseRules(@"C:\Users\ygalbe\Dropbox\Automate\toy.spec", new List<string>() {"S1"});
+            var res = parser.ParseRules(@"toy.spec", new List<string>() {"S1"});
 
             Assert.AreEqual(res.Conditions.Count,4);
             Assert.IsTrue(res.Conditions.ContainsKey("Conditions1"));

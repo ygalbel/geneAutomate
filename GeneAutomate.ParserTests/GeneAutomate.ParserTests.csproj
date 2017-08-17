@@ -56,6 +56,10 @@
     <Compile Include="RuleFileParserTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeneAutomate.BDD\GeneAutomate.BDD.csproj">
+      <Project>{c53a919a-a33d-46d8-b2c3-d52373a97366}</Project>
+      <Name>GeneAutomate.BDD</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Models\GeneAutomate.Models.csproj">
       <Project>{63af470e-a7ef-4f5f-a6bb-9d18909bdebb}</Project>
       <Name>GeneAutomate.Models</Name>
@@ -66,12 +70,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="toy.net">
+    <Content Include="toy_changed.net">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="toy.spec">
+    <Content Include="toy_changed.spec">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

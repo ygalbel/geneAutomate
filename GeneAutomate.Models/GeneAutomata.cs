@@ -20,6 +20,8 @@ namespace GeneAutomate.Models
             get { return 1 + ((Transitions != null) ? Transitions.First().Node.NodeLength : 0); }
         }
 
+
+
         /// <summary>
         /// Don't work with loops!!
         /// </summary>
@@ -39,6 +41,10 @@ namespace GeneAutomate.Models
             Transitions?.ForEach(f => f.Node.GetAllConditionLetters(letters));
         }
 
+        public void AppendPath(StringBuilder builder)
+        {
+            this.Visit((a) => builder.Append($"{a.NodeName} => "));
+        }
         public void Visit(Action<GeneNode> function)
         {
             function.Invoke(this);
@@ -55,5 +61,16 @@ namespace GeneAutomate.Models
         public GeneNode Node { get; set; }
 
         public Condition Condition { get; set; }
+    }
+
+
+    public static class NodeExtenstions
+    {
+        public static string Path(this GeneNode node)
+        {
+            StringBuilder builder = new StringBuilder();
+            node.AppendPath(builder);
+            return builder.ToString();
+        }
     }
 }

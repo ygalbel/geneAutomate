@@ -31,7 +31,7 @@ namespace GeneAutomate.BusinessLogic
                     }
                     else
                     {
-                        Trace.WriteLine($"Merge for {m.NodeName} is not valid");
+                        Trace.WriteLine($"Merge for {m.Path()} is not valid");
                     }
 
                 });
@@ -65,7 +65,19 @@ namespace GeneAutomate.BusinessLogic
                          where n1 != n2
                          select GetValidMerges(n1, n2, booleanNetwok);
 
-            return merges.SelectMany(a => a).ToList();
+            var validMerges = merges.SelectMany(a => a).ToList();
+
+            TraceMerges(validMerges);
+
+            return validMerges;
+        }
+
+        private void TraceMerges(List<GeneNode> validMerges)
+        {
+            validMerges.ForEach(a =>
+            {
+                Trace.WriteLine($"{a.NodeName}\t{a.NodeLength}\t{a.Path()}");
+            });
         }
 
         public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2)
@@ -75,7 +87,7 @@ namespace GeneAutomate.BusinessLogic
             var t1 = automata1;
             while (t1.Transitions != null && t1.Transitions.Any())
             {
-                var merge = CreateMerge(t1, automata2);
+                var merge = CreateMerge(automata2, t1, automata1);
 
                 if (merge != null)
                 {
@@ -88,7 +100,7 @@ namespace GeneAutomate.BusinessLogic
             var t2 = automata2?.Transitions?.FirstOrDefault()?.Node;
             while (t2 != null && t2.Transitions != null && t2.Transitions.Any())
             {
-                var merge = CreateMerge(automata1, t2);
+                var merge = CreateMerge(automata1, t2, automata2);
 
                 if (merge != null)
                 {
@@ -101,12 +113,15 @@ namespace GeneAutomate.BusinessLogic
             return possibleMerges;
         }
 
-        public GeneNode CreateMerge(GeneNode node1, GeneNode node2)
+        public GeneNode CreateMerge(GeneNode node1, GeneNode node2, GeneNode node2Head)
         {
+
+
             var cloned = CloneHelper.Clone(node1);
             var t1 = cloned;
+            GeneNode lastT1 = null;
             var t2 = node2;
-            while (t1.Transitions != null && t1.Transitions.Any() &&  t2.Transitions != null && t2.Transitions.Any())
+            while (t1 != null &&  t2 != null)
             {
                 var newCondition = CreateMergedCondition(t1.CurrentCondition,
                     t2.CurrentCondition);
@@ -116,20 +131,40 @@ namespace GeneAutomate.BusinessLogic
                     return null;
                 }
 
-                t1.Transitions.First().Condition = newCondition;
+                //t1.Transitions.First().Condition = newCondition;
                 t1.NodeName = t1.NodeName + " merged " + t2.NodeName;
                 t1.CurrentCondition = newCondition;
-                t1 = t1.Transitions.First().Node;
-                t2 = t2.Transitions.First().Node;
+                lastT1 = t1;
+                t1 = t1.Transitions?.First()?.Node;
+                t2 = t2.Transitions?.First()?.Node;
             }
 
-            if (t2.Transitions != null && t2.Transitions.Any())
+
+            // suffix
+            if (t2?.Transitions != null && t2.Transitions.Any())
             {
-                t1.Transitions = t2.Transitions;
+                lastT1.Transitions = t2.Transitions;
+            }
+
+            // prefix
+            if (node2 != node2Head) // node2 is not the first node in node2 automata, so we have
+                                    // to add parents of node2
+            {
+                var cloned2 = CloneHelper.Clone(node2Head);
+                var temp = cloned2;
+
+                // find new head
+                while (temp?.Transitions.First().Node.NodeName != node2.NodeName)
+                {
+                    temp = temp.Transitions.First().Node;
+                }
+
+                temp.Transitions.First().Node = cloned;
+
+                cloned = cloned2;
             }
 
             return cloned;
-            ;
         }
 
         //public bool CanMergeNode(GeneNode node1, GeneNode node2)
@@ -156,6 +191,21 @@ namespace GeneAutomate.BusinessLogic
 
         private Condition CreateMergedCondition(Condition c1, Condition c2)
         {
+            if (c1 == null && c2 == null)
+            {
+                return null;
+            }
+
+            if (c1 == null || !c1.Any())
+            {
+                return c2;
+            }
+
+            if (c2 == null || !c2.Any())
+            {
+                return c1;
+            }
+
             if (c1.All(v => !c2.ContainsKey(v.Key) || c2[v.Key] == c1[v.Key]) &&
                 c2.All(v => !c1.ContainsKey(v.Key) || c2[v.Key] == c1[v.Key]) &&
                 c1.IsFixedPoint == c2.IsFixedPoint)
