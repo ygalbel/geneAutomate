@@ -10,9 +10,16 @@ using GeneAutomate.BDD;
 
 namespace GeneAutomate.BusinessLogic
 {
+    public class MergeResultCache
+    {
+        public Dictionary<string, List<GeneNode>> AlreadySeenMerges = new Dictionary<string, List<GeneNode>>();
+    }
+
     public class AutomataMergeLogic
     {
         BooleanNetworkValidator validator = new BooleanNetworkValidator();
+
+        MergeResultCache _cache = new MergeResultCache();
 
         public List<GeneNode> GetValidMerges(GeneNode automata1, GeneNode automata2, List<GeneLink> booleanNetwok)
         {
@@ -57,7 +64,6 @@ namespace GeneAutomate.BusinessLogic
             return merges.SelectMany(a => a).ToList();
         }
 
-
         public List<GeneNode> GetValidMerges(List<GeneNode> nodes, List<GeneLink> booleanNetwok)
         {
             var merges = from n1 in nodes
@@ -72,6 +78,51 @@ namespace GeneAutomate.BusinessLogic
             return validMerges;
         }
 
+
+        public void GetFinalMerges(Stack<GeneNode> availableNodes, List<GeneLink> booleanNetwok, List<GeneNode> foundResults)
+        {
+            // search only 2 results
+            if (foundResults.Count == 2)
+            {
+                return;
+            }
+
+            if (availableNodes.Count == 0)
+            {
+                return;
+            }
+
+            if (availableNodes.Count == 1)
+            {
+                foundResults.Add(availableNodes.Pop());
+                return;
+            }
+
+            var currentStack = new Stack<GeneNode>(availableNodes);
+            var first = currentStack.Pop();
+            bool found = false;
+            while (currentStack.Any())
+            {
+                var second = currentStack.Pop();
+
+                var merges = GetValidMerges(first, second, booleanNetwok);
+
+                if (merges != null && merges.Any())
+                {
+                    var newStack = new Stack<GeneNode>(currentStack);
+                    merges.ForEach(newStack.Push);
+
+                    GetFinalMerges(newStack, booleanNetwok, foundResults);
+                    found = true;
+                }
+            }
+
+            var stackWithoutFirst = new Stack<GeneNode>(availableNodes);
+            GetFinalMerges(stackWithoutFirst, booleanNetwok, foundResults);
+
+
+        }
+
         private void TraceMerges(List<GeneNode> validMerges)
         {
             validMerges.ForEach(a =>
@@ -82,6 +133,14 @@ namespace GeneAutomate.BusinessLogic
 
         public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2)
         {
+            var key = $"{automata1.MergeName} ~ {automata2.MergeName}";
+            if (!string.IsNullOrWhiteSpace(automata1.MergeName) && !string.IsNullOrWhiteSpace(automata2.MergeName) &&
+                _cache.AlreadySeenMerges.ContainsKey(key))
+            {
+                Trace.WriteLine($"Already found {key} in cahce");
+                return _cache.AlreadySeenMerges[key];
+            }
+
             var possibleMerges = new List<GeneNode>();
 
             var t1 = automata1;
@@ -110,17 +169,17 @@ namespace GeneAutomate.BusinessLogic
                 t2 = t2.Transitions.First().Node;
             }
 
+            _cache.AlreadySeenMerges[key] = possibleMerges;
             return possibleMerges;
         }
 
         public GeneNode CreateMerge(GeneNode node1, GeneNode node2, GeneNode node2Head)
         {
-
-
             var cloned = CloneHelper.Clone(node1);
             var t1 = cloned;
             GeneNode lastT1 = null;
             var t2 = node2;
+            string mergeName = string.Empty;
             while (t1 != null &&  t2 != null)
             {
                 var newCondition = CreateMergedCondition(t1.CurrentCondition,
@@ -132,7 +191,8 @@ namespace GeneAutomate.BusinessLogic
                 }
 
                 //t1.Transitions.First().Condition = newCondition;
-                t1.NodeName = t1.NodeName + " merged " + t2.NodeName;
+                mergeName = t1.NodeName + " ~ " + t2.NodeName;
+                t1.NodeName = mergeName;
                 t1.CurrentCondition = newCondition;
                 lastT1 = t1;
                 t1 = t1.Transitions?.First()?.Node;
@@ -162,6 +222,11 @@ namespace GeneAutomate.BusinessLogic
                 temp.Transitions.First().Node = cloned;
 
                 cloned = cloned2;
+            }
+
+            if (cloned != null)
+            {
+                cloned.MergeName = mergeName;
             }
 
             return cloned;

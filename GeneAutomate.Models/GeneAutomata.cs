@@ -14,13 +14,10 @@ namespace GeneAutomate.Models
 
         public Condition CurrentCondition { get; set; }
 
-
         public int NodeLength
         {
             get { return 1 + ((Transitions != null) ? Transitions.First().Node.NodeLength : 0); }
         }
-
-
 
         /// <summary>
         /// Don't work with loops!!
@@ -45,6 +42,7 @@ namespace GeneAutomate.Models
         {
             this.Visit((a) => builder.Append($"{a.NodeName} => "));
         }
+
         public void Visit(Action<GeneNode> function)
         {
             function.Invoke(this);
@@ -54,6 +52,8 @@ namespace GeneAutomate.Models
                 Transitions.ForEach(d => d.Node.Visit(function));
             }
         }
+
+        public string MergeName { get; set; }
     }
 
     public class GeneTransition
