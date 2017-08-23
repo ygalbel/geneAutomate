@@ -93,12 +93,19 @@ namespace GeneAutomate.BusinessLogic
             }
 
             if (availableNodes.Count == 1)
-            {
-                foundResults.Add(availableNodes.Pop());
+            { 
+                var current = availableNodes.Pop();
+
+                // add only if it's a real merge
+                if (!string.IsNullOrEmpty(current.MergeName))
+                {
+                    foundResults.Add(current);
+                }
+
                 return;
             }
 
-            var currentStack = new Stack<GeneNode>(availableNodes);
+            var currentStack = availableNodes.Clone();
             var first = currentStack.Pop();
             bool found = false;
             while (currentStack.Any())
@@ -109,7 +116,7 @@ namespace GeneAutomate.BusinessLogic
 
                 if (merges != null && merges.Any())
                 {
-                    var newStack = new Stack<GeneNode>(currentStack);
+                    var newStack = currentStack.Clone();
                     merges.ForEach(newStack.Push);
 
                     GetFinalMerges(newStack, booleanNetwok, foundResults);
@@ -117,7 +124,8 @@ namespace GeneAutomate.BusinessLogic
                 }
             }
 
-            var stackWithoutFirst = new Stack<GeneNode>(availableNodes);
+            var stackWithoutFirst = availableNodes.Clone();
+            stackWithoutFirst.Pop();
             GetFinalMerges(stackWithoutFirst, booleanNetwok, foundResults);
 
 
@@ -134,8 +142,7 @@ namespace GeneAutomate.BusinessLogic
         public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2)
         {
             var key = $"{automata1.MergeName} ~ {automata2.MergeName}";
-            if (!string.IsNullOrWhiteSpace(automata1.MergeName) && !string.IsNullOrWhiteSpace(automata2.MergeName) &&
-                _cache.AlreadySeenMerges.ContainsKey(key))
+            if (KeyAlreadyInCache(automata1, automata2, key))
             {
                 Trace.WriteLine($"Already found {key} in cahce");
                 return _cache.AlreadySeenMerges[key];
@@ -173,6 +180,12 @@ namespace GeneAutomate.BusinessLogic
             return possibleMerges;
         }
 
+        private bool KeyAlreadyInCache(GeneNode automata1, GeneNode automata2, string key)
+        {
+            return !string.IsNullOrWhiteSpace(automata1.MergeName) && !string.IsNullOrWhiteSpace(automata2.MergeName) &&
+                   _cache.AlreadySeenMerges.ContainsKey(key);
+        }
+
         public GeneNode CreateMerge(GeneNode node1, GeneNode node2, GeneNode node2Head)
         {
             var cloned = CloneHelper.Clone(node1);
@@ -198,7 +211,6 @@ namespace GeneAutomate.BusinessLogic
                 t1 = t1.Transitions?.First()?.Node;
                 t2 = t2.Transitions?.First()?.Node;
             }
-
 
             // suffix
             if (t2?.Transitions != null && t2.Transitions.Any())

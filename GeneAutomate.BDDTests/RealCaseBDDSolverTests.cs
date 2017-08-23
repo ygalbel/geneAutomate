@@ -14,19 +14,34 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestToyCaseBddSolver()
         {
+            var experimentName = "toy";
+            var res = IsExistPath(experimentName);
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestToyYeastBddSolver()
+        {
+            var experimentName = "yeast";
+            var res = IsExistPath(experimentName);
+            Assert.IsTrue(res);
+        }
+
+        private static bool IsExistPath(string experimentName)
+        {
             var solver = new BDDSolver();
 
             var parser = new FileParser();
 
             var data = new ParseRuleResponse();
-            var res = parser.GetConditionAndExperiments($"toy.net", $"toy.spec", out data);
+            var res = parser.GetConditionAndExperiments($"{experimentName}.net", $"{experimentName}.spec", out data);
 
             var automates =
                 data.Experiments.ToDictionary(s => s.Key,
                     s => new AutomataFromExperimentCreator().CreateAutomata(s.Value));
 
             var sos = solver.IsValidPath(automates.First().Value, res);
-            Assert.IsTrue(sos);
+            return sos;
         }
 
         [TestMethod]

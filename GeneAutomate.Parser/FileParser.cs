@@ -21,21 +21,23 @@ namespace GeneAutomate.Parser
                 conditionAndExperiments.Experiments.ToDictionary(s => s.Key,
                     s =>  new AutomataFromExperimentCreator().CreateAutomata(s.Value));
 
-            var merges = new AutomataMergeLogic()
-                .GetValidMerges(automates.Select(a => a.Value).ToList(), links)
+            var res = new List<GeneNode>();
+            new AutomataMergeLogic()
+                .GetFinalMerges(new Stack<GeneNode>(automates.Select(a => a.Value).ToList()), links, res);
+
+               var merges = res
                 .Take(100)
                 .Select(a => a.ToViewAutomata())
                 .ToList();
 
             Trace.WriteLine($"Finish merges found {merges.Count} valid merges");
 
-            var allMerges = new AutomataMergeLogic()
+         /*   var allMerges = new AutomataMergeLogic()
                 .GetMerges(automates.Select(a => a.Value).ToList())
                 .Take(100)
                 .Select(a => a.ToViewAutomata())
                 .ToList();
-
-
+                */
 
             var automatesView = automates
                     .ToDictionary(a => a.Key, a => a.Value.ToViewAutomata());
@@ -47,7 +49,7 @@ namespace GeneAutomate.Parser
                 Experiments = conditionAndExperiments.Experiments,
                 Automates = automatesView,
                 Merges = merges,
-                AllMerges = allMerges
+                //AllMerges = allMerges
             };
         }
 

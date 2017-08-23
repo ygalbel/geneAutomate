@@ -22,5 +22,18 @@ namespace GeneAutomate.ParserTests
             Assert.IsTrue(res.Merges.Count > 0);
             
         }
+
+
+        [TestMethod]
+        public void TestCanParseToys2()
+        {
+            var parser = new FileParser();
+
+            var data = new ParseRuleResponse();
+            var res = parser.ParseFiles($"toy_changed2.net", $"toy_changed2.spec");
+
+            Assert.IsTrue(res.Merges.Count > 0);
+
+        }
     }
 }

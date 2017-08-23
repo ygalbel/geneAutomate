@@ -10,6 +10,78 @@ using GeneAutomate.Models;
 
 namespace GeneAutomate.BusinessLogic.Tests
 {
+   /* [TestClass]
+    public class FinalMergeTests
+    {
+        [TestMethod]
+        public void TestCanHandleExistingMergeCase()
+        {
+            var automata1 = new GeneNode()
+            {
+                NodeName = "a1",
+                CurrentCondition = new Condition() { { "A", true }, { "B", false }, { "C", true } },
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            NodeName = "b1",
+                            CurrentCondition = new Condition() { {"A" , false}, {"B", true} , {"C", false} },
+                            Transitions = new List<GeneTransition>()
+                            {
+                                new GeneTransition()
+                                {
+                                    Node = new GeneNode() { NodeName = "c1", CurrentCondition = z}
+                                }
+                            }
+                        }
+                    }
+                }
+
+            };
+
+
+            var automata2 = new GeneNode()
+            {
+                NodeName = "a2",
+                CurrentCondition = new Condition() { { "A", false }, { "B", false }, { "C", false } },
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            NodeName = "b2",
+                            CurrentCondition = new Condition() { {"A" , false}, {"B", true} , {"C", true} },
+                            Transitions = new List<GeneTransition>()
+                            {
+                                new GeneTransition()
+                                {
+                                    Node = new GeneNode() { NodeName = "c2"}
+                                }
+                            }
+                        }
+                    }
+                }
+
+            };
+
+            var automates = new List<GeneNode>()
+            {
+                new GeneNode()
+                {
+                    
+                }
+            };
+
+            var res = new List<GeneNode>();
+            new AutomataMergeLogic()
+                .GetFinalMerges(new Stack<GeneNode>(automates.Select(a => a.Value).ToList()), links, res);
+
+        }
+}*/
+
     [TestClass()]
     public class AutomataMergeLogicTests
     {
