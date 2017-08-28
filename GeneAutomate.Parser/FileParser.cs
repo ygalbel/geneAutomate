@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
+using Newtonsoft.Json;
 
 namespace GeneAutomate.Parser
 {
@@ -17,31 +18,36 @@ namespace GeneAutomate.Parser
             ParseRuleResponse conditionAndExperiments;
             var links = GetConditionAndExperiments(netPath, specPath, out conditionAndExperiments);
 
-             var automates =
-                conditionAndExperiments.Experiments.ToDictionary(s => s.Key,
-                    s =>  new AutomataFromExperimentCreator().CreateAutomata(s.Value));
+            var automates =
+               conditionAndExperiments.Experiments.ToDictionary(s => s.Key,
+                   s => new AutomataFromExperimentCreator().CreateAutomata(s.Value));
 
             var res = new List<GeneNode>();
+            var backTrackingNode = new BackTrackingNode() { Label = "Root", Level = 0};
             new AutomataMergeLogic()
-                .GetFinalMerges(new Stack<GeneNode>(automates.Select(a => a.Value).ToList()), links, res);
+                .GetFinalMerges(new Stack<GeneNode>(automates.Select(a => a.Value).ToList()), links, res, backTrackingNode);
 
-               var merges = res
-                .Take(100)
-                .Select(a => a.ToViewAutomata())
-                .ToList();
+            var merges = res
+             .Take(100)
+             .Select(a => a.ToViewAutomata())
+             .ToList();
 
             Trace.WriteLine($"Finish merges found {merges.Count} valid merges");
 
-         /*   var allMerges = new AutomataMergeLogic()
-                .GetMerges(automates.Select(a => a.Value).ToList())
-                .Take(100)
-                .Select(a => a.ToViewAutomata())
-                .ToList();
-                */
+            /*   var allMerges = new AutomataMergeLogic()
+                   .GetMerges(automates.Select(a => a.Value).ToList())
+                   .Take(100)
+                   .Select(a => a.ToViewAutomata())
+                   .ToList();
+                   */
 
             var automatesView = automates
                     .ToDictionary(a => a.Key, a => a.Value.ToViewAutomata());
 
+            var backTrackingAutomata = backTrackingNode?.ToViewAutomata();
+
+            Trace.WriteLine("BackTracing");
+            Trace.WriteLine(JsonConvert.SerializeObject(backTrackingAutomata, Formatting.Indented));
             return new FileParsingResult()
             {
                 GeneLinks = links,
@@ -49,6 +55,7 @@ namespace GeneAutomate.Parser
                 Experiments = conditionAndExperiments.Experiments,
                 Automates = automatesView,
                 Merges = merges,
+                BackTrackingNode = backTrackingAutomata
                 //AllMerges = allMerges
             };
         }
@@ -93,7 +100,7 @@ namespace GeneAutomate.Parser
 
     public static class GeneLinkHelper
     {
-        public static List<string> GetAllNodes(this List<GeneLink>  t)
+        public static List<string> GetAllNodes(this List<GeneLink> t)
         {
             return t.Select(a => a.From).Union(t.Select(a => a.To)).Distinct().ToList();
         }

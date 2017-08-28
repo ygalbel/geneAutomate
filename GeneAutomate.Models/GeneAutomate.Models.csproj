@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutomateObject.cs" />
+    <Compile Include="BackTrackingNode.cs" />
     <Compile Include="Condition.cs" />
     <Compile Include="Edge.cs" />
     <Compile Include="Experiment.cs" />

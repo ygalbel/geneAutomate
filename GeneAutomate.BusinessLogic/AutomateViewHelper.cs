@@ -90,6 +90,60 @@ namespace GeneAutomate.BusinessLogic
             return label;
         }
 
+        public static AutomateObject ToViewAutomata(this BackTrackingNode automata)
+        {
+            return CreateViewAutomata(automata);
+        }
+
+        public static AutomateObject CreateViewAutomata(BackTrackingNode node)
+        {
+            var res = new AutomateObject();
+
+            var nodes = new List<BackTrackingNode>();
+
+            node.Visit((g) => nodes.Add(g));
+
+            var trans = new List<Edge>();
+
+
+            node.Visit((g) =>
+            {
+                if (g.Nodes != null && g.Nodes.Any())
+                {
+                    g.Nodes.ForEach(f =>
+                    {
+                        trans.Add(new Edge
+                        {
+                            source = g.Label,
+                            target = f.Label
+                        });
+
+                    });
+                }
+            });
+
+            res.nodes = nodes
+                .Select(a => new Node()
+                {
+                    id = a.Label,
+                    label = a.Label,
+                    size = 3,
+                    level = a.Level
+                }).ToList();
+            res.edges =
+                trans.Select(d => new Edge()
+                {
+                    id = d.source + "_" + d.target,
+                    source = d.source,
+                    target = d.target,
+                    color = "#3300ff",
+                    type = "arrow",
+                    label = d.label //+ " " + CreateLabel(d)
+                })
+                    .ToList();
+
+            return res;
+        }
 
         public static AutomateObject CreateViewAutomata(List<GeneLink> automata)
         {

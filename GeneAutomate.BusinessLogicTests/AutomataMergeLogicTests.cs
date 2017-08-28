@@ -240,13 +240,66 @@ namespace GeneAutomate.BusinessLogic.Tests
             var res = mergeLogic.GetMerges(automata1, automata2);
 
             Assert.AreEqual(1, res.Count);
-            Assert.AreEqual(res.First().Transitions.First().Condition["A"], true);
-            Assert.AreEqual(res.First().Transitions.First().Condition["B"], true);
-            Assert.AreEqual(res.First().Transitions.First().Condition["C"], true);
+            Assert.AreEqual(res.First().CurrentCondition["A"], true);
+            Assert.AreEqual(res.First().CurrentCondition["B"], true);
+            Assert.AreEqual(res.First().CurrentCondition["C"], true);
 
 
         }
 
+
+        //[TestMethod()]
+        //public void TestMergeWithRealNullConditionReturnValid()
+        //{
+        //    var automata1 = new GeneNode()
+        //    {
+        //        NodeName = "a1",
+        //        CurrentCondition = new Condition() { {"A", null}, { "B" , true}, {"C", true} }, // here A is missing
+        //        Transitions = new List<GeneTransition>()
+        //        {
+        //            new GeneTransition()
+        //            {
+        //                Node = new GeneNode()
+        //                {
+        //                    NodeName = "b1",
+        //                    CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
+                            
+        //                }
+        //            }
+        //        }
+
+        //    };
+
+
+        //    var automata2 = new GeneNode()
+        //    {
+        //        NodeName = "a2",
+        //        CurrentCondition = new Condition() { { "A", true}, { "B" , true} }, // Here C is missing
+        //        Transitions = new List<GeneTransition>()
+        //        {
+        //            new GeneTransition()
+        //            {
+        //                Node = new GeneNode()
+        //                {
+        //                    NodeName = "b2",
+        //                    CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
+                            
+        //                }
+        //            }
+        //        }
+
+        //    };
+
+        //    var mergeLogic = new AutomataMergeLogic();
+        //    var res = mergeLogic.GetMerges(automata1, automata2);
+
+        //    Assert.AreEqual(1, res.Count);
+        //    Assert.AreEqual(res.First().CurrentCondition["A"], true);
+        //    Assert.AreEqual(res.First().CurrentCondition["B"], true);
+        //    Assert.AreEqual(res.First().CurrentCondition["C"], true);
+
+
+        //}
 
         [TestMethod()]
         public void TestMergeWhenAutomata2CanBeMergedFromAutomata1Child()
@@ -306,7 +359,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var res = mergeLogic.GetMerges(automata1, automata2);
 
             Assert.AreEqual(1, res.Count);
-            Assert.AreEqual(3, res.First().NodeLength);
+            Assert.AreEqual(4, res.First().NodeLength);
         }
 
         [TestMethod]

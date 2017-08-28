@@ -78,6 +78,7 @@
         .container {
             top: 0px;
             position: absolute;
+            cursor: pointer;
         }
 
         .sidebar {
@@ -91,6 +92,7 @@
         <a lookup="experiments" class="bar-item button">Experiments</a>
         <a lookup="automata" class="bar-item button">Automata</a>
         <a lookup="merges" class="bar-item button">Merges</a>
+        <a lookup="backTracking" class="bar-item button">Back Tracking</a>
     </div>
     <div style="margin-left:25%">
 
@@ -106,6 +108,10 @@
         <div id="merges" style="display:none" class="container">
             <h1>Valid Merges</h1>
         </div>
+        
+        <div id="backTracking" style="display:none" class="container">
+            <h1>Back tracking</h1>
+        </div>
     </div>
     <script src="../Scripts/jquery-1.10.2.js"></script>
     <script src="../Scripts/Sigma/sigma.min.js"></script>
@@ -114,29 +120,98 @@
     <script src="../Scripts/Sigma/plugins/sigma.renderers.customEdgeShapes.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.renderers.edgeLabels.min.js"></script>
     <script>
-
+        colors = [
+           "#e3f2fd",
+"#bbdefb",
+"#90caf9",
+"#64b5f6",
+"#42a5f5",
+"#2196f3",
+"#1e88e5",
+"#1976d2",
+"#1565c0",
+"#0d47a1",
+"#82b1ff",
+"#448aff",
+"#2979ff",
+"#2962"
+        ];
         var currentExperimentName = getParameterByName('name');
         var graphs = [];
 
-        $(".bar-item").click(function () {
+        $(".bar-item")
+            .click(function() {
 
-            $(".bar-item").removeClass('bar-selected');
-            $(this).addClass('bar-selected');
+                $(".bar-item").removeClass('bar-selected');
+                $(this).addClass('bar-selected');
 
-            $(".container").hide();
-            var idToShow = $(this).attr('lookup');
+                $(".container").hide();
+                var idToShow = $(this).attr('lookup');
 
-            $("#" + idToShow).show();
+                $("#" + idToShow).show();
 
-            if (graphs[idToShow]) {
-                graphs[idToShow].forEach(function (g) {
-                    g.refresh();
-                    g.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1.2 });
-                });
+                if (graphs[idToShow]) {
+                    graphs[idToShow].forEach(function(g) {
+                        g.refresh();
+                        g.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1.2 });
+                    });
+                }
+
+            });
+
+        function numOfBrothers(nodes, n) {
+            return nodes.filter(function(d) { return d.level === n }).length;
+        }
+
+
+        var nthCache = {};
+
+        function nthOfBrothers(n) {
+            if (nthCache[n]) {
+                nthCache[n]++;
+            } else {
+                nthCache[n] = 1;
             }
 
-        })
+            return nthCache[n];
+        }
 
+        var showBTN = function () {
+
+            var levelSize = 30;
+            var startX = 250;
+            var btn = getBT();
+
+            $("#backTracking")
+                    .append('<h3 class="mergeItem" id="btn' +
+                        '"> Back tracking' +
+                        '</h3>' +
+                        '<div class="automata-experiment" id="btn_container' +
+                        '"></div>');
+
+
+            btn.nodes
+                  .forEach(function (node, i, a) {
+                      console.log(node, i, a);
+                      node.x = 150 * (nthOfBrothers(node.level) / (numOfBrothers(btn.nodes, node.level) + 1));
+                      node.y = node.level * levelSize;
+                      //node.label = "(" + node.x + "," + node.y + ")";
+                      node.size = 20;
+                      node.color =
+                          colors[node.level * 2];
+                  });
+
+            var u = createAutomata("btn_container", btn, true);
+
+
+            if (!graphs["btn_container"]) {
+                graphs["btn_container"] = [];
+            }
+
+            graphs["btn_container"].push(u);
+        };
+        showBTN();
+        /*
         $.ajax('/api/experiment?exampleName=' + currentExperimentName)
             .success(function (data) {
 
@@ -199,6 +274,7 @@
 
                 }
 
+
                 data.Merges.forEach(function(m, i) {
                     $("#merges")
                         .append('<h3 class="mergeItem" id="merge' +
@@ -246,15 +322,10 @@
 
                 //data.Experiments;
             });
+        */
+        
 
-        colors = [
-            '#617db4',
-            '#668f3c',
-            '#c6583e',
-            '#b956af'
-        ];
-
-        sigma.parsers.json('/api/automate?exampleName=' + currentExperimentName,
+        /*sigma.parsers.json('/api/automate?exampleName=' + currentExperimentName,
             {
                 container: 'container',
                 renderer: {
@@ -296,18 +367,20 @@
 
             });
 
+        */
+        function createAutomata(containerId, g, skipResize) {
 
-        function createAutomata(containerId, g) {
-            g.nodes
-                  .forEach(function (node, i, a) {
-                      console.log(node, i, a);
-                      node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
-                      node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
-                      node.size = 7;
-                      node.color =
-                          colors[Math.floor(Math.random() * colors.length)];
-                  });
-
+            if (!skipResize) {
+                g.nodes
+                    .forEach(function(node, i, a) {
+                        console.log(node, i, a);
+                        node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
+                        node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
+                        node.size = 7;
+                        node.color =
+                            colors[Math.floor(Math.random() * colors.length)];
+                    });
+            }
 
             g.edges
                 .forEach(function (edge, i, a) {
@@ -339,6 +412,386 @@
                 300);
 
             return u;
+        }
+
+
+        function getBT() {
+            return {
+                "nodes": [
+                    {
+                        "id": "Root",
+                        "label": "Root",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 0
+                    },
+                    {
+                        "id": "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "label":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 1
+                    },
+                    {
+                        "id": "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "label":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 2
+                    },
+                    {
+                        "id":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "label":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 3
+                    },
+                    {
+                        "id":
+                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "label":
+                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 4
+                    },
+                    {
+                        "id":
+                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "label":
+                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 5
+                    },
+                    {
+                        "id": "Experiment1_0",
+                        "label": "Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 5
+                    },
+                    {
+                        "id": "Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "label": "Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 4
+                    },
+                    {
+                        "id": "Experiment2_0,Experiment1_0",
+                        "label": "Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 4
+                    },
+                    {
+                        "id": "Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "label": "Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 3
+                    },
+                    {
+                        "id": "Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "label": "Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 3
+                    },
+                    {
+                        "id": "Experiment3_0,Experiment2_0,Experiment1_0",
+                        "label": "Experiment3_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 3
+                    },
+                    {
+                        "id": "Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "label": "Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 2
+                    },
+                    {
+                        "id": "Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "label": "Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 2
+                    },
+                    {
+                        "id": "Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "label": "Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 2
+                    },
+                    {
+                        "id": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "label": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 2
+                    },
+                    {
+                        "id": "Experiment4_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "label": "Experiment4_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 1
+                    },
+                    {
+                        "id": "Experiment3_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "label": "Experiment3_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 1
+                    },
+                    {
+                        "id": "Experiment2_0 ~ Experiment6_0,Experiment1_0",
+                        "label": "Experiment2_0 ~ Experiment6_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 1
+                    },
+                    {
+                        "id": "Experiment1_0 ~ Experiment6_0",
+                        "label": "Experiment1_0 ~ Experiment6_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 1
+                    },
+                    {
+                        "id": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "label": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "x": null,
+                        "y": null,
+                        "size": 3,
+                        "level": 1
+                    }
+                ],
+                "edges": [
+                    {
+                        "id":
+                            "Root_Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "source": "Root",
+                        "target":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id": "Root_Experiment4_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "source": "Root",
+                        "target": "Experiment4_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id": "Root_Experiment3_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "source": "Root",
+                        "target": "Experiment3_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id": "Root_Experiment2_0 ~ Experiment6_0,Experiment1_0",
+                        "source": "Root",
+                        "target": "Experiment2_0 ~ Experiment6_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id": "Root_Experiment1_0 ~ Experiment6_0",
+                        "source": "Root",
+                        "target": "Experiment1_0 ~ Experiment6_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id": "Root_Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "source": "Root",
+                        "target": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "source":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "source":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "source":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "source":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "source":
+                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "source":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "source":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "source":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0,Experiment2_0,Experiment1_0",
+                        "source":
+                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment3_0,Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "source":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "target":
+                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "source":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment2_0,Experiment1_0",
+                        "source":
+                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "target": "Experiment2_0,Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0_Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "source":
+                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "target":
+                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    },
+                    {
+                        "id":
+                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0_Experiment1_0",
+                        "source":
+                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "target": "Experiment1_0",
+                        "type": "arrow",
+                        "color": "#3300ff",
+                        "label": null
+                    }
+                ]
+            };
         }
 
         // from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript

@@ -12,5 +12,7 @@ namespace GeneAutomate.Models
         public List<AutomateObject> Merges { get; set; }
 
         public List<AutomateObject> AllMerges { get; set; }
+
+        public AutomateObject BackTrackingNode { get; set; }
     }
 }

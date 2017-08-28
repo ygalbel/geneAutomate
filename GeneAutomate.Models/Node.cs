@@ -7,5 +7,9 @@
         public int? x { get; set; }
         public int? y { get; set; }
         public int size { get; set; }
+        
+
+        // for trees only
+        public int level { get; set; }
     }
 }

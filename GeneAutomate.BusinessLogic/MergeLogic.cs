@@ -20,6 +20,7 @@ namespace GeneAutomate.BusinessLogic
         BooleanNetworkValidator validator = new BooleanNetworkValidator();
 
         MergeResultCache _cache = new MergeResultCache();
+        private readonly MergeLogicAlghoritms _mergeLogicAlghoritms = new MergeLogicAlghoritms();
 
         public List<GeneNode> GetValidMerges(GeneNode automata1, GeneNode automata2, List<GeneLink> booleanNetwok)
         {
@@ -31,6 +32,7 @@ namespace GeneAutomate.BusinessLogic
 
             possibleMerges.ForEach(m =>
                 {
+                    // firstly check simple logic, and only after check with CUDD, because it's expensive
                     if (validator.IsValidAutomata(m, null, booleanNetwok) && IsBddValid(m, booleanNetwok))
                     {
                         Trace.WriteLine($"Merge for {m.NodeName} is valid");
@@ -57,9 +59,9 @@ namespace GeneAutomate.BusinessLogic
         public List<GeneNode> GetMerges(List<GeneNode> nodes)
         {
             var merges = from n1 in nodes
-                from n2 in nodes
-                where n1 != n2
-                select GetMerges(n1, n2);
+                         from n2 in nodes
+                         where n1 != n2
+                         select GetMerges(n1, n2);
 
             return merges.SelectMany(a => a).ToList();
         }
@@ -79,7 +81,10 @@ namespace GeneAutomate.BusinessLogic
         }
 
 
-        public void GetFinalMerges(Stack<GeneNode> availableNodes, List<GeneLink> booleanNetwok, List<GeneNode> foundResults)
+        public void GetFinalMerges(Stack<GeneNode> availableNodes, 
+            List<GeneLink> booleanNetwok, 
+            List<GeneNode> foundResults,
+            BackTrackingNode node)
         {
             // search only 2 results
             if (foundResults.Count == 2)
@@ -93,7 +98,7 @@ namespace GeneAutomate.BusinessLogic
             }
 
             if (availableNodes.Count == 1)
-            { 
+            {
                 var current = availableNodes.Pop();
 
                 // add only if it's a real merge
@@ -119,16 +124,23 @@ namespace GeneAutomate.BusinessLogic
                     var newStack = currentStack.Clone();
                     merges.ForEach(newStack.Push);
 
-                    GetFinalMerges(newStack, booleanNetwok, foundResults);
+                    var currentNode = CreateBackTrackingNodeFromStack(newStack, node.Level + 1);
+                    node.Nodes.Add(currentNode);
+                    GetFinalMerges(newStack, booleanNetwok, foundResults, currentNode);
                     found = true;
                 }
             }
 
             var stackWithoutFirst = availableNodes.Clone();
             stackWithoutFirst.Pop();
-            GetFinalMerges(stackWithoutFirst, booleanNetwok, foundResults);
+            var newNode = CreateBackTrackingNodeFromStack(stackWithoutFirst, node.Level +1);
+            node.Nodes.Add(newNode);
+            GetFinalMerges(stackWithoutFirst, booleanNetwok, foundResults, newNode);
+        }
 
-
+        private static BackTrackingNode CreateBackTrackingNodeFromStack(Stack<GeneNode> newStack, int level)
+        {
+            return new BackTrackingNode() { Label = string.Join(",",newStack.Select(a => a.NodeName)), Level = level};
         }
 
         private void TraceMerges(List<GeneNode> validMerges)
@@ -141,10 +153,16 @@ namespace GeneAutomate.BusinessLogic
 
         public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2)
         {
-            var key = $"{automata1.MergeName} ~ {automata2.MergeName}";
+            // check positive and negative merge algorithm
+            return GetMerges(automata1, automata2, true).Union(GetMerges(automata1, automata2, false)).ToList();
+        }
+
+        public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2, bool usePositiveAlgo)
+        {
+            var key = $"{automata1.MergeName} ~ {automata2.MergeName} - {usePositiveAlgo}";
             if (KeyAlreadyInCache(automata1, automata2, key))
             {
-                Trace.WriteLine($"Already found {key} in cahce");
+                Trace.WriteLine($"Already found {key} in cache");
                 return _cache.AlreadySeenMerges[key];
             }
 
@@ -153,7 +171,7 @@ namespace GeneAutomate.BusinessLogic
             var t1 = automata1;
             while (t1.Transitions != null && t1.Transitions.Any())
             {
-                var merge = CreateMerge(automata2, t1, automata1);
+                var merge = CreateMerge(automata2, t1, automata1, usePositiveAlgo);
 
                 if (merge != null)
                 {
@@ -166,7 +184,7 @@ namespace GeneAutomate.BusinessLogic
             var t2 = automata2?.Transitions?.FirstOrDefault()?.Node;
             while (t2 != null && t2.Transitions != null && t2.Transitions.Any())
             {
-                var merge = CreateMerge(automata1, t2, automata2);
+                var merge = CreateMerge(automata1, t2, automata2, usePositiveAlgo);
 
                 if (merge != null)
                 {
@@ -186,17 +204,17 @@ namespace GeneAutomate.BusinessLogic
                    _cache.AlreadySeenMerges.ContainsKey(key);
         }
 
-        public GeneNode CreateMerge(GeneNode node1, GeneNode node2, GeneNode node2Head)
+        public GeneNode CreateMerge(GeneNode node1, GeneNode node2, GeneNode node2Head,bool usePositiveAlgo)
         {
             var cloned = CloneHelper.Clone(node1);
             var t1 = cloned;
             GeneNode lastT1 = null;
             var t2 = node2;
             string mergeName = string.Empty;
-            while (t1 != null &&  t2 != null)
+            while (t1 != null && t2 != null)
             {
                 var newCondition = CreateMergedCondition(t1.CurrentCondition,
-                    t2.CurrentCondition);
+                    t2.CurrentCondition, usePositiveAlgo);
 
                 if (newCondition == null)
                 {
@@ -204,7 +222,8 @@ namespace GeneAutomate.BusinessLogic
                 }
 
                 //t1.Transitions.First().Condition = newCondition;
-                mergeName = t1.NodeName + " ~ " + t2.NodeName;
+                var prefix = usePositiveAlgo ? string.Empty : "!";
+                mergeName = $"{t1.NodeName} ~ {prefix}{t2.NodeName}";
                 t1.NodeName = mergeName;
                 t1.CurrentCondition = newCondition;
                 lastT1 = t1;
@@ -260,13 +279,9 @@ namespace GeneAutomate.BusinessLogic
         //    return false;
         //}
 
-        private Condition HaveMathingNode(Condition condition, GeneNode node2)
-        {
-            return
-                node2.Transitions.Select(a => CreateMergedCondition(condition, a.Condition)).FirstOrDefault(a => a != null);
-        }
+     
 
-        private Condition CreateMergedCondition(Condition c1, Condition c2)
+        private Condition CreateMergedCondition(Condition c1, Condition c2, bool usePositiveStrategy)
         {
             if (c1 == null && c2 == null)
             {
@@ -283,21 +298,17 @@ namespace GeneAutomate.BusinessLogic
                 return c1;
             }
 
-            if (c1.All(v => !c2.ContainsKey(v.Key) || c2[v.Key] == c1[v.Key]) &&
-                c2.All(v => !c1.ContainsKey(v.Key) || c2[v.Key] == c1[v.Key]) &&
-                c1.IsFixedPoint == c2.IsFixedPoint)
+            Condition mergedCondition;
+            if (usePositiveStrategy)
             {
-                var mergedCondition = new Condition();
-
-                mergedCondition.IsFixedPoint = c1.IsFixedPoint;
-
-                c1.ToList().ForEach(a => mergedCondition[a.Key] = a.Value);
-                c2.ToList().ForEach(a => mergedCondition[a.Key] = a.Value);
-
-                return mergedCondition;
+                mergedCondition = _mergeLogicAlghoritms.CreateWithPositiveLogic(c1, c2);
+            }
+            else
+            {
+                mergedCondition = _mergeLogicAlghoritms.CreateWithNegativeLogic(c1, c2);
             }
 
-            return null;
+            return mergedCondition;
         }
     }
 
@@ -309,4 +320,6 @@ namespace GeneAutomate.BusinessLogic
             return JsonConvert.DeserializeObject<T>(serialized);
         }
     }
+
+
 }
