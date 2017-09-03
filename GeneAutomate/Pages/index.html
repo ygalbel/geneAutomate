@@ -108,7 +108,7 @@
         <div id="merges" style="display:none" class="container">
             <h1>Valid Merges</h1>
         </div>
-        
+
         <div id="backTracking" style="display:none" class="container">
             <h1>Back tracking</h1>
         </div>
@@ -119,28 +119,30 @@
     <script src="../Scripts/Sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.renderers.customEdgeShapes.min.js"></script>
     <script src="../Scripts/Sigma/plugins/sigma.renderers.edgeLabels.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="../Scripts/backTracking.js"></script>
     <script>
         colors = [
-           "#e3f2fd",
-"#bbdefb",
-"#90caf9",
-"#64b5f6",
-"#42a5f5",
-"#2196f3",
-"#1e88e5",
-"#1976d2",
-"#1565c0",
-"#0d47a1",
-"#82b1ff",
-"#448aff",
-"#2979ff",
-"#2962"
+            "#e3f2fd",
+            "#bbdefb",
+            "#90caf9",
+            "#64b5f6",
+            "#42a5f5",
+            "#2196f3",
+            "#1e88e5",
+            "#1976d2",
+            "#1565c0",
+            "#0d47a1",
+            "#82b1ff",
+            "#448aff",
+            "#2979ff",
+            "#2962"
         ];
         var currentExperimentName = getParameterByName('name');
         var graphs = [];
 
         $(".bar-item")
-            .click(function() {
+            .click(function () {
 
                 $(".bar-item").removeClass('bar-selected');
                 $(this).addClass('bar-selected');
@@ -151,7 +153,7 @@
                 $("#" + idToShow).show();
 
                 if (graphs[idToShow]) {
-                    graphs[idToShow].forEach(function(g) {
+                    graphs[idToShow].forEach(function (g) {
                         g.refresh();
                         g.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1.2 });
                     });
@@ -160,7 +162,7 @@
             });
 
         function numOfBrothers(nodes, n) {
-            return nodes.filter(function(d) { return d.level === n }).length;
+            return nodes.filter(function (d) { return d.level === n }).length;
         }
 
 
@@ -183,23 +185,23 @@
             var btn = getBT();
 
             $("#backTracking")
-                    .append('<h3 class="mergeItem" id="btn' +
-                        '"> Back tracking' +
-                        '</h3>' +
-                        '<div class="automata-experiment" id="btn_container' +
-                        '"></div>');
+                .append('<h3 class="mergeItem" id="btn' +
+                '"> Back tracking' +
+                '</h3>' +
+                '<div class="automata-experiment" id="btn_container' +
+                '"></div>');
 
 
             btn.nodes
-                  .forEach(function (node, i, a) {
-                      console.log(node, i, a);
-                      node.x = 150 * (nthOfBrothers(node.level) / (numOfBrothers(btn.nodes, node.level) + 1));
-                      node.y = node.level * levelSize;
-                      //node.label = "(" + node.x + "," + node.y + ")";
-                      node.size = 20;
-                      node.color =
-                          colors[node.level * 2];
-                  });
+                .forEach(function (node, i, a) {
+                    console.log(node, i, a);
+                    node.x = 150 * (nthOfBrothers(node.level) / (numOfBrothers(btn.nodes, node.level) + 1));
+                    node.y = node.level * levelSize;
+                    //node.label = "(" + node.x + "," + node.y + ")";
+                    node.size = 20;
+                    node.color =
+                        colors[node.level * 2];
+                });
 
             var u = createAutomata("btn_container", btn, true);
 
@@ -211,7 +213,7 @@
             graphs["btn_container"].push(u);
         };
         showBTN();
-        /*
+
         $.ajax('/api/experiment?exampleName=' + currentExperimentName)
             .success(function (data) {
 
@@ -251,16 +253,16 @@
 
                     $("#experiments")
                         .append('<h3 class="experimentLable" id="' +
-                            experiments[i] +
-                            '">' +
-                            experiments[i] +
-                            '</h3>' +
-                            '<table class="experimenTable"><thead>' +
-                            headTxt +
-                            '</thead><tbody>' +
-                            tableBody +
-                            '</tbody></table>' +
-                            '<div class="automata-experiment" id="container_' + experiments[i] + '"></div>');
+                        experiments[i] +
+                        '">' +
+                        experiments[i] +
+                        '</h3>' +
+                        '<table class="experimenTable"><thead>' +
+                        headTxt +
+                        '</thead><tbody>' +
+                        tableBody +
+                        '</tbody></table>' +
+                        '<div class="automata-experiment" id="container_' + experiments[i] + '"></div>');
 
                     var u = createAutomata("container_" + experiments[i], data.Automates[experiments[i]]);
 
@@ -275,16 +277,16 @@
                 }
 
 
-                data.Merges.forEach(function(m, i) {
+                data.Merges.forEach(function (m, i) {
                     $("#merges")
                         .append('<h3 class="mergeItem" id="merge' +
-                            i +
-                            '"> Merge' +
-                            i +
-                            '</h3>' +
-                            '<div class="automata-experiment" id="merge_container_' +
-                            i +
-                            '"></div>');
+                        i +
+                        '"> Merge' +
+                        i +
+                        '</h3>' +
+                        '<div class="automata-experiment" id="merge_container_' +
+                        i +
+                        '"></div>');
 
                     var u = createAutomata("merge_container_" + i, m);
 
@@ -300,13 +302,13 @@
                 data.AllMerges.forEach(function (m, i) {
                     $("#automata")
                         .append('<h3 class="mergeItem" id="merge' +
-                            i +
-                            '"> Merge' +
-                            i +
-                            '</h3>' +
-                            '<div class="automata-experiment" id="merge_container_' +
-                            i +
-                            '"></div>');
+                        i +
+                        '"> Merge' +
+                        i +
+                        '</h3>' +
+                        '<div class="automata-experiment" id="merge_container_' +
+                        i +
+                        '"></div>');
 
                     var u = createAutomata("merge_container_" + i, m);
 
@@ -322,10 +324,10 @@
 
                 //data.Experiments;
             });
-        */
-        
 
-        /*sigma.parsers.json('/api/automate?exampleName=' + currentExperimentName,
+
+
+        sigma.parsers.json('/api/automate?exampleName=' + currentExperimentName,
             {
                 container: 'container',
                 renderer: {
@@ -357,9 +359,9 @@
 
                 s.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1.2 });
 
-                setTimeout(function() {
-                        s.refresh();
-                    },
+                setTimeout(function () {
+                    s.refresh();
+                },
                     300);
 
                 graphs["container"] = [];
@@ -367,12 +369,12 @@
 
             });
 
-        */
+
         function createAutomata(containerId, g, skipResize) {
 
             if (!skipResize) {
                 g.nodes
-                    .forEach(function(node, i, a) {
+                    .forEach(function (node, i, a) {
                         console.log(node, i, a);
                         node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
                         node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
@@ -406,9 +408,9 @@
 
                 });
 
-            setTimeout(function() {
-                    u.refresh();
-                },
+            setTimeout(function () {
+                u.refresh();
+            },
                 300);
 
             return u;
@@ -429,7 +431,7 @@
                     {
                         "id": "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "label":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "x": null,
                         "y": null,
                         "size": 3,
@@ -438,7 +440,7 @@
                     {
                         "id": "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "label":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "x": null,
                         "y": null,
                         "size": 3,
@@ -446,9 +448,9 @@
                     },
                     {
                         "id":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "label":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "x": null,
                         "y": null,
                         "size": 3,
@@ -456,9 +458,9 @@
                     },
                     {
                         "id":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "label":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "x": null,
                         "y": null,
                         "size": 3,
@@ -466,9 +468,9 @@
                     },
                     {
                         "id":
-                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
                         "label":
-                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
                         "x": null,
                         "y": null,
                         "size": 3,
@@ -598,10 +600,10 @@
                 "edges": [
                     {
                         "id":
-                            "Root_Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Root_Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "source": "Root",
                         "target":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
                         "label": null
@@ -648,20 +650,20 @@
                     },
                     {
                         "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
                         "label": null
                     },
                     {
                         "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -669,9 +671,9 @@
                     },
                     {
                         "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -679,9 +681,9 @@
                     },
                     {
                         "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
                         "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -689,9 +691,9 @@
                     },
                     {
                         "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -699,20 +701,20 @@
                     },
                     {
                         "id":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "source":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
                         "label": null
                     },
                     {
                         "id":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "source":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -720,9 +722,9 @@
                     },
                     {
                         "id":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
                         "source":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -730,9 +732,9 @@
                     },
                     {
                         "id":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0,Experiment2_0,Experiment1_0",
                         "source":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                        "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment3_0,Experiment2_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -740,20 +742,20 @@
                     },
                     {
                         "id":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "source":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "target":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
                         "label": null
                     },
                     {
                         "id":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
                         "source":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -761,9 +763,9 @@
                     },
                     {
                         "id":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment2_0,Experiment1_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment2_0,Experiment1_0",
                         "source":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
+                        "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
                         "target": "Experiment2_0,Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
@@ -771,20 +773,20 @@
                     },
                     {
                         "id":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0_Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0_Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
                         "source":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "target":
-                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
+                        "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
                         "type": "arrow",
                         "color": "#3300ff",
                         "label": null
                     },
                     {
                         "id":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0_Experiment1_0",
+                        "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0_Experiment1_0",
                         "source":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
+                        "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
                         "target": "Experiment1_0",
                         "type": "arrow",
                         "color": "#3300ff",
