@@ -221,20 +221,32 @@ namespace GeneAutomate.BusinessLogic
                 var newCondition = CreateMergedCondition(lastNode.CurrentCondition,
                     t1.CurrentCondition, true);
 
+
+
                 if (newCondition != null)
                 {
                     var currentNode = CloneHelper.Clone(cloned);
 
+                    var tt1 = t1;
+                    var tlastNode = lastNode;
+
+                    t1 = currentNode.Find(t1);
+                    lastNode = currentNode.Find(lastNode);
                     // now we can work on cloned
 
-                    var mergeName = $"{t1.NodeName} ^ {lastNode.NodeName}";
-                    t1.NodeName = mergeName;
-                    t1.CurrentCondition = newCondition;
+                    //          var mergeName = $"{t1.NodeName} ^ {lastNode.NodeName}";
+                    //        t1.NodeName = mergeName;
 
-                    if (IsBddValid(cloned, booleanNetwok))
+                    ////  both sides take new condition
+                    //t1.CurrentCondition = newCondition;
+                    //lastNode.CurrentCondition = newCondition;
+
+                    cloned = ApplyMergeToAllChildrens(tt1, tlastNode, cloned);
+
+                    if (cloned != null && IsBddValid(cloned, booleanNetwok))
                     {
                         // set last node to "Looped" to allow more loops with other
-                        lastNode.IsInLoop = true;
+                        tlastNode.IsInLoop = true;
                         return cloned;
                         
                     }
@@ -246,6 +258,34 @@ namespace GeneAutomate.BusinessLogic
             }
 
             return null;
+        }
+
+        private GeneNode ApplyMergeToAllChildrens(GeneNode tt1, GeneNode lastNode, GeneNode t1Head)
+        {
+            // direction is from last node to t1
+
+            var t1 = tt1;
+            var t2 = lastNode;
+            while (t1 != null && t2 != null && t1 != lastNode)
+            {
+                var newCondition = CreateMergedCondition(t1.CurrentCondition,
+                    t2.CurrentCondition, true);
+
+                if (newCondition == null)
+                {
+                    return null;
+                }
+
+                //t1.Transitions.First().Condition = newCondition;
+                var mergeName = $"{t1.NodeName} ^ {t2.NodeName}";
+                t1.NodeName = mergeName;
+                t1.CurrentCondition = newCondition;
+                t2.CurrentCondition = newCondition;
+                t1 = t1.Transitions?.First()?.Node;
+                t2 = t2.Transitions?.First()?.Node;
+            }
+
+            return t1Head;
         }
 
         public GeneNode ApplyAllPossibleLoops(GeneNode node, List<GeneLink> booleanNetwok)
@@ -394,6 +434,28 @@ namespace GeneAutomate.BusinessLogic
             var serialized = JsonConvert.SerializeObject(source);
             return JsonConvert.DeserializeObject<T>(serialized);
         }
+    }
+
+    public static class GeneNodeHelper
+    {
+        public static GeneNode Find(this GeneNode source, GeneNode node)
+        {
+            var t = source;
+
+            while (t != null)
+            {
+                if (t.NodeName == node.NodeName)
+                {
+                    return t;
+                }
+
+                t = t.Transitions?.First()?.Node;
+
+            }
+
+            return null;
+        }
+
     }
 
 

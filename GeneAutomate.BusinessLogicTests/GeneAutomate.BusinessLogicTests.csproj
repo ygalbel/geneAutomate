@@ -59,6 +59,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeneAutomate.BDD\GeneAutomate.BDD.csproj">
+      <Project>{c53a919a-a33d-46d8-b2c3-d52373a97366}</Project>
+      <Name>GeneAutomate.BDD</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.BusinessLogic\GeneAutomate.BusinessLogic.csproj">
       <Project>{a5750481-47b8-42ec-9069-67681d210194}</Project>
       <Name>GeneAutomate.BusinessLogic</Name>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GeneAutomate.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -166,6 +167,8 @@ namespace GeneAutomate.BusinessLogic.Tests
 
             var mergeLogic = new AutomataMergeLogic();
             var res = mergeLogic.ApplyAllPossibleLoops(automata1, booleanNetwok);
+
+            Assert.AreEqual(res.Transitions.First().Node.NodeName, "a1 ^ a3 ^ a2", res.Transitions.First().Node.NodeName);
             Assert.IsNotNull(res);
         }
     }
