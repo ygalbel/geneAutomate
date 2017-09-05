@@ -54,6 +54,7 @@
     <Compile Include="AutomataFromExperimentCreatorTests.cs" />
     <Compile Include="AutomataMergeLogicTests.cs" />
     <Compile Include="BooleanNetworkValidatorTests.cs" />
+    <Compile Include="LoopMergeTests.cs" />
     <Compile Include="MergeLogicAlghoritmsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

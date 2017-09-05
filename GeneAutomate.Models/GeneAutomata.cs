@@ -54,6 +54,7 @@ namespace GeneAutomate.Models
         }
 
         public string MergeName { get; set; }
+        public bool IsInLoop { get; set; }
     }
 
     public class GeneTransition

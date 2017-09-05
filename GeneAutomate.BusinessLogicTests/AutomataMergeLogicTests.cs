@@ -10,77 +10,77 @@ using GeneAutomate.Models;
 
 namespace GeneAutomate.BusinessLogic.Tests
 {
-   /* [TestClass]
-    public class FinalMergeTests
-    {
-        [TestMethod]
-        public void TestCanHandleExistingMergeCase()
-        {
-            var automata1 = new GeneNode()
-            {
-                NodeName = "a1",
-                CurrentCondition = new Condition() { { "A", true }, { "B", false }, { "C", true } },
-                Transitions = new List<GeneTransition>()
-                {
-                    new GeneTransition()
-                    {
-                        Node = new GeneNode()
-                        {
-                            NodeName = "b1",
-                            CurrentCondition = new Condition() { {"A" , false}, {"B", true} , {"C", false} },
-                            Transitions = new List<GeneTransition>()
-                            {
-                                new GeneTransition()
-                                {
-                                    Node = new GeneNode() { NodeName = "c1", CurrentCondition = z}
-                                }
-                            }
-                        }
-                    }
-                }
+    /* [TestClass]
+     public class FinalMergeTests
+     {
+         [TestMethod]
+         public void TestCanHandleExistingMergeCase()
+         {
+             var automata1 = new GeneNode()
+             {
+                 NodeName = "a1",
+                 CurrentCondition = new Condition() { { "A", true }, { "B", false }, { "C", true } },
+                 Transitions = new List<GeneTransition>()
+                 {
+                     new GeneTransition()
+                     {
+                         Node = new GeneNode()
+                         {
+                             NodeName = "b1",
+                             CurrentCondition = new Condition() { {"A" , false}, {"B", true} , {"C", false} },
+                             Transitions = new List<GeneTransition>()
+                             {
+                                 new GeneTransition()
+                                 {
+                                     Node = new GeneNode() { NodeName = "c1", CurrentCondition = z}
+                                 }
+                             }
+                         }
+                     }
+                 }
 
-            };
+             };
 
 
-            var automata2 = new GeneNode()
-            {
-                NodeName = "a2",
-                CurrentCondition = new Condition() { { "A", false }, { "B", false }, { "C", false } },
-                Transitions = new List<GeneTransition>()
-                {
-                    new GeneTransition()
-                    {
-                        Node = new GeneNode()
-                        {
-                            NodeName = "b2",
-                            CurrentCondition = new Condition() { {"A" , false}, {"B", true} , {"C", true} },
-                            Transitions = new List<GeneTransition>()
-                            {
-                                new GeneTransition()
-                                {
-                                    Node = new GeneNode() { NodeName = "c2"}
-                                }
-                            }
-                        }
-                    }
-                }
+             var automata2 = new GeneNode()
+             {
+                 NodeName = "a2",
+                 CurrentCondition = new Condition() { { "A", false }, { "B", false }, { "C", false } },
+                 Transitions = new List<GeneTransition>()
+                 {
+                     new GeneTransition()
+                     {
+                         Node = new GeneNode()
+                         {
+                             NodeName = "b2",
+                             CurrentCondition = new Condition() { {"A" , false}, {"B", true} , {"C", true} },
+                             Transitions = new List<GeneTransition>()
+                             {
+                                 new GeneTransition()
+                                 {
+                                     Node = new GeneNode() { NodeName = "c2"}
+                                 }
+                             }
+                         }
+                     }
+                 }
 
-            };
+             };
 
-            var automates = new List<GeneNode>()
-            {
-                new GeneNode()
-                {
-                    
-                }
-            };
+             var automates = new List<GeneNode>()
+             {
+                 new GeneNode()
+                 {
 
-            var res = new List<GeneNode>();
-            new AutomataMergeLogic()
-                .GetFinalMerges(new Stack<GeneNode>(automates.Select(a => a.Value).ToList()), links, res);
+                 }
+             };
 
-        }
-}*/
+             var res = new List<GeneNode>();
+             new AutomataMergeLogic()
+                 .GetFinalMerges(new Stack<GeneNode>(automates.Select(a => a.Value).ToList()), links, res);
+
+         }
+ }*/
 
     [TestClass()]
     public class AutomataMergeLogicTests
@@ -91,7 +91,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var automata1 = new GeneNode()
             {
                 NodeName = "a1",
-                CurrentCondition = new Condition() { { "A", true}, { "B" , true}, {"C", true} },
+                CurrentCondition = new Condition() { { "A", true }, { "B", true }, { "C", true } },
                 Transitions = new List<GeneTransition>()
                 {
                     new GeneTransition()
@@ -100,7 +100,7 @@ namespace GeneAutomate.BusinessLogic.Tests
                         {
                             NodeName = "b1",
                             CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
-                
+
                         }
                     }
                 }
@@ -111,7 +111,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var automata2 = new GeneNode()
             {
                 NodeName = "a2",
-                CurrentCondition =  new Condition() { { "A", true}, { "B" , true}, {"C", true} },
+                CurrentCondition = new Condition() { { "A", true }, { "B", true }, { "C", true } },
                 Transitions = new List<GeneTransition>()
                 {
                     new GeneTransition()
@@ -120,7 +120,7 @@ namespace GeneAutomate.BusinessLogic.Tests
                         {
                             NodeName = "b2",
                             CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
-                
+
                         }
                     }
                 }
@@ -130,7 +130,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var mergeLogic = new AutomataMergeLogic();
             var res = mergeLogic.GetMerges(automata1, automata2);
 
-            Assert.AreEqual(1,res.Count);
+            Assert.AreEqual(1, res.Count);
         }
 
         [TestMethod()]
@@ -200,7 +200,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var automata1 = new GeneNode()
             {
                 NodeName = "a1",
-                CurrentCondition = new Condition() { { "B" , true}, {"C", true} }, // here A is missing
+                CurrentCondition = new Condition() { { "B", true }, { "C", true } }, // here A is missing
                 Transitions = new List<GeneTransition>()
                 {
                     new GeneTransition()
@@ -209,7 +209,7 @@ namespace GeneAutomate.BusinessLogic.Tests
                         {
                             NodeName = "b1",
                             CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
-                            
+
                         }
                     }
                 }
@@ -220,7 +220,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var automata2 = new GeneNode()
             {
                 NodeName = "a2",
-                CurrentCondition = new Condition() { { "A", true}, { "B" , true} }, // Here C is missing
+                CurrentCondition = new Condition() { { "A", true }, { "B", true } }, // Here C is missing
                 Transitions = new List<GeneTransition>()
                 {
                     new GeneTransition()
@@ -229,7 +229,7 @@ namespace GeneAutomate.BusinessLogic.Tests
                         {
                             NodeName = "b2",
                             CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
-                            
+
                         }
                     }
                 }
@@ -263,7 +263,7 @@ namespace GeneAutomate.BusinessLogic.Tests
         //                {
         //                    NodeName = "b1",
         //                    CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
-                            
+
         //                }
         //            }
         //        }
@@ -283,7 +283,7 @@ namespace GeneAutomate.BusinessLogic.Tests
         //                {
         //                    NodeName = "b2",
         //                    CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
-                            
+
         //                }
         //            }
         //        }
@@ -333,7 +333,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var automata2 = new GeneNode()
             {
                 NodeName = "a2",
-                CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} }, 
+                CurrentCondition = new Condition() { { "A", false }, { "B", false }, { "C", false } },
                 Transitions = new List<GeneTransition>()
                 {
                     new GeneTransition()
@@ -368,7 +368,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var automata1 = new GeneNode()
             {
                 NodeName = "a1",
-                CurrentCondition = new Condition() { {"A" , false}, {"B", false} , {"C", false} },
+                CurrentCondition = new Condition() { { "A", false }, { "B", false }, { "C", false } },
                 Transitions = new List<GeneTransition>()
                 {
                     new GeneTransition()
@@ -391,7 +391,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var automata2 = new GeneNode()
             {
                 NodeName = "a2",
-                CurrentCondition = new Condition() { {"A" , false}, {"B", true} , {"C", true} },
+                CurrentCondition = new Condition() { { "A", false }, { "B", true }, { "C", true } },
                 Transitions = new List<GeneTransition>()
                 {
                     new GeneTransition()
@@ -422,5 +422,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             Trace.WriteLine(builder.ToString());
             Assert.AreEqual(4, res.First().NodeLength);
         }
+
+
     }
 }

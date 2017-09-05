@@ -12,7 +12,7 @@ namespace GeneAutomate.ParserTests
     public class FullFileParserTests
     {
         [TestMethod]
-        public void TestCanParseToyCase()
+        public void TestCanParseToyChangedCase()
         {
             var parser = new FileParser();
 
@@ -22,6 +22,18 @@ namespace GeneAutomate.ParserTests
             Assert.IsTrue(res.Merges.Count > 0);
             
         }
+
+
+        //[TestMethod] public void TestCanParseToyOriginalCase()
+        //{
+        //    var parser = new FileParser();
+
+        //    var data = new ParseRuleResponse();
+        //    var res = parser.ParseFiles($"toy.net", $"toy.spec");
+
+        //    Assert.IsTrue(res.Merges.Count > 0);
+
+        //}
 
 
         [TestMethod]

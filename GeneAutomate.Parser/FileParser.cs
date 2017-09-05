@@ -23,9 +23,10 @@ namespace GeneAutomate.Parser
                    s => new AutomataFromExperimentCreator().CreateAutomata(s.Value));
 
             var res = new List<GeneNode>();
-            var backTrackingNode = new BackTrackingNode() { Label = "Root", Level = 0};
+            var availableNodes = new Stack<GeneNode>(automates.Select(a => a.Value).ToList());
+            var backTrackingNode = AutomataMergeLogic.CreateBackTrackingNodeFromStack(availableNodes, 0);
             new AutomataMergeLogic()
-                .GetFinalMerges(new Stack<GeneNode>(automates.Select(a => a.Value).ToList()), links, res, backTrackingNode);
+                .GetFinalMerges(availableNodes, links, res, backTrackingNode);
 
             var merges = res
              .Take(100)

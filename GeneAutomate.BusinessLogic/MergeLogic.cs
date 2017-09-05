@@ -104,6 +104,7 @@ namespace GeneAutomate.BusinessLogic
                 // add only if it's a real merge
                 if (!string.IsNullOrEmpty(current.MergeName))
                 {
+                    node.IsFinal = true;
                     foundResults.Add(current);
                 }
 
@@ -138,9 +139,9 @@ namespace GeneAutomate.BusinessLogic
             GetFinalMerges(stackWithoutFirst, booleanNetwok, foundResults, newNode);
         }
 
-        private static BackTrackingNode CreateBackTrackingNodeFromStack(Stack<GeneNode> newStack, int level)
+        public static BackTrackingNode CreateBackTrackingNodeFromStack(Stack<GeneNode> newStack, int level)
         {
-            return new BackTrackingNode() { Label = string.Join(",",newStack.Select(a => a.NodeName)), Level = level};
+            return new BackTrackingNode() { Label = string.Join(",",newStack.Select(a => string.IsNullOrEmpty(a.MergeName) ? a.NodeName : a.MergeName)), Level = level};
         }
 
         private void TraceMerges(List<GeneNode> validMerges)
@@ -202,6 +203,80 @@ namespace GeneAutomate.BusinessLogic
         {
             return !string.IsNullOrWhiteSpace(automata1.MergeName) && !string.IsNullOrWhiteSpace(automata2.MergeName) &&
                    _cache.AlreadySeenMerges.ContainsKey(key);
+        }
+
+        public GeneNode CreateValidLoopMerge(GeneNode node, List<GeneLink> booleanNetwok)
+        {
+            var cloned = CloneHelper.Clone(node);
+            var t1 = cloned;
+            var lastNode = FindLastNode(cloned);
+
+            if (lastNode == null)
+            {
+                return null;
+            }
+
+            while (t1 != null && t1 != lastNode)
+            {
+                var newCondition = CreateMergedCondition(lastNode.CurrentCondition,
+                    t1.CurrentCondition, true);
+
+                if (newCondition != null)
+                {
+                    var currentNode = CloneHelper.Clone(cloned);
+
+                    // now we can work on cloned
+
+                    var mergeName = $"{t1.NodeName} ^ {lastNode.NodeName}";
+                    t1.NodeName = mergeName;
+                    t1.CurrentCondition = newCondition;
+
+                    if (IsBddValid(cloned, booleanNetwok))
+                    {
+                        // set last node to "Looped" to allow more loops with other
+                        lastNode.IsInLoop = true;
+                        return cloned;
+                        
+                    }
+
+                    cloned = currentNode;
+                }
+
+                t1 = t1.Transitions.First()?.Node;
+            }
+
+            return null;
+        }
+
+        public GeneNode ApplyAllPossibleLoops(GeneNode node, List<GeneLink> booleanNetwok)
+        {
+            var current = node;
+            GeneNode last = null;
+            while (current != null)
+            {
+                last = current;
+                current = CreateValidLoopMerge(current, booleanNetwok);
+            }
+
+            return last;
+        }
+
+        private GeneNode FindLastNode(GeneNode node)
+        {
+            var current = node;
+            var last = current;
+            while (current != null && !current.IsInLoop)
+            {
+                last = current;
+                current = current.Transitions?.First().Node;
+            }
+
+            if (last != current)
+            {
+                return last;
+            }
+
+            return null;
         }
 
         public GeneNode CreateMerge(GeneNode node1, GeneNode node2, GeneNode node2Head,bool usePositiveAlgo)

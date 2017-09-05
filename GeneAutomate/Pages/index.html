@@ -108,7 +108,7 @@
         <div id="merges" style="display:none" class="container">
             <h1>Valid Merges</h1>
         </div>
-        
+
         <div id="backTracking" style="display:none" class="container">
             <h1>Back tracking</h1>
         </div>
@@ -140,7 +140,7 @@
         var graphs = [];
 
         $(".bar-item")
-            .click(function() {
+            .click(function () {
 
                 $(".bar-item").removeClass('bar-selected');
                 $(this).addClass('bar-selected');
@@ -151,7 +151,7 @@
                 $("#" + idToShow).show();
 
                 if (graphs[idToShow]) {
-                    graphs[idToShow].forEach(function(g) {
+                    graphs[idToShow].forEach(function (g) {
                         g.refresh();
                         g.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1.2 });
                     });
@@ -160,7 +160,7 @@
             });
 
         function numOfBrothers(nodes, n) {
-            return nodes.filter(function(d) { return d.level === n }).length;
+            return nodes.filter(function (d) { return d.level === n }).length;
         }
 
 
@@ -323,7 +323,7 @@
                 //data.Experiments;
             });
         */
-        
+
 
         /*sigma.parsers.json('/api/automate?exampleName=' + currentExperimentName,
             {
@@ -372,7 +372,7 @@
 
             if (!skipResize) {
                 g.nodes
-                    .forEach(function(node, i, a) {
+                    .forEach(function (node, i, a) {
                         console.log(node, i, a);
                         node.x = 2 * Math.cos(Math.PI * 2 * i / a.length);
                         node.y = 2 * Math.sin(Math.PI * 2 * i / a.length);
@@ -406,9 +406,9 @@
 
                 });
 
-            setTimeout(function() {
-                    u.refresh();
-                },
+            setTimeout(function () {
+                u.refresh();
+            },
                 300);
 
             return u;
@@ -418,380 +418,339 @@
         function getBT() {
             return {
                 "nodes": [
-                    {
-                        "id": "Root",
-                        "label": "Root",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 0
-                    },
-                    {
-                        "id": "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "label":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 1
-                    },
-                    {
-                        "id": "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "label":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 2
-                    },
-                    {
-                        "id":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "label":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 3
-                    },
-                    {
-                        "id":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "label":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 4
-                    },
-                    {
-                        "id":
-                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "label":
-                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 5
-                    },
-                    {
-                        "id": "Experiment1_0",
-                        "label": "Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 5
-                    },
-                    {
-                        "id": "Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "label": "Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 4
-                    },
-                    {
-                        "id": "Experiment2_0,Experiment1_0",
-                        "label": "Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 4
-                    },
-                    {
-                        "id": "Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "label": "Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 3
-                    },
-                    {
-                        "id": "Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "label": "Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 3
-                    },
-                    {
-                        "id": "Experiment3_0,Experiment2_0,Experiment1_0",
-                        "label": "Experiment3_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 3
-                    },
-                    {
-                        "id": "Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "label": "Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 2
-                    },
-                    {
-                        "id": "Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "label": "Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 2
-                    },
-                    {
-                        "id": "Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "label": "Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 2
-                    },
-                    {
-                        "id": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "label": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 2
-                    },
-                    {
-                        "id": "Experiment4_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "label": "Experiment4_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 1
-                    },
-                    {
-                        "id": "Experiment3_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "label": "Experiment3_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 1
-                    },
-                    {
-                        "id": "Experiment2_0 ~ Experiment6_0,Experiment1_0",
-                        "label": "Experiment2_0 ~ Experiment6_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 1
-                    },
-                    {
-                        "id": "Experiment1_0 ~ Experiment6_0",
-                        "label": "Experiment1_0 ~ Experiment6_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 1
-                    },
-                    {
-                        "id": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "label": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "x": null,
-                        "y": null,
-                        "size": 3,
-                        "level": 1
-                    }
+                  {
+                      "id": "Root",
+                      "label": "Root",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 0
+                  },
+                  {
+                      "id": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "label": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 1
+                  },
+                  {
+                      "id": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "label": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 2
+                  },
+                  {
+                      "id": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "label": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 3
+                  },
+                  {
+                      "id": "Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "label": "Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 4
+                  },
+                  {
+                      "id": "Experiment1_18 ~ Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "label": "Experiment1_18 ~ Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 5
+                  },
+                  {
+                      "id": "Experiment1_0",
+                      "label": "Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 5
+                  },
+                  {
+                      "id": "Experiment1_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "label": "Experiment1_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 4
+                  },
+                  {
+                      "id": "Experiment2_0,Experiment1_0",
+                      "label": "Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 4
+                  },
+                  {
+                      "id": "Experiment2_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "label": "Experiment2_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 3
+                  },
+                  {
+                      "id": "Experiment1_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "label": "Experiment1_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 3
+                  },
+                  {
+                      "id": "Experiment3_0,Experiment2_0,Experiment1_0",
+                      "label": "Experiment3_0,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 3
+                  },
+                  {
+                      "id": "Experiment3_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "label": "Experiment3_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 2
+                  },
+                  {
+                      "id": "Experiment2_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "label": "Experiment2_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 2
+                  },
+                  {
+                      "id": "Experiment1_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "label": "Experiment1_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 2
+                  },
+                  {
+                      "id": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "label": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 2
+                  },
+                  {
+                      "id": "Experiment4_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "label": "Experiment4_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 1
+                  },
+                  {
+                      "id": "Experiment3_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "label": "Experiment3_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 1
+                  },
+                  {
+                      "id": "Experiment2_18 ~ Experiment6_18,Experiment1_0",
+                      "label": "Experiment2_18 ~ Experiment6_18,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 1
+                  },
+                  {
+                      "id": "Experiment1_18 ~ Experiment6_18",
+                      "label": "Experiment1_18 ~ Experiment6_18",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 1
+                  },
+                  {
+                      "id": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "label": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "x": null,
+                      "y": null,
+                      "size": 3,
+                      "level": 1
+                  }
                 ],
                 "edges": [
-                    {
-                        "id":
-                            "Root_Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "source": "Root",
-                        "target":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id": "Root_Experiment4_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "source": "Root",
-                        "target": "Experiment4_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id": "Root_Experiment3_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "source": "Root",
-                        "target": "Experiment3_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id": "Root_Experiment2_0 ~ Experiment6_0,Experiment1_0",
-                        "source": "Root",
-                        "target": "Experiment2_0 ~ Experiment6_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id": "Root_Experiment1_0 ~ Experiment6_0",
-                        "source": "Root",
-                        "target": "Experiment1_0 ~ Experiment6_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id": "Root_Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "source": "Root",
-                        "target": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment3_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment2_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment1_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "source":
-                            "Experiment5_0 ~ Experiment6_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "source":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "source":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment2_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "source":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment1_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0,Experiment2_0,Experiment1_0",
-                        "source":
-                            "Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment3_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment3_0,Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "source":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "target":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "source":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment1_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0_Experiment2_0,Experiment1_0",
-                        "source":
-                            "Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment2_0,Experiment1_0",
-                        "target": "Experiment2_0,Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0_Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "source":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "target":
-                            "Experiment1_0 ~ Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    },
-                    {
-                        "id":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0_Experiment1_0",
-                        "source":
-                            "Experiment2_0 ~ Experiment3_0 ~ Experiment4_0 ~ Experiment5_0 ~ Experiment6_0,Experiment1_0",
-                        "target": "Experiment1_0",
-                        "type": "arrow",
-                        "color": "#3300ff",
-                        "label": null
-                    }
+                  {
+                      "id": "Root_Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "source": "Root",
+                      "target": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Root_Experiment4_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "source": "Root",
+                      "target": "Experiment4_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Root_Experiment3_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "source": "Root",
+                      "target": "Experiment3_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Root_Experiment2_18 ~ Experiment6_18,Experiment1_0",
+                      "source": "Root",
+                      "target": "Experiment2_18 ~ Experiment6_18,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Root_Experiment1_18 ~ Experiment6_18",
+                      "source": "Root",
+                      "target": "Experiment1_18 ~ Experiment6_18",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Root_Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "source": "Root",
+                      "target": "Experiment5_0,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "source": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "source": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment3_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "source": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment2_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "source": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment1_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0_Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "source": "Experiment5_18 ~ Experiment6_18,Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment4_0,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "source": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0_Experiment2_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "source": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment2_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0_Experiment1_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "source": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment1_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0_Experiment3_0,Experiment2_0,Experiment1_0",
+                      "source": "Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment3_0,Experiment2_0,Experiment1_0",
+                      "target": "Experiment3_0,Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0_Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "source": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "target": "Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0_Experiment1_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "source": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "target": "Experiment1_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0_Experiment2_0,Experiment1_0",
+                      "source": "Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment2_0,Experiment1_0",
+                      "target": "Experiment2_0,Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0_Experiment1_18 ~ Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "source": "Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "target": "Experiment1_18 ~ Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  },
+                  {
+                      "id": "Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0_Experiment1_0",
+                      "source": "Experiment2_18 ~ Experiment3_18 ~ Experiment4_18 ~ Experiment5_18 ~ Experiment6_18,Experiment1_0",
+                      "target": "Experiment1_0",
+                      "type": "arrow",
+                      "color": "#3300ff",
+                      "label": null
+                  }
                 ]
-            };
+            }
+
         }
 
         // from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
