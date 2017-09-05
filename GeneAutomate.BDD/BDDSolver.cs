@@ -16,69 +16,76 @@ namespace GeneAutomate.BDD
     {
         private const string nOT = PrimitiveApplication.NOT;
 
+        private static object locker = new object();
+
         public bool IsValidPath(GeneNode automata, List<GeneLink> booleanNetwok)
         {
-            var sb = new StringBuilder();
+            lock (locker)
+            {
+                var sb = new StringBuilder();
 
-            var letters = new List<string>();
+                var letters = new List<string>();
 
-            int z = 0;
-            var depth = automata.NodeLength;
+                int z = 0;
+                var depth = automata.NodeLength;
 
-            automata.GetAllConditionLetters(letters);
+                automata.GetAllConditionLetters(letters);
 
-            letters = letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => FormatParameter(l, n))).ToList();
+                letters = letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => FormatParameter(l, n))).ToList();
 
-            Trace.WriteLine(automata.NodeLength + 1);
-            Model.NUMBER_OF_EVENT = automata.NodeLength + 2;
-            Model.MAX_NUMBER_EVENT_PARAMETERS = 0;
+                Trace.WriteLine(automata.NodeLength + 1);
 
-            BDDEncoder encoder = new BDDEncoder();
+                Model.NUMBER_OF_EVENT = automata.NodeLength + 2;
+                Model.MAX_NUMBER_EVENT_PARAMETERS = 0;
 
-            letters.Distinct().ToList().ForEach(l => encoder.model.AddLocalVar(l, 0, 1));
-            Trace.WriteLine(string.Join(",", letters));
+                BDDEncoder encoder = new BDDEncoder();
 
-            SymbolicLTS lts = new SymbolicLTS();
+                letters.Distinct().ToList().ForEach(l => encoder.model.AddLocalVar(l, 0, 1));
+                Trace.WriteLine(string.Join(",", letters));
 
-            List<State> states = new List<State>();
-            var state0 = lts.AddState();
-            states.Add(state0);
+                SymbolicLTS lts = new SymbolicLTS();
 
-            var state1 = lts.AddState();
-            states.Add(state1);
+                List<State> states = new List<State>();
+                var state0 = lts.AddState();
+                states.Add(state0);
+
+                var state1 = lts.AddState();
+                states.Add(state1);
 
 
-            lts.InitialState = states[0];
+                lts.InitialState = states[0];
 
-            var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok, automata.NodeLength-1);
+                var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok, automata.NodeLength - 1);
 
-            Trace.WriteLine("Assignments: " + seq);
+                Trace.WriteLine("Assignments: " + seq);
 
-            var trans1 = new Transition(new Event("a"), null, seq, states[0], states[1]);
-            lts.Transitions.Add(trans1);
+                var trans1 = new Transition(new Event("a"), null, seq, states[0], states[1]);
+                lts.Transitions.Add(trans1);
 
-            Trace.WriteLine(lts);
-            AutomataBDD systemBDD = lts.Encode(encoder);
+                Trace.WriteLine(lts);
+                AutomataBDD systemBDD = lts.Encode(encoder);
 
-            // init is time 0
+                // init is time 0
 
-            CUDDNode initDD = CUDD.Function.Or(systemBDD.initExpression.TranslateBoolExpToBDD(encoder.model).GuardDDs);
+                CUDDNode initDD = CUDD.Function.Or(systemBDD.initExpression.TranslateBoolExpToBDD(encoder.model).GuardDDs);
 
-            bool reach1 = true;
-            var path = new List<CUDDNode>();
-            var geneTransition = automata;
+                bool reach1 = true;
+                var path = new List<CUDDNode>();
+                var geneTransition = automata;
 
+
+                InitInitialState(geneTransition, systemBDD);
+                var goal = SetGoalsBasedOnAutomata(geneTransition);
+                path = IsExistPath(goal, encoder, path, initDD, systemBDD, ref reach1);
+                geneTransition = geneTransition.Transitions?.First()?.Node;
+
+
+                path.Clear();
+                Trace.WriteLine(sb);
+                encoder.model.Close();
+                return reach1;
+            }
            
-            InitInitialState(geneTransition, systemBDD);
-            var goal = SetGoalsBasedOnAutomata(geneTransition);
-            path = IsExistPath(goal, encoder, path, initDD, systemBDD, ref reach1);
-            geneTransition = geneTransition.Transitions?.First()?.Node;
-
-
-            path.Clear();
-            Trace.WriteLine(sb);
-            encoder.model.Close();
-            return reach1;
 
         }
 
