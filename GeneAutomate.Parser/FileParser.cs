@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
+using GeneAutomate.Writer;
 using Newtonsoft.Json;
 
 namespace GeneAutomate.Parser
@@ -34,6 +35,7 @@ namespace GeneAutomate.Parser
              .ToList();
 
             Trace.WriteLine($"Finish merges found {merges.Count} valid merges");
+
 
             /*   var allMerges = new AutomataMergeLogic()
                    .GetMerges(automates.Select(a => a.Value).ToList())

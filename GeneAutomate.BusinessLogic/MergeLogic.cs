@@ -113,10 +113,14 @@ namespace GeneAutomate.BusinessLogic
 
             var currentStack = availableNodes.Clone();
             var first = currentStack.Pop();
-            bool found = false;
             while (currentStack.Any())
             {
                 var second = currentStack.Pop();
+
+                if (AlreadyMerged(first, second))
+                {
+                    continue;
+                }
 
                 var merges = GetValidMerges(first, second, booleanNetwok);
 
@@ -128,7 +132,6 @@ namespace GeneAutomate.BusinessLogic
                     var currentNode = CreateBackTrackingNodeFromStack(newStack, node.Level + 1);
                     node.Nodes.Add(currentNode);
                     GetFinalMerges(newStack, booleanNetwok, foundResults, currentNode);
-                    found = true;
                 }
             }
 
@@ -137,6 +140,14 @@ namespace GeneAutomate.BusinessLogic
             var newNode = CreateBackTrackingNodeFromStack(stackWithoutFirst, node.Level +1);
             node.Nodes.Add(newNode);
             GetFinalMerges(stackWithoutFirst, booleanNetwok, foundResults, newNode);
+        }
+
+        private bool AlreadyMerged(GeneNode first, GeneNode second)
+        {
+            return 
+                !string.IsNullOrEmpty(first.MergeName) &&
+                !string.IsNullOrWhiteSpace(second.MergeName) &&
+                first.GetAllMergedNode().Intersect(second.GetAllMergedNode()).Any();
         }
 
         public static BackTrackingNode CreateBackTrackingNodeFromStack(Stack<GeneNode> newStack, int level)

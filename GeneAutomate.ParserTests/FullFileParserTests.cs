@@ -20,6 +20,7 @@ namespace GeneAutomate.ParserTests
             var res = parser.ParseFiles($"toy_changed.net", $"toy_changed.spec");
 
             Assert.IsTrue(res.Merges.Count > 0);
+
             
         }
 

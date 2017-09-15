@@ -71,6 +71,10 @@
       <Project>{63af470e-a7ef-4f5f-a6bb-9d18909bdebb}</Project>
       <Name>GeneAutomate.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GeneAutomate.Writer\GeneAutomate.Writer.csproj">
+      <Project>{FF7F5FE3-89D8-4FF6-8835-CC85C888FDA6}</Project>
+      <Name>GeneAutomate.Writer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

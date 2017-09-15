@@ -55,6 +55,12 @@ namespace GeneAutomate.Models
 
         public string MergeName { get; set; }
         public bool IsInLoop { get; set; }
+
+        // find all merged node in curren
+        public List<string> GetAllMergedNode()
+        {
+            return (MergeName ?? string.Empty).Split('~').Select(a => a.Replace('!',' ').Trim()).ToList();
+        }
     }
 
     public class GeneTransition

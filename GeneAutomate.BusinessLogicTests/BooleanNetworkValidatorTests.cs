@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Models;
+using GeneAutomate.Writer;
+using System.Diagnostics;
 
 namespace GeneAutomate.BusinessLogic.Tests
 {
@@ -164,6 +166,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             var res = validator.IsValidAutomata(automata, null, booleanNetwork);
 
             Assert.IsTrue(res);
+
         }
 
         [TestMethod()]
@@ -250,9 +253,11 @@ namespace GeneAutomate.BusinessLogic.Tests
             }
             ;
 
+
             var res = validator.IsValidAutomata(automata, null, booleanNetwork);
 
             Assert.IsTrue(res);
+
         }
     }
 }

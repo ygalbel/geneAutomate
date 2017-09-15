@@ -68,6 +68,10 @@
       <Project>{faede5ae-4c20-4991-ab85-8aafba4e5210}</Project>
       <Name>GeneAutomate.Parser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GeneAutomate.Writer\GeneAutomate.Writer.csproj">
+      <Project>{FF7F5FE3-89D8-4FF6-8835-CC85C888FDA6}</Project>
+      <Name>GeneAutomate.Writer</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="toy_changed.net">
