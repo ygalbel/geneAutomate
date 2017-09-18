@@ -35,6 +35,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PAT", "PAT", "{5578F806-EC0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneAutomate.Writer", "GeneAutomate.Writer\GeneAutomate.Writer.csproj", "{FF7F5FE3-89D8-4FF6-8835-CC85C888FDA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneAutomate.ModelsTests", "GeneAutomate.ModelsTests\GeneAutomate.ModelsTests.csproj", "{67528DE4-62F5-49D7-98A5-F04C241B4814}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneAutomate.WriterTests", "GeneAutomate.WriterTests\GeneAutomate.WriterTests.csproj", "{9D8DB9EE-BFA1-434B-9F4C-1BE980E7C5B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,14 @@ Global
 		{FF7F5FE3-89D8-4FF6-8835-CC85C888FDA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF7F5FE3-89D8-4FF6-8835-CC85C888FDA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF7F5FE3-89D8-4FF6-8835-CC85C888FDA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67528DE4-62F5-49D7-98A5-F04C241B4814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67528DE4-62F5-49D7-98A5-F04C241B4814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67528DE4-62F5-49D7-98A5-F04C241B4814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67528DE4-62F5-49D7-98A5-F04C241B4814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D8DB9EE-BFA1-434B-9F4C-1BE980E7C5B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8DB9EE-BFA1-434B-9F4C-1BE980E7C5B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8DB9EE-BFA1-434B-9F4C-1BE980E7C5B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8DB9EE-BFA1-434B-9F4C-1BE980E7C5B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

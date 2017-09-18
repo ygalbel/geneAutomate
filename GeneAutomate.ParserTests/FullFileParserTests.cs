@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Parser;
+using GeneAutomate.Writer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneAutomate.ParserTests
@@ -25,16 +27,22 @@ namespace GeneAutomate.ParserTests
         }
 
 
-        //[TestMethod] public void TestCanParseToyOriginalCase()
-        //{
-        //    var parser = new FileParser();
+        [TestMethod] public void TestCanParseToyOriginalCase()
+        {
+            var parser = new FileParser();
 
-        //    var data = new ParseRuleResponse();
-        //    var res = parser.ParseFiles($"toy.net", $"toy.spec");
+            var data = new ParseRuleResponse();
+            var res = parser.ParseFiles($"toy.net", $"toy.spec");
 
-        //    Assert.IsTrue(res.Merges.Count > 0);
+            
 
-        //}
+            Assert.IsTrue(res.MergeObjects.Count > 0);
+
+            var txt = new RuleFileWriter().CreateSpecString(res.MergeObjects);
+
+            Trace.WriteLine(txt);
+
+        }
 
 
         [TestMethod]
@@ -44,6 +52,19 @@ namespace GeneAutomate.ParserTests
 
             var data = new ParseRuleResponse();
             var res = parser.ParseFiles($"toy_changed2.net", $"toy_changed2.spec");
+
+            Assert.IsTrue(res.Merges.Count > 0);
+
+        }
+
+
+        [TestMethod]
+        public void TestCanParsesimple1()
+        {
+            var parser = new FileParser();
+
+            var data = new ParseRuleResponse();
+            var res = parser.ParseFiles($"simple1.net", $"simple1.spec");
 
             Assert.IsTrue(res.Merges.Count > 0);
 

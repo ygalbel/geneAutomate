@@ -57,9 +57,26 @@ namespace GeneAutomate.Models
         public bool IsInLoop { get; set; }
 
         // find all merged node in curren
-        public List<string> GetAllMergedNode()
+        public List<string> GetAllMergedExperiment()
         {
-            return (MergeName ?? string.Empty).Split('~').Select(a => a.Replace('!',' ').Trim()).ToList();
+            if (string.IsNullOrEmpty(MergeName))
+            {
+                return null;
+            }
+            return MergeName.Split('~').Select(a => a.Split('_').FirstOrDefault()?.Replace('!',' ').Trim()).Distinct().ToList();
+        }
+
+        public List<string> GetAllMergedNodes()
+        {
+            if (string.IsNullOrEmpty(MergeName))
+            {
+                return null;
+            }
+            return MergeName.Split('~').Select(a => a.Replace('!', ' ').Trim()).Distinct().ToList();
+        }
+        public string GetExperimentName()
+        {
+            return NodeName.Split('_').FirstOrDefault()?.Replace('!', ' ').Trim();
         }
     }
 

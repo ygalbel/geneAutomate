@@ -26,12 +26,23 @@ namespace GeneAutomate.Parser
             var res = new List<GeneNode>();
             var availableNodes = new Stack<GeneNode>(automates.Select(a => a.Value).ToList());
             var backTrackingNode = AutomataMergeLogic.CreateBackTrackingNodeFromStack(availableNodes, 0);
-            new AutomataMergeLogic()
+
+            // find merges
+            var automataMergeLogic = new AutomataMergeLogic();
+
+            automataMergeLogic
                 .GetFinalMerges(availableNodes, links, res, backTrackingNode);
+
+            // handle not merged experiments
+            availableNodes.Where(d => NotExistInMerges(d, res)).ToList().ForEach(f =>
+            {
+                f = automataMergeLogic.ApplyAllPossibleLoops(f, links);
+                res.Add(f);
+            });
 
             var merges = res
              .Take(100)
-             .Select(a => a.ToViewAutomata())
+             .Select(a => a.ToFullViewAutomata(automates))
              .ToList();
 
             Trace.WriteLine($"Finish merges found {merges.Count} valid merges");
@@ -58,9 +69,16 @@ namespace GeneAutomate.Parser
                 Experiments = conditionAndExperiments.Experiments,
                 Automates = automatesView,
                 Merges = merges,
-                BackTrackingNode = backTrackingAutomata
+                BackTrackingNode = backTrackingAutomata,
+                MergeObjects = res
                 //AllMerges = allMerges
             };
+        }
+
+        // TODO: handle "cutted" merged
+        private bool NotExistInMerges(GeneNode geneNode, List<GeneNode> res)
+        {
+            return !res.Any(m => m.GetAllMergedExperiment().Contains(geneNode.GetExperimentName()));
         }
 
         public List<GeneLink> GetConditionAndExperiments(string netPath, string specPath, out ParseRuleResponse conditionAndExperiments)

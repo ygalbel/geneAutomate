@@ -18,6 +18,102 @@ namespace GeneAutomate.BusinessLogic
             return CreateViewAutomata(automata);
         }
 
+        public static AutomateObject ToFullViewAutomata(this GeneNode automata, Dictionary<string,GeneNode> automateBank)
+        {
+            var res = new AutomateObject();
+            var node = automata;
+
+            var nodes = new List<GeneNode>();
+            node.Visit((g) => nodes.Add(g));
+
+            var trans = new List<Edge>();
+
+            var tempViewAutomates = new AutomateObject() { edges = new List<Edge>(), nodes = new List<Node>()};
+
+            node.Visit((g) =>
+            {
+                var toAdd = g.GetAllMergedExperiment()?.Where(a => a != g.GetExperimentName()) ?? Enumerable.Empty<string>();
+
+                foreach (var automteToAdd in toAdd)
+                {
+                    var geneNodeToAdd = automateBank[automteToAdd];
+
+                    if (geneNodeToAdd == null)
+                    {
+                        continue;
+                    }
+
+                    var lastNodeToMerge = g.GetAllMergedNodes().FirstOrDefault(a => a.StartsWith(automteToAdd));
+
+                    var partAutomate = GetCutteddVersionOfAutomate(geneNodeToAdd, lastNodeToMerge, g.NodeName);
+
+                    var toAddViewAutomate = partAutomate.ToViewAutomata();
+
+                    toAddViewAutomate.edges.ForEach(e => e.color = "#FF5733");
+                    tempViewAutomates.nodes.AddRange(toAddViewAutomate.nodes);
+                    tempViewAutomates.edges.AddRange(toAddViewAutomate.edges);
+                }
+
+
+                if (g.Transitions != null && g.Transitions.Any())
+                {
+                    g.Transitions.ForEach(f =>
+                    {
+                        trans.Add(new Edge
+                        {
+                            source = g.NodeName,
+                            target = f.Node.NodeName,
+                        });
+
+                    });
+                }
+            });
+
+            res.nodes = nodes
+                .Select(a => new Node()
+                {
+                    id = a.NodeName,
+                    label = FormatNodeLabel(a),
+                    size = 3
+                }).ToList();
+
+            res.edges =
+                trans.Select(d => new Edge()
+                {
+                    id = d.source + "_" + d.target,
+                    source = d.source,
+                    target = d.target,
+                    color = "#3300ff",
+                    type = "arrow",
+                    label = d.label //+ " " + CreateLabel(d)
+                })
+                    .ToList();
+
+
+
+            res.nodes.AddRange(tempViewAutomates.nodes.Where(r => res.nodes.All(b => b.id != r.id)));
+            res.edges.AddRange(tempViewAutomates.edges);
+            return res;
+        }
+
+        private static GeneNode GetCutteddVersionOfAutomate(GeneNode geneNodeToAdd, string lastNodeToMerge, string newLastNode)
+        {
+            var newVersion = CloneHelper.Clone(geneNodeToAdd);
+            var temp = newVersion;
+
+            while (temp.NodeName != lastNodeToMerge)
+            {
+                temp = temp.Transitions.First().Node;
+            }
+
+            temp.NodeName = newLastNode;
+            temp.Transitions = new List<GeneTransition>();
+
+            return newVersion;
+
+
+        }
+
         public static AutomateObject CreateViewAutomata(GeneNode node)
         {
             var res = new AutomateObject();
@@ -47,6 +143,7 @@ namespace GeneAutomate.BusinessLogic
             res.nodes = nodes
                 .Select(a => new Node() { id = a.NodeName,
                     label = FormatNodeLabel(a), size = 3 }).ToList();
+
             res.edges =
                 trans.Select(d => new Edge()
                 {

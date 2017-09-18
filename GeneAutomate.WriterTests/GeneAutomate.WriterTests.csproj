@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B6944649-EE89-4723-BAF8-8F9BE01DD81C}</ProjectGuid>
+    <ProjectGuid>{9D8DB9EE-BFA1-434B-9F4C-1BE980E7C5B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GeneAutomate.ParserTests</RootNamespace>
-    <AssemblyName>GeneAutomate.ParserTests</AssemblyName>
+    <RootNamespace>GeneAutomate.WriterTests</RootNamespace>
+    <AssemblyName>GeneAutomate.WriterTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -51,77 +51,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="FullFileParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RuleFileParserTests.cs" />
+    <Compile Include="RuleFileWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeneAutomate.BDD\GeneAutomate.BDD.csproj">
-      <Project>{c53a919a-a33d-46d8-b2c3-d52373a97366}</Project>
-      <Name>GeneAutomate.BDD</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Models\GeneAutomate.Models.csproj">
-      <Project>{63af470e-a7ef-4f5f-a6bb-9d18909bdebb}</Project>
+      <Project>{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}</Project>
       <Name>GeneAutomate.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GeneAutomate.Parser\GeneAutomate.Parser.csproj">
-      <Project>{faede5ae-4c20-4991-ab85-8aafba4e5210}</Project>
-      <Name>GeneAutomate.Parser</Name>
     </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Writer\GeneAutomate.Writer.csproj">
       <Project>{FF7F5FE3-89D8-4FF6-8835-CC85C888FDA6}</Project>
       <Name>GeneAutomate.Writer</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="toy_changed.net">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="toy_changed.spec">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="yeast.net">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="yeast.spec">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="toy_changed2.net">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="toy_changed2.spec">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="toy.net">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="toy.spec">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="simple1.spec">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="simple1.net">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

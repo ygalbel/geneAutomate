@@ -101,8 +101,10 @@ namespace GeneAutomate.BusinessLogic
             {
                 var current = availableNodes.Pop();
 
+                current = ApplyAllPossibleLoops(current, booleanNetwok);
+
                 // add only if it's a real merge
-                if (!string.IsNullOrEmpty(current.MergeName))
+                if (!string.IsNullOrEmpty(current.MergeName) && !foundResults.Any(a => a.MergeName == current.MergeName))
                 {
                     node.IsFinal = true;
                     foundResults.Add(current);
@@ -147,7 +149,7 @@ namespace GeneAutomate.BusinessLogic
             return 
                 !string.IsNullOrEmpty(first.MergeName) &&
                 !string.IsNullOrWhiteSpace(second.MergeName) &&
-                first.GetAllMergedNode().Intersect(second.GetAllMergedNode()).Any();
+                first.GetAllMergedExperiment().Intersect(second.GetAllMergedExperiment()).Any();
         }
 
         public static BackTrackingNode CreateBackTrackingNodeFromStack(Stack<GeneNode> newStack, int level)
@@ -166,7 +168,9 @@ namespace GeneAutomate.BusinessLogic
         public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2)
         {
             // check positive and negative merge algorithm
-            return GetMerges(automata1, automata2, true).Union(GetMerges(automata1, automata2, false)).ToList();
+            return GetMerges(automata1, automata2, true)
+                //.Union(GetMerges(automata1, automata2, false))
+                .ToList();
         }
 
         public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2, bool usePositiveAlgo)
@@ -258,6 +262,7 @@ namespace GeneAutomate.BusinessLogic
                     {
                         // set last node to "Looped" to allow more loops with other
                         tlastNode.IsInLoop = true;
+                        cloned.MergeName = cloned.NodeName;
                         return cloned;
                         
                     }
@@ -279,10 +284,11 @@ namespace GeneAutomate.BusinessLogic
             var t2 = lastNode;
             while (t1 != null && t2 != null && t1 != lastNode)
             {
+                
                 var newCondition = CreateMergedCondition(t1.CurrentCondition,
                     t2.CurrentCondition, true);
 
-                if (newCondition == null)
+                if (newCondition == null || AlreadyMergedNodes(t1, t2))
                 {
                     return null;
                 }
@@ -297,6 +303,15 @@ namespace GeneAutomate.BusinessLogic
             }
 
             return t1Head;
+        }
+
+        private static bool AlreadyMergedNodes(GeneNode t1, GeneNode t2)
+        {
+            var firstMerged = t1.NodeName.Split('^');
+            
+            var secondMerged = t2.NodeName.Split('^');
+
+            return firstMerged.Intersect(secondMerged).Any();
         }
 
         public GeneNode ApplyAllPossibleLoops(GeneNode node, List<GeneLink> booleanNetwok)
