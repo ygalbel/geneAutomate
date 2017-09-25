@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Models;
+using NLog;
 
 namespace GeneAutomate.BusinessLogic.Tests
 {
+
+
     /* [TestClass]
      public class FinalMergeTests
      {
@@ -85,6 +88,10 @@ namespace GeneAutomate.BusinessLogic.Tests
     [TestClass()]
     public class AutomataMergeLogicTests
     {
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
         [TestMethod()]
         public void TestMergeWithSameConditionReturnMerged()
         {
@@ -419,7 +426,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             Assert.AreEqual(1, res.Count);
             var builder = new StringBuilder();
             res.First().AppendPath(builder);
-            Trace.WriteLine(builder.ToString());
+            logger.Info(builder.ToString());
             Assert.AreEqual(4, res.First().NodeLength);
         }
 

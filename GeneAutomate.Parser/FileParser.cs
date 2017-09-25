@@ -9,11 +9,15 @@ using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
 using GeneAutomate.Writer;
 using Newtonsoft.Json;
+using NLog;
 
 namespace GeneAutomate.Parser
 {
     public class FileParser
     {
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public FileParsingResult ParseFiles(string netPath, string specPath)
         {
             ParseRuleResponse conditionAndExperiments;
@@ -45,7 +49,7 @@ namespace GeneAutomate.Parser
              .Select(a => a.ToFullViewAutomata(automates))
              .ToList();
 
-            Trace.WriteLine($"Finish merges found {merges.Count} valid merges");
+            logger.Info($"Finish merges found {merges.Count} valid merges");
 
 
             /*   var allMerges = new AutomataMergeLogic()
@@ -60,8 +64,8 @@ namespace GeneAutomate.Parser
 
             var backTrackingAutomata = backTrackingNode?.ToViewAutomata();
 
-            Trace.WriteLine("BackTracing");
-            Trace.WriteLine(JsonConvert.SerializeObject(backTrackingAutomata, Formatting.Indented));
+            logger.Info("BackTracing");
+            logger.Info(JsonConvert.SerializeObject(backTrackingAutomata, Formatting.Indented));
             return new FileParsingResult()
             {
                 GeneLinks = links,

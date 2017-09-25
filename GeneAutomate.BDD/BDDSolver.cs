@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Models;
+using NLog;
 using PAT.Common.Classes.CUDDLib;
 using PAT.Common.Classes.Expressions.ExpressionClass;
 using PAT.Common.Classes.LTS;
@@ -14,6 +15,8 @@ namespace GeneAutomate.BDD
 {
     public class BDDSolver
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private const string nOT = PrimitiveApplication.NOT;
 
         private static object locker = new object();
@@ -22,8 +25,6 @@ namespace GeneAutomate.BDD
         {
             lock (locker)
             {
-                var sb = new StringBuilder();
-
                 var letters = new List<string>();
 
                 int z = 0;
@@ -33,7 +34,7 @@ namespace GeneAutomate.BDD
 
                 letters = letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => FormatParameter(l, n))).ToList();
 
-                Trace.WriteLine(automata.NodeLength + 1);
+                logger.Info(automata.NodeLength + 1);
 
                 Model.NUMBER_OF_EVENT = automata.NodeLength + 2;
                 Model.MAX_NUMBER_EVENT_PARAMETERS = 0;
@@ -41,7 +42,7 @@ namespace GeneAutomate.BDD
                 BDDEncoder encoder = new BDDEncoder();
 
                 letters.Distinct().ToList().ForEach(l => encoder.model.AddLocalVar(l, 0, 1));
-                Trace.WriteLine(string.Join(",", letters));
+                logger.Info(string.Join(",", letters));
 
                 SymbolicLTS lts = new SymbolicLTS();
 
@@ -57,12 +58,12 @@ namespace GeneAutomate.BDD
 
                 var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok, automata.NodeLength - 1);
 
-                Trace.WriteLine("Assignments: " + seq);
+                logger.Info("Assignments: " + seq);
 
                 var trans1 = new Transition(new Event("a"), null, seq, states[0], states[1]);
                 lts.Transitions.Add(trans1);
 
-                Trace.WriteLine(lts);
+                logger.Info(lts);
                 AutomataBDD systemBDD = lts.Encode(encoder);
 
                 // init is time 0
@@ -81,7 +82,6 @@ namespace GeneAutomate.BDD
 
 
                 path.Clear();
-                Trace.WriteLine(sb);
                 encoder.model.Close();
                 return reach1;
             }
@@ -91,7 +91,7 @@ namespace GeneAutomate.BDD
 
         private static string FormatParameter(string f, int i)
         {
-            return $"{f}_{i}";
+            return $"{f.Replace('(','_').Replace(')','_')}_{i}";
         }
 
         private static Expression CreateExpressionsFromBooleanNetwork(List<GeneLink> booleanNetwok,
@@ -135,7 +135,7 @@ namespace GeneAutomate.BDD
             }, path, false);
 
 
-            Trace.WriteLine("Finish run. Result is " + reach1);
+            logger.Info("Finish run. Result is " + reach1);
 
             return path;
         }
@@ -167,7 +167,7 @@ namespace GeneAutomate.BDD
 
            
 
-            Trace.WriteLine("init: " + systemBDD.initExpression);
+            logger.Info("init: " + systemBDD.initExpression);
         }
 
         private static Expression SetGoalsBasedOnAutomata(GeneNode automata)
@@ -212,7 +212,7 @@ namespace GeneAutomate.BDD
                 i++;
             });
 
-            Trace.WriteLine("Goal: " + goal1);
+            logger.Info("Goal: " + goal1);
             return goal1;
         }
 

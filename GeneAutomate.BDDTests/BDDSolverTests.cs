@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Models;
+using NLog;
 using PAT.Common.Classes.CUDDLib;
 using PAT.Common.Classes.Expressions.ExpressionClass;
 using PAT.Common.Classes.LTS;
@@ -17,6 +18,9 @@ namespace GeneAutomate.BDD.Tests
     [TestClass()]
     public class BDDSolverTests
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
         [TestMethod()]
         public void Test1Test()
         {
@@ -65,7 +69,7 @@ namespace GeneAutomate.BDD.Tests
             /*PrimitiveApplication.CombineProgramBlock(
             primitiveApplication1,
             primitiveApplication2);*/
-            Trace.WriteLine(primitiveApplication);
+            logger.Info(primitiveApplication);
 
             Transition trans1 = new Transition(new Event("a"), null,
                primitiveApplication,
@@ -109,13 +113,13 @@ namespace GeneAutomate.BDD.Tests
 
             CUDDNode initDD = CUDD.Function.Or(systemBDD.initExpression.TranslateBoolExpToBDD(encoder.model).GuardDDs);
 
-            Trace.WriteLine("init: " + systemBDD.initExpression);
+            logger.Info("init: " + systemBDD.initExpression);
 
             var u = 1;
 
             for (; u < 2; u++)
             {
-                Trace.WriteLine($"U is {u}");
+                logger.Info($"U is {u}");
                 //Define 2 goals
                 Expression goal1 = new PrimitiveApplication(PrimitiveApplication.EQUAL,
                         new Variable(varX), new IntConstant(3));
@@ -124,7 +128,7 @@ namespace GeneAutomate.BDD.Tests
 
                 //Encode 2 goals to BDD
                 CUDDNode goal1DD = CUDD.Function.Or(goal1.TranslateBoolExpToBDD(encoder.model).GuardDDs);
-                Trace.WriteLine("Goal: " + goal1);
+                logger.Info("Goal: " + goal1);
 
                 List<CUDDNode> path = new List<CUDDNode>();
 
@@ -141,7 +145,7 @@ namespace GeneAutomate.BDD.Tests
                     foreach (var cuddNode in path)
                     {
                         encoder.model.PrintAllVariableValue(cuddNode);
-                        Trace.WriteLine("after");
+                        logger.Info("after");
                         CUDD.Print.PrintMinterm(cuddNode);
                         //     CUDD.Print.PrintBDDTree(path);
                         int valueOfX = encoder.model.GetRowVarValue(cuddNode, varX);
@@ -178,7 +182,7 @@ namespace GeneAutomate.BDD.Tests
                 sb.AppendLine("goal2 is unreachable");
             }
             */
-            Trace.WriteLine(sb);
+            logger.Info(sb);
             encoder.model.Close();
 
         }

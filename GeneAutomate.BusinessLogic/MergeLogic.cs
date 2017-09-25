@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using GeneAutomate.Models;
 using Newtonsoft.Json;
 using GeneAutomate.BDD;
+using NLog;
 
 namespace GeneAutomate.BusinessLogic
 {
+
     public class MergeResultCache
     {
         public Dictionary<string, List<GeneNode>> AlreadySeenMerges = new Dictionary<string, List<GeneNode>>();
@@ -17,6 +19,9 @@ namespace GeneAutomate.BusinessLogic
 
     public class AutomataMergeLogic
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
         BooleanNetworkValidator validator = new BooleanNetworkValidator();
 
         MergeResultCache _cache = new MergeResultCache();
@@ -26,7 +31,7 @@ namespace GeneAutomate.BusinessLogic
         {
             var possibleMerges = GetMerges(automata1, automata2);
 
-            Trace.WriteLine($"All merge (include invalids) is {possibleMerges.Count}");
+            logger.Info($"All merge (include invalids) is {possibleMerges.Count}");
 
             var validMerges = new List<GeneNode>();
 
@@ -35,17 +40,17 @@ namespace GeneAutomate.BusinessLogic
                     // firstly check simple logic, and only after check with CUDD, because it's expensive
                     if (validator.IsValidAutomata(m, null, booleanNetwok) && IsBddValid(m, booleanNetwok))
                     {
-                        Trace.WriteLine($"Merge for {m.NodeName} is valid");
+                        logger.Info($"Merge for {m.NodeName} is valid");
                         validMerges.Add(m);
                     }
                     else
                     {
-                        Trace.WriteLine($"Merge for {m.Path()} is not valid");
+                        logger.Info($"Merge for {m.Path()} is not valid");
                     }
 
                 });
 
-            Trace.WriteLine($"Valid merges are {validMerges.Count}");
+            logger.Info($"Valid merges are {validMerges.Count}");
 
 
             return validMerges;
@@ -161,7 +166,7 @@ namespace GeneAutomate.BusinessLogic
         {
             validMerges.ForEach(a =>
             {
-                Trace.WriteLine($"{a.NodeName}\t{a.NodeLength}\t{a.Path()}");
+                logger.Info($"{a.NodeName}\t{a.NodeLength}\t{a.Path()}");
             });
         }
 
@@ -178,7 +183,7 @@ namespace GeneAutomate.BusinessLogic
             var key = $"{automata1.MergeName} ~ {automata2.MergeName} - {usePositiveAlgo}";
             if (KeyAlreadyInCache(automata1, automata2, key))
             {
-                Trace.WriteLine($"Already found {key} in cache");
+                logger.Info($"Already found {key} in cache");
                 return _cache.AlreadySeenMerges[key];
             }
 
@@ -322,9 +327,21 @@ namespace GeneAutomate.BusinessLogic
             {
                 last = current;
                 current = CreateValidLoopMerge(current, booleanNetwok);
+
+                LogLoop(node, current);
             }
 
             return last;
+        }
+
+        private static void LogLoop(GeneNode node, GeneNode current)
+        {
+            var builder = new StringBuilder();
+            if (current != null)
+            {
+                current.AppendPath(builder);
+            }
+            logger.Info($"Get value of loop for {node.NodeName}, value is {builder}");
         }
 
         private GeneNode FindLastNode(GeneNode node)

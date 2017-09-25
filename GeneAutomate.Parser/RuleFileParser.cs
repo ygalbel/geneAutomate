@@ -6,11 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Models;
+using NLog;
 
 namespace GeneAutomate.Parser
 {
     public class RuleFileParser
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
         public ParseRuleResponse ParseRules(string path, List<string> variables)
         {
             var lines = File.ReadLines(path);
@@ -183,7 +187,7 @@ namespace GeneAutomate.Parser
 
         private Condition CreateConditionFromSingleLine(string line, List<string> variables)
         {
-            Trace.WriteLine(line);
+            logger.Info(line);
             var splitted = line.Split(':');
             var conditionName = splitted[0].Trim().Substring(1); // line is like $Conditions1 so i skip $
             splitted = splitted[1].Split('{')[1].Split('}'); // todo: change to regex;
@@ -204,7 +208,7 @@ namespace GeneAutomate.Parser
                 }
                 else
                 {
-                    Trace.WriteLine("Skip " + conditionName);
+                    logger.Info("Skip " + conditionName);
                 }
             });
 

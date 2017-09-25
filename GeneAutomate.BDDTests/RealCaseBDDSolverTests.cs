@@ -5,12 +5,16 @@ using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
 using GeneAutomate.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NLog;
 
 namespace GeneAutomate.BDD.Tests
 {
     [TestClass]
     public class RealCaseBDDSolverTests
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
         [TestMethod]
         public void TestToyCaseBddSolver()
         {
@@ -63,7 +67,7 @@ namespace GeneAutomate.BDD.Tests
             {
                 var solver = new BDDSolver();
 
-                Trace.WriteLine("Start " + (i++));
+                logger.Info("Start " + (i++));
                 sos &= solver.IsValidPath(a.Value, res);
                 
             });

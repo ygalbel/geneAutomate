@@ -62,25 +62,47 @@ namespace GeneAutomate.Writer
         {
              
             HashSet<GeneNode> nodesVisited = new HashSet<GeneNode>();
+            Dictionary<string,string> Conditions = new Dictionary<string, string>();
             var z = currentCondition;
             string OneName = "";
+            bool stopVisit = false;
             geneNode.Visit(v =>
             {
-                if (!nodesVisited.Contains(v) && v != null && v.CurrentCondition != null && v.CurrentCondition.Any())
+                if (!nodesVisited.Contains(v) && v != null && 
+                    v.CurrentCondition != null && 
+                    v.CurrentCondition.Any() &&
+                    !stopVisit)
                 {
                     //$Conditions1 := { S1 = 0 and S2 = 1};
 
                     var conditionName = $"$Condition{z}";
+                    var joinCondition = JoinCondition(v.CurrentCondition);
+
+                    if (Conditions.ContainsKey(joinCondition))
+                    {
+                        conditionName = Conditions[joinCondition];
+                    }
+                    else
+                    {
+                        Conditions.Add(joinCondition, conditionName);
+                    }
+
+
                     observationBuilder.AppendLine(
-                        $"{conditionName} := {JoinCondition(v.CurrentCondition)}");
+                        $"{conditionName} := {joinCondition}");
 
                     var connector = (v.Transitions == null || !v.Transitions.Any()) ? "" : " and ";
 
                     var name = CreateName(v.NodeName, alreadyTakenNames, out OneName);
 
-
-
                     predicatesBuilder.AppendLine($"{name} |= {conditionName} {connector}");
+
+                    if (v.IsLoopFixedPoint())
+                    {
+                        predicatesBuilder.AppendLine($"fixpoint({name})");
+                        stopVisit = true;
+                    }
+
                     z++;
 
                     nodesVisited.Add(v);
@@ -117,7 +139,7 @@ namespace GeneAutomate.Writer
                 builder.Append("{ ");
             }
 
-            condition.ToList().ForEach(f =>
+            condition.OrderBy(a => a.Key).ToList().ForEach(f =>
             {
 
                 if (f.Value.HasValue)
@@ -125,7 +147,7 @@ namespace GeneAutomate.Writer
                     var val = f.Value.Value ? "1" : "0";
                     builder.Append($"{f.Key} = {val}");
 
-                    if (f.Key != condition.Last().Key)
+                    if (f.Key != condition.Last(a => a.Value.HasValue).Key)
                     {
                         builder.Append(" and ");
                     }

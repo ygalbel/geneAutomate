@@ -7,12 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Models;
+using NLog;
 
 namespace GeneAutomate.Writer.Tests
 {
     [TestClass()]
     public class RuleFileWriterTests
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
         [TestMethod()]
         public void WriteFileTestSingleTakeRightTime()
         {
@@ -32,7 +36,7 @@ namespace GeneAutomate.Writer.Tests
 
 
             Assert.IsTrue(txt.Contains("#Experiment1[3] |= $Condition0"));
-            Trace.WriteLine(txt);
+            logger.Info(txt);
         }
 
         [TestMethod()]
@@ -70,7 +74,7 @@ namespace GeneAutomate.Writer.Tests
 
             Assert.IsTrue(txt.Contains("#Experiment1[3] |= $Condition0"));
             Assert.IsTrue(txt.Contains("#Experiment1[8] |= $Condition1"));
-            Trace.WriteLine(txt);
+            logger.Info(txt);
         }
     }
 }

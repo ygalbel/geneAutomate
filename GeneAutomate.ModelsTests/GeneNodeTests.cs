@@ -14,8 +14,8 @@ namespace GeneAutomate.Models.Tests
         [TestMethod()]
         public void TestReturnEmptyInCaseOfnull()
         {
-            var merged = new GeneNode() {MergeName = null}.GetAllMergedExperiment();
-            Assert.AreEqual(null,merged);
+            var merged = new GeneNode() { MergeName = null }.GetAllMergedExperiment();
+            Assert.AreEqual(null, merged);
         }
 
         [TestMethod()]
@@ -32,6 +32,80 @@ namespace GeneAutomate.Models.Tests
             var merged = new GeneNode() { MergeName = "Experiment_0 ~ Experiment_2" }.GetAllMergedExperiment();
             Assert.AreEqual(1, merged.Count);
             Assert.AreEqual("Experiment", merged.First());
+        }
+
+        [TestMethod()]
+        public void IsLoopFixedPointSimplePositiveTest()
+        {
+            var node1 = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "A" , true}, {"B", false} },
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition() { Node = new GeneNode()
+                    {
+                        CurrentCondition = new Condition() { { "A", true}, { "B", false} }
+                    }}
+                }
+            };
+
+            Assert.IsTrue(node1.IsLoopFixedPoint());
+        }
+
+
+        [TestMethod()]
+        public void IsLoopFixedPointSimpleNegativeTest()
+        {
+            var node1 = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "A", true }, { "B", false } },
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition() { Node = new GeneNode()
+                    {
+                        CurrentCondition = new Condition() { { "A", true}, { "B", true} }
+                    }}
+                }
+            };
+
+            Assert.IsFalse(node1.IsLoopFixedPoint());
+        }
+
+        [TestMethod()]
+        public void IsLoopFixedPointMissingKeyNegativeTest()
+        {
+            var node1 = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "A", true }, { "B", false } },
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition() { Node = new GeneNode()
+                    {
+                        CurrentCondition = new Condition() { { "A", true} }
+                    }}
+                }
+            };
+
+            Assert.IsFalse(node1.IsLoopFixedPoint());
+        }
+
+
+        [TestMethod()]
+        public void IsLoopFixedPointMissingKeyChildNegativeTest()
+        {
+            var node1 = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "A", true } },
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition() { Node = new GeneNode()
+                    {
+                        CurrentCondition = new Condition() { { "A", true}, { "B", false } }
+                    }}
+                }
+            };
+
+            Assert.IsFalse(node1.IsLoopFixedPoint());
         }
     }
 }

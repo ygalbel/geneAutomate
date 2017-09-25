@@ -78,6 +78,20 @@ namespace GeneAutomate.Models
         {
             return NodeName.Split('_').FirstOrDefault()?.Replace('!', ' ').Trim();
         }
+
+        public bool IsLoopFixedPoint()
+        {
+            if (Transitions == null || !Transitions.Any())
+            {
+                return true;
+            }
+
+            var nextCondition = Transitions.First().Node.CurrentCondition;
+
+            return CurrentCondition.Count == nextCondition.Count &&
+                CurrentCondition.All(a => nextCondition.ContainsKey(a.Key) && nextCondition[a.Key] == a.Value) 
+                   && Transitions.First().Node.IsLoopFixedPoint();
+        }
     }
 
     public class GeneTransition

@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 using GeneAutomate.Parser;
 using GeneAutomate.Writer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NLog;
 
 namespace GeneAutomate.ParserTests
 {
     [TestClass]
     public class FullFileParserTests
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
         [TestMethod]
         public void TestCanParseToyChangedCase()
         {
@@ -40,17 +44,17 @@ namespace GeneAutomate.ParserTests
 
             var txt = new RuleFileWriter().CreateSpecString(res.MergeObjects);
 
-            Trace.WriteLine(txt);
+            logger.Info(txt);
 
         }
 
         [TestMethod]
-        public void TestCanParsePluripotencyOriginalCase()
+        public void TestCanParsePluripotencySmallCase()
         {
             var parser = new FileParser();
 
             var data = new ParseRuleResponse();
-            var res = parser.ParseFiles($"pluripotency.net", $"pluripotency.spec");
+            var res = parser.ParseFiles($"pluripotency_small.net", $"pluripotency_small.spec");
 
 
 
@@ -58,7 +62,7 @@ namespace GeneAutomate.ParserTests
 
             var txt = new RuleFileWriter().CreateSpecString(res.MergeObjects);
 
-            Trace.WriteLine(txt);
+            logger.Info(txt);
 
         }
 
