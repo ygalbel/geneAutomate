@@ -15,7 +15,9 @@ namespace GeneAutomate.Writer
            var observationBuilder = new StringBuilder();
 
             int num = 0;
-            CreateSpecString(geneNode, predicatesBuilder, observationBuilder, ref num);
+            var observationNames = new HashSet<string>();
+
+            CreateSpecString(geneNode, predicatesBuilder, observationBuilder,  observationNames, ref num);
 
             var builder = new StringBuilder();
             builder.AppendLine(observationBuilder.ToString());
@@ -31,11 +33,11 @@ namespace GeneAutomate.Writer
             var observationBuilder = new StringBuilder();
 
             int num = 0;
-
+            var alreadyTakenName = new HashSet<string>();
             for (int index = 0; index < geneNodes.Count; index++)
             {
                 var geneNode = geneNodes[index];
-                CreateSpecString(geneNode, predicatesBuilder, observationBuilder, ref num);
+                CreateSpecString(geneNode, predicatesBuilder, observationBuilder,alreadyTakenName, ref num);
 
                 // last one
                 if (index == geneNodes.Count - 1)
@@ -56,11 +58,12 @@ namespace GeneAutomate.Writer
             return builder.ToString();
         }
 
-        public void CreateSpecString(GeneNode geneNode, StringBuilder predicatesBuilder, StringBuilder observationBuilder, ref int currentCondition)
+        public void CreateSpecString(GeneNode geneNode, StringBuilder predicatesBuilder, StringBuilder observationBuilder, HashSet<string> alreadyTakenNames, ref int currentCondition)
         {
              
             HashSet<GeneNode> nodesVisited = new HashSet<GeneNode>();
             var z = currentCondition;
+            string OneName = "";
             geneNode.Visit(v =>
             {
                 if (!nodesVisited.Contains(v) && v != null && v.CurrentCondition != null && v.CurrentCondition.Any())
@@ -72,7 +75,12 @@ namespace GeneAutomate.Writer
                         $"{conditionName} := {JoinCondition(v.CurrentCondition)}");
 
                     var connector = (v.Transitions == null || !v.Transitions.Any()) ? "" : " and ";
-                    predicatesBuilder.AppendLine($"{CreateName(v.NodeName)} |= {conditionName} {connector}");
+
+                    var name = CreateName(v.NodeName, alreadyTakenNames, out OneName);
+
+
+
+                    predicatesBuilder.AppendLine($"{name} |= {conditionName} {connector}");
                     z++;
 
                     nodesVisited.Add(v);
@@ -81,12 +89,21 @@ namespace GeneAutomate.Writer
             });
 
             currentCondition = z;
+            alreadyTakenNames.Add(OneName);
         }
 
-        private string CreateName(string objNodeName)
+        private string CreateName(string objNodeName, HashSet<string> alreadyTakenNames, out string onlyName)
         {
             var name = objNodeName.Split('_')[0];
-            var time = objNodeName.Split('_')[1].Split('^')[0].Trim();
+
+            while (alreadyTakenNames.Contains(name))
+            {
+                name = name + '0';
+            }
+
+            onlyName = name;
+
+            var time = objNodeName.Split('_')[1].Split('^', '~')[0].Trim();
 
             return $"#{name}[{time}]";
         }

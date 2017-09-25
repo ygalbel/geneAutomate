@@ -72,7 +72,7 @@ namespace GeneAutomate.Models
             {
                 return null;
             }
-            return MergeName.Split('~').Select(a => a.Replace('!', ' ').Trim()).Distinct().ToList();
+            return MergeName.Split('~', '^').Select(a => a.Replace('!', ' ').Trim()).Distinct().ToList();
         }
         public string GetExperimentName()
         {
