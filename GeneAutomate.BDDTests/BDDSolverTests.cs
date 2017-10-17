@@ -20,6 +20,23 @@ namespace GeneAutomate.BDD.Tests
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        private TestContext m_testContext;
+
+        public TestContext TestContext
+
+        {
+
+            get { return m_testContext; }
+
+            set { m_testContext = value; }
+
+        }
+
+        [TestInitialize]
+        public void TestInit()
+        {
+            logger.Info($"start test {TestContext.TestName}");
+        }
 
         [TestMethod()]
         public void Test1Test()
@@ -357,6 +374,50 @@ namespace GeneAutomate.BDD.Tests
         }
 
         [TestMethod]
+        public void TestPositiveConnectionCantPassWithNegativeValue()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() {  },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true}},
+                            NodeName = "n1",
+                            Transitions = new List<GeneTransition>
+                            {
+                                new GeneTransition()
+                                {
+                                    Node = new GeneNode()
+                                    {
+                                        CurrentCondition =new Condition() {{"a", false}},
+                                        NodeName = "n2",
+                                      
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = true},
+                //new GeneLink() {From = "b", To = "b", IsPositive = false}
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
         public void TestCaseWithOneParametersAndTwoStepsIn_Time_2_BDDSolverShouldPass()
         {
             var solver = new BDDSolver();
@@ -401,6 +462,135 @@ namespace GeneAutomate.BDD.Tests
 
 
         [TestMethod]
+        public void TestCaseWithOneParameterAndTwoStepsBDDSolverShouldFailedErrorInMiddle()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", true } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true} },
+                            NodeName = "n1",
+                            Transitions = new List<GeneTransition>()
+                            {
+                                new GeneTransition()
+                                {
+                                    Node = new GeneNode()
+                                    {
+                                        CurrentCondition = new Condition() { {"a", false }},
+                                        NodeName = "n2",
+                                       
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = false},
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestCaseWithOneParameterAndTwoStepsSameAsAboveStartFromNegative()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", false } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", false} },
+                            NodeName = "n1",
+                            Transitions = new List<GeneTransition>()
+                            {
+                                new GeneTransition()
+                                {
+                                    Node = new GeneNode()
+                                    {
+                                        CurrentCondition = new Condition() { {"a", true }},
+                                        NodeName = "n2",
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = false},
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestCaseWithOneParameterAndTwoStepsBDDSolverShouldFailedErrorInLast()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", true } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", false} },
+                            NodeName = "n1",
+                            Transitions = new List<GeneTransition>()
+                            {
+                                new GeneTransition()
+                                {
+                                    Node = new GeneNode()
+                                    {
+                                        CurrentCondition = new Condition() { {"a", false }},
+                                        NodeName = "n2",
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = false},
+            };
+
+            var res = solver.IsValidPath(automata, booleanNetwork);
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
         public void TestCaseWithTwoParametersAndTwoStepsBDDSolverShouldFailed()
         {
             var solver = new BDDSolver();
@@ -422,9 +612,20 @@ namespace GeneAutomate.BDD.Tests
                                 new GeneTransition()
                                 {
                                     Node = new GeneNode()
-                                    {                                           // here b is wrong
-                                        CurrentCondition = new Condition() { {"a", true }, { "b", true} },
-                                        NodeName = "n2"
+                                    {                                           
+                                        CurrentCondition = new Condition() { {"a", true }, { "b", false} },
+                                        NodeName = "n2",
+                                        Transitions = new List<GeneTransition>()
+                                        {
+                                            new GeneTransition()
+                                            {
+                                                Node = new GeneNode()
+                                                {
+                                                    NodeName = "n3",                               // here b is wrong
+                                                    CurrentCondition = new Condition() { {"a", true }, { "b", false} },
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -494,18 +695,18 @@ namespace GeneAutomate.BDD.Tests
                         {
                             CurrentCondition = new Condition() {{"a", false}, {"b", true}, {"c", true} },
                             NodeName = "n1",
-                            Transitions = new List<GeneTransition>()
-                            {
-                                new GeneTransition()
-                                {
-                                   Node = new GeneNode()
-                                    {
-                                        NodeName = "n2",
-                                        CurrentCondition = new Condition() { { "a", true }, { "b", false }, {"c", false} }
+                            //Transitions = new List<GeneTransition>()
+                            //{
+                            //    new GeneTransition()
+                            //    {
+                            //       Node = new GeneNode()
+                            //        {
+                            //            NodeName = "n2",
+                            //            CurrentCondition = new Condition() { { "a", true }, { "b", false }, {"c", false} }
 
-                                    }
-                                }
-                            }
+                            //        }
+                            //    }
+                            //}
                         }
                     }
                 }
