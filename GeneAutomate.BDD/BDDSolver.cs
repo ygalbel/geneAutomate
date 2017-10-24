@@ -21,12 +21,24 @@ namespace GeneAutomate.BDD
 
         private static object locker = new object();
 
-        public bool IsValidPath(GeneNode automata, List<GeneLink> booleanNetwok)
+        public bool IsValidPath(GeneNode automata, List<GeneLink> booleanNetwok, Dictionary<string, List<int>> availableFunctions = null)
         {
             lock (locker)
             {
-                var tempAutomata = automata;
-
+                var tempAutomata = //automata;
+                    new GeneNode()
+                {
+                    NodeName = "Start",
+                    CurrentCondition = new Condition(),
+                    Transitions = new List<GeneTransition>()
+                    {
+                        new GeneTransition()
+                        {
+                            Node = automata
+                        }
+                    }
+                };
+                
                 var letters = new List<string>();
 
                 int z = 0;
@@ -34,7 +46,7 @@ namespace GeneAutomate.BDD
 
                 tempAutomata.GetAllConditionLetters(letters);
 
-                letters = letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => FormatParameter(l, n))).ToList();
+                letters = letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => Formater.FormatParameter(l, n))).ToList();
 
                 logger.Info(tempAutomata.NodeLength + 1);
 
@@ -58,26 +70,12 @@ namespace GeneAutomate.BDD
 
                 lts.InitialState = states[0];
 
-                var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok, tempAutomata.NodeLength - 1);
-
-                //// init is only based on first condition
-                //// that's why here their not "visit"
-                //automata.CurrentCondition.ToList()
-                //        .Where(f => f.Value.HasValue).ToList().ForEach(f =>
-                //        {
-                //            Expression value = Value(f);
-
-                //            var formatParameter = FormatParameter(f.Key, 0);
-                //            seq = new  Sequence(seq,
-                //                    new PrimitiveApplication(PrimitiveApplication.EQUAL,
-                //                        new Variable(formatParameter), value));
-                //        });
-
+                var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok, tempAutomata.NodeLength - 1, availableFunctions);
 
                 logger.Info("Assignments: " + seq);
 
-                var trans1 = 
-                    new Transition(new Event("a"), null, seq, 
+                var trans1 =
+                    new Transition(new Event("a"), null, seq,
                     states[0], states[1]);
 
                 lts.Transitions.Add(trans1);
@@ -85,8 +83,7 @@ namespace GeneAutomate.BDD
                 logger.Info(lts);
                 AutomataBDD systemBDD = lts.Encode(encoder);
 
-                // init is time 0
-
+                systemBDD.PrintTransition();
                 CUDDNode initDD = CUDD.Function.Or(
                     systemBDD.initExpression.TranslateBoolExpToBDD(encoder.model).GuardDDs);
 
@@ -104,38 +101,67 @@ namespace GeneAutomate.BDD
 
         }
 
-        private static string FormatParameter(string f, int i)
-        {
-            return $"{f.Replace('(', '_').Replace(')', '_')}_{i}";
-        }
 
         private static Expression CreateExpressionsFromBooleanNetwork(List<GeneLink> booleanNetwok,
-                                                                        int depth)
+                                                                        int depth,
+                                                                        Dictionary<string, List<int>> availableFunctions)
         {
             Expression seq = null;
 
+            var toDictionary = booleanNetwok.GroupBy(a => a.To);
+
             for (int i = 0; i < depth; i++)
             {
-                // filter optional connections
-                booleanNetwok.Where(s => !s.IsOptional).ToList().ForEach(b =>
+
+                var ass = CreateFunctionApplication(availableFunctions, toDictionary, i);
+
+                if (seq == null)
                 {
-                    var ass = CreateAssignment(b, i);
+                    seq = ass;
+                }
+                else
+                {
+                    seq = new Sequence(seq,
+                        ass);
+                }
+            };
 
-                    if (seq == null)
-                    {
-                        seq = ass;
-                    }
-                    else
-                    {
-                        seq = new Sequence(seq,
-                            ass);
-                    }
-                });
-            }
 
-            
 
             return seq;
+        }
+
+        private static Assignment CreateFunctionApplication(Dictionary<string, List<int>> availableFunctions, IEnumerable<IGrouping<string, GeneLink>> toDictionary, int i)
+        {
+            Assignment res = null;
+
+            toDictionary.ToList().ForEach(ff =>
+            {
+                PrimitiveApplication ass = null;
+                var to = ff.Key;
+                var froms = ff.Where(a => !a.IsOptional).ToList();
+
+                // can be null!!
+
+                if (availableFunctions == null || !availableFunctions.ContainsKey(to))
+                {
+                    res = CreateAssignment(ff.FirstOrDefault(), i);
+                }
+                else
+                {
+                    
+                    var availableFunc = availableFunctions[to];
+                    var funcAssignmentHelper = new FuncAssignmentHelper();
+
+                    availableFunc.ForEach(f => { ass = funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f); });
+
+                    var toFormatted = Formater.FormatParameter(to, i + 1);
+
+                    res = new Assignment(toFormatted, ass);
+                }
+            });
+
+            return res;
         }
 
         private static List<CUDDNode> IsExistPath(Expression goal1, BDDEncoder encoder,
@@ -178,7 +204,7 @@ namespace GeneAutomate.BDD
             }
 
             int i = 0;
-            
+
 
             // init is only based on first condition
             // that's why here their not "visit"
@@ -187,20 +213,17 @@ namespace GeneAutomate.BDD
                 {
                     Expression value = Value(f);
 
-                    var formatParameter = FormatParameter(f.Key, i);
+                    var formatParameter = Formater.FormatParameter(f.Key, i);
                     handledLetters.Add(formatParameter);
-                    systemBDD.initExpression = 
+                    var primitiveApplication = BddHelper.SetBooleanValue(i, f.Value.Value, f.Key);
+
+                    systemBDD.initExpression =
                     new PrimitiveApplication(PrimitiveApplication.AND,
                             systemBDD.initExpression,
-                            new PrimitiveApplication(PrimitiveApplication.EQUAL,
-                                new Variable(formatParameter), value));
+                            primitiveApplication);
                 });
             i++;
-            ;
 
-
-   
-            
             logger.Info("init: " + systemBDD.initExpression);
         }
 
@@ -228,9 +251,8 @@ namespace GeneAutomate.BDD
                     .ForEach(
                         f =>
                         {
-                            var primitiveApplication = new PrimitiveApplication(PrimitiveApplication.EQUAL,
-                                new Variable(FormatParameter(f.Key, i)),
-                                new BoolConstant(f.Value.Value));
+                            var primitiveApplication =
+                                BddHelper.SetBooleanValue(i, f.Value.Value, f.Key);
 
                             if (goal1 == null)
                             {
@@ -261,7 +283,7 @@ namespace GeneAutomate.BDD
             {
                 CUDD.Print.PrintMinterm(cuddNode);
                 //     CUDD.Print.PrintBDDTree(path);
-
+                
                 encoder.model.PrintAllVariableValue(cuddNode);
                 letters.ForEach(l =>
                     {
@@ -269,14 +291,20 @@ namespace GeneAutomate.BDD
                         sb.AppendLine(l + " = " + valueOfX);
                     }
                 );
+
+                int v = encoder.model.GetRowVarValue(cuddNode, "#state#0");
+                sb.AppendLine("#state#0" + " = " + v);
+
+                int v1 = encoder.model.GetRowVarValue(cuddNode, "#event");
+                sb.AppendLine("#event" + " = " + v1);
             }
         }
 
         private static Assignment CreateAssignment(GeneLink b, int i)
         {
             Assignment ass;
-            var from = FormatParameter(b.From, i);
-            var to = FormatParameter(b.To, i + 1);
+            var from = Formater.FormatParameter(b.From, i);
+            var to = Formater.FormatParameter(b.To, i + 1);
 
             if (b.IsPositive)
             {

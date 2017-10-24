@@ -15,12 +15,121 @@ using PAT.Common.Classes.SemanticModels.LTS.BDD;
 
 namespace GeneAutomate.BDD.Tests
 {
-    [TestClass()]
-    public class BDDSolverTests
+    [TestClass]
+    public class FunctionBDDSolverTests : AbstractBddTest
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        [TestInitialize]
+        public void TestInit()
+        {
+            base.TestInit();
+        }
 
-        private TestContext m_testContext;
+
+        [TestMethod]
+        public void TestAndFunctionPositive()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", true }, {"b", true} },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true}},
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = true},
+                new GeneLink() {From = "b", To = "a", IsPositive = true}
+            };
+
+            var availableFunctions = new Dictionary<string, List<int>>() { {"a", new List<int>() {0} } };
+            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestAndFunctionNegativeCase1()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", false }, { "b", true } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true}},
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = true},
+                new GeneLink() {From = "b", To = "a", IsPositive = true}
+            };
+
+            var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { 0 } } };
+            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestAndFunctionNegativeCase2()
+        {
+            var solver = new BDDSolver();
+
+            var automata = new GeneNode()
+            {
+                CurrentCondition = new Condition() { { "a", true }, { "b", false } },
+                NodeName = "n0",
+                Transitions = new List<GeneTransition>()
+                {
+                    new GeneTransition()
+                    {
+                        Node = new GeneNode()
+                        {
+                            CurrentCondition = new Condition() {{"a", true}},
+                            NodeName = "n1"
+                        }
+                    }
+                }
+            };
+
+            var booleanNetwork = new List<GeneLink>()
+            {
+                new GeneLink() {From = "a", To = "a", IsPositive = true},
+                new GeneLink() {From = "b", To = "a", IsPositive = true},
+            };
+
+            var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { 0 } } };
+            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+            Assert.IsFalse(res);
+        }
+    }
+
+    public abstract class AbstractBddTest
+    {
+        protected static Logger logger = LogManager.GetCurrentClassLogger();
+
+        protected TestContext m_testContext;
 
         public TestContext TestContext
 
@@ -32,11 +141,22 @@ namespace GeneAutomate.BDD.Tests
 
         }
 
-        [TestInitialize]
         public void TestInit()
         {
             logger.Info($"start test {TestContext.TestName}");
         }
+
+    }
+
+    [TestClass()]
+    public class BDDSolverTests : AbstractBddTest
+    {
+        [TestInitialize]
+        public void TestInit()
+        {
+            base.TestInit();
+        }
+
 
         [TestMethod()]
         public void Test1Test()
@@ -81,7 +201,8 @@ namespace GeneAutomate.BDD.Tests
                 update = new Sequence(update, new Assignment(model.eventParameterVariables[i], exps[i]));
             }
              */
-            var primitiveApplication = new Sequence(primitiveApplication1, primitiveApplication2);
+            var primitiveApplication = new Sequence(primitiveApplication1, 
+                primitiveApplication2);
 
             /*PrimitiveApplication.CombineProgramBlock(
             primitiveApplication1,
@@ -93,11 +214,15 @@ namespace GeneAutomate.BDD.Tests
                state1,
                state2);
 
-            Expression assignment = new Assignment(varX, new PrimitiveApplication(PrimitiveApplication.PLUS,
+            Expression assignment = 
+                new Assignment(varX, new PrimitiveApplication(PrimitiveApplication.PLUS,
                 new Variable(varX),
                 new IntConstant(2)));
 
-            var secAssignment = new Assignment(varY, new PrimitiveApplication(PrimitiveApplication.PLUS, new Variable(varY), new WildConstant()));
+            var secAssignment = 
+                new Assignment(varY, 
+                new PrimitiveApplication(PrimitiveApplication.PLUS, 
+                new Variable(varY), new WildConstant()));
 
 
 

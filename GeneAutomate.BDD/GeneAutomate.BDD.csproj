@@ -49,6 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BDDSolver.cs" />
+    <Compile Include="BooleanBdd.cs" />
+    <Compile Include="Formater.cs" />
+    <Compile Include="FuncAssignmentHeleper.cs" />
+    <Compile Include="FuncAssignmentHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
