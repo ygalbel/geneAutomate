@@ -161,6 +161,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod()]
         public void Test1Test()
         {
+            
             var sb = new StringBuilder();
             string varX = "x";
             string varY = "y";
@@ -218,6 +219,8 @@ namespace GeneAutomate.BDD.Tests
                 new Assignment(varX, new PrimitiveApplication(PrimitiveApplication.PLUS,
                 new Variable(varX),
                 new IntConstant(2)));
+
+            logger.Info("Assignments: " + assignment);
 
             var secAssignment = 
                 new Assignment(varY, 
