@@ -16,7 +16,7 @@ using PAT.Common.Classes.SemanticModels.LTS.BDD;
 namespace GeneAutomate.BDD.Tests
 {
     [TestClass]
-    public class FunctionBDDSolverTests : AbstractBddTest
+    public class FunctionBddSolverTests : AbstractBddTest
     {
         [TestInitialize]
         public void TestInit()

@@ -72,7 +72,7 @@ namespace GeneAutomate.BDD
                 var state1 = lts.AddState();
                 states.Add(state1);
                 var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok,
-                        availableFunctions, depth);
+                        availableFunctions, depth, Mode.Assignment);
                 var goal2 = CreateExpressionBasedOnAutomata(tempAutomata);
 
                 seq = new Sequence(seq, goal2);
@@ -96,8 +96,8 @@ namespace GeneAutomate.BDD
                 var geneTransition = tempAutomata;
                 InitInitialState(geneTransition, systemBDD, letters);
                 var goal = SetGoalsBasedOnAutomata(geneTransition);
-                var goal3 = SetGoalBasedOnFunction(booleanNetwok,
-                        availableFunctions, depth);
+                var goal3 = CreateExpressionsFromBooleanNetwork(booleanNetwok,
+                        availableFunctions, depth, Mode.Equal);
 
                 goal = new PrimitiveApplication(PrimitiveApplication.AND, goal, goal3);
                 logger.Info("Goal: " + goal);
@@ -112,7 +112,7 @@ namespace GeneAutomate.BDD
 
 
         private static Expression CreateExpressionsFromBooleanNetwork(List<GeneLink> booleanNetwok,
-                                                                        Dictionary<string, List<int>> availableFunctions, int depth)
+                                                                        Dictionary<string, List<int>> availableFunctions, int depth, Mode mode)
         {
             Expression seq = null;
 
@@ -120,22 +120,14 @@ namespace GeneAutomate.BDD
 
             for (int i = 0; i < depth - 1; i++)
             {
-                var ass = CreateFunctionApplication(availableFunctions, toDictionary, i);
+                var ass = CreateFunctionApplication(availableFunctions, toDictionary, i, mode);
 
-                if (seq == null)
-                {
-                    seq = ass;
-                }
-                else
-                {
-                    seq = new Sequence(seq,
-                        ass);
-                }
-
+                seq = AddIfExist(seq, ass, mode);
             }
 
             return seq;
         }
+
 
         private static Expression SetGoalBasedOnFunction(List<GeneLink> booleanNetwok,
                                                                         Dictionary<string, List<int>> availableFunctions, int depth)
@@ -185,16 +177,20 @@ namespace GeneAutomate.BDD
                     }
                 });
 
-                
+
 
             }
 
             return seq;
         }
 
-        private static Assignment CreateFunctionApplication(Dictionary<string, List<int>> availableFunctions, IEnumerable<IGrouping<string, GeneLink>> toDictionary, int i)
+        private static Expression CreateFunctionApplication(
+            Dictionary<string, List<int>> availableFunctions,
+            IEnumerable<IGrouping<string, GeneLink>> toDictionary,
+            int i,
+            Mode mode)
         {
-            Assignment res = null;
+            Expression res = null;
 
             toDictionary.ToList().ForEach(ff =>
             {
@@ -206,7 +202,7 @@ namespace GeneAutomate.BDD
 
                 if (availableFunctions == null || !availableFunctions.ContainsKey(to))
                 {
-                    res = CreateAssignment(ff.FirstOrDefault(), i);
+                    res = AddIfExist(res, CreateAssignment(ff.FirstOrDefault(), i, GetFunction(mode)), mode);
                 }
                 else
                 {
@@ -214,16 +210,61 @@ namespace GeneAutomate.BDD
                     var availableFunc = availableFunctions[to];
                     var funcAssignmentHelper = new FuncAssignmentHelper();
 
-                    availableFunc.ForEach(f => { ass = funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f); });
+                    availableFunc.ForEach(f =>
+                    {
+                        ass =
+                            funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f);
+                    });
 
                     var toFormatted = Formater.FormatParameter(to, i + 1);
 
-                    res = new Assignment(toFormatted, ass);
+
+                    res = CreateAssignment(toFormatted, ass);
                 }
             });
 
             return res;
         }
+
+        private static Expression AddIfExist(Expression res, Expression createAssignment, Mode mode)
+        {
+            if (res == null)
+            {
+                return createAssignment;
+            }
+
+            if (mode == Mode.Equal)
+            {
+                res = new PrimitiveApplication(PrimitiveApplication.AND, res, createAssignment);
+            }
+            else
+            {
+                res = new Sequence(res, createAssignment);
+            }
+
+            return res;
+        }
+
+        private static Func<string, Expression, Expression> GetFunction(Mode mode)
+        {
+
+            return mode == Mode.Assignment ? AssignmentFunction : EqualityFunction;
+        }
+
+
+
+        private static Expression CreateEquality(string toFormatted, Expression ass)
+        {
+            return new PrimitiveApplication(PrimitiveApplication.EQUAL, new Variable(toFormatted), ass);
+        }
+
+        private static Assignment CreateAssignment(string toFormatted, Expression ass)
+        {
+            return new Assignment(toFormatted, ass);
+        }
+
+
+
 
         private static List<CUDDNode> IsExistPath(Expression goal1, BDDEncoder encoder,
             List<CUDDNode> path,
@@ -330,7 +371,7 @@ namespace GeneAutomate.BDD
             });
 
 
-            
+
             return goal1;
         }
 
@@ -409,9 +450,10 @@ namespace GeneAutomate.BDD
             }
         }
 
-        private static Assignment CreateAssignment(GeneLink b, int i)
+        private static Expression CreateAssignment(GeneLink b, int i, 
+            Func<string, Expression, Expression> accumulatorFunc)
         {
-            Assignment ass;
+            Expression ass;
             var from = Formater.FormatParameter(b.From, i);
             var to = Formater.FormatParameter(b.To, i + 1);
 
@@ -420,23 +462,42 @@ namespace GeneAutomate.BDD
                 //ass = new Assignment(b.To,
                 //    new Variable(b.From));
 
-                ass = new Assignment(to,
-                   new PrimitiveApplication(
-                       PrimitiveApplication.AND, new Variable(from)));
+                ass = accumulatorFunc.Invoke(to, new Variable(from));
             }
             else
             {
-                ass = new Assignment(to,
-                    new PrimitiveApplication(
-                        PrimitiveApplication.AND, new PrimitiveApplication(nOT, new Variable(from))));
+                
+                ass = accumulatorFunc.Invoke(to,
+                      new PrimitiveApplication(
+                                PrimitiveApplication.AND,new PrimitiveApplication(nOT, new Variable(from))));
+
+                //ass = new PrimitiveApplication(PrimitiveApplication.EQUAL,
+                //            new Variable(to),
+                //            new PrimitiveApplication(
+                //                PrimitiveApplication.AND, new PrimitiveApplication(nOT, new Variable(from))));
             }
             return ass;
         }
+
+
+        private static Func<string, Expression, Expression> AssignmentFunction = (to, from) =>
+                  new Assignment(to,from);
+
+
+        private static Func<string, Expression, Expression> EqualityFunction = (to, from) =>
+                new PrimitiveApplication(PrimitiveApplication.EQUAL,
+                    new Variable(to), from);
 
         private static Expression Value(KeyValuePair<string, bool?> f)
         {
             return new BoolConstant(f.Value.Value);
         }
+    }
+
+    public enum Mode
+    {
+        Assignment,
+        Equal
     }
 }
 
