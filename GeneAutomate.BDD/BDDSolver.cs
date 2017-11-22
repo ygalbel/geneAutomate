@@ -218,8 +218,17 @@ namespace GeneAutomate.BDD
 
                     var toFormatted = Formater.FormatParameter(to, i + 1);
 
+                    if (mode == Mode.Equal)
+                    {
+                        res = new PrimitiveApplication(PrimitiveApplication.EQUAL, new Variable(toFormatted),
+                                new PrimitiveApplication(PrimitiveApplication.AND, ass));
+                    }
+                    else
+                    {
+                        
+                        res = GetFunction(mode).Invoke(toFormatted, ass);
+                    }
 
-                    res = CreateAssignment(toFormatted, ass);
                 }
             });
 

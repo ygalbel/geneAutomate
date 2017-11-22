@@ -15,116 +15,6 @@ using PAT.Common.Classes.SemanticModels.LTS.BDD;
 
 namespace GeneAutomate.BDD.Tests
 {
-    [TestClass]
-    public class FunctionBddSolverTests : AbstractBddTest
-    {
-        [TestInitialize]
-        public void TestInit()
-        {
-            base.TestInit();
-        }
-
-
-        [TestMethod]
-        public void TestAndFunctionPositive()
-        {
-            var solver = new BDDSolver();
-
-            var automata = new GeneNode()
-            {
-                CurrentCondition = new Condition() { { "a", true }, {"b", true} },
-                NodeName = "n0",
-                Transitions = new List<GeneTransition>()
-                {
-                    new GeneTransition()
-                    {
-                        Node = new GeneNode()
-                        {
-                            CurrentCondition = new Condition() {{"a", true}},
-                            NodeName = "n1"
-                        }
-                    }
-                }
-            };
-
-            var booleanNetwork = new List<GeneLink>()
-            {
-                new GeneLink() {From = "a", To = "a", IsPositive = true},
-                new GeneLink() {From = "b", To = "a", IsPositive = true}
-            };
-
-            var availableFunctions = new Dictionary<string, List<int>>() { {"a", new List<int>() {0} } };
-            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
-            Assert.IsTrue(res);
-        }
-
-        [TestMethod]
-        public void TestAndFunctionNegativeCase1()
-        {
-            var solver = new BDDSolver();
-
-            var automata = new GeneNode()
-            {
-                CurrentCondition = new Condition() { { "a", false }, { "b", true } },
-                NodeName = "n0",
-                Transitions = new List<GeneTransition>()
-                {
-                    new GeneTransition()
-                    {
-                        Node = new GeneNode()
-                        {
-                            CurrentCondition = new Condition() {{"a", true}},
-                            NodeName = "n1"
-                        }
-                    }
-                }
-            };
-
-            var booleanNetwork = new List<GeneLink>()
-            {
-                new GeneLink() {From = "a", To = "a", IsPositive = true},
-                new GeneLink() {From = "b", To = "a", IsPositive = true}
-            };
-
-            var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { 0 } } };
-            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
-            Assert.IsFalse(res);
-        }
-
-        [TestMethod]
-        public void TestAndFunctionNegativeCase2()
-        {
-            var solver = new BDDSolver();
-
-            var automata = new GeneNode()
-            {
-                CurrentCondition = new Condition() { { "a", true }, { "b", false } },
-                NodeName = "n0",
-                Transitions = new List<GeneTransition>()
-                {
-                    new GeneTransition()
-                    {
-                        Node = new GeneNode()
-                        {
-                            CurrentCondition = new Condition() {{"a", true}},
-                            NodeName = "n1"
-                        }
-                    }
-                }
-            };
-
-            var booleanNetwork = new List<GeneLink>()
-            {
-                new GeneLink() {From = "a", To = "a", IsPositive = true},
-                new GeneLink() {From = "b", To = "a", IsPositive = true},
-            };
-
-            var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { 0 } } };
-            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
-            Assert.IsFalse(res);
-        }
-    }
-
     public abstract class AbstractBddTest
     {
         protected static Logger logger = LogManager.GetCurrentClassLogger();
@@ -161,7 +51,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod()]
         public void Test1Test()
         {
-            
+
             var sb = new StringBuilder();
             string varX = "x";
             string varY = "y";
@@ -202,7 +92,7 @@ namespace GeneAutomate.BDD.Tests
                 update = new Sequence(update, new Assignment(model.eventParameterVariables[i], exps[i]));
             }
              */
-            var primitiveApplication = new Sequence(primitiveApplication1, 
+            var primitiveApplication = new Sequence(primitiveApplication1,
                 primitiveApplication2);
 
             /*PrimitiveApplication.CombineProgramBlock(
@@ -215,16 +105,16 @@ namespace GeneAutomate.BDD.Tests
                state1,
                state2);
 
-            Expression assignment = 
+            Expression assignment =
                 new Assignment(varX, new PrimitiveApplication(PrimitiveApplication.PLUS,
                 new Variable(varX),
                 new IntConstant(2)));
 
             logger.Info("Assignments: " + assignment);
 
-            var secAssignment = 
-                new Assignment(varY, 
-                new PrimitiveApplication(PrimitiveApplication.PLUS, 
+            var secAssignment =
+                new Assignment(varY,
+                new PrimitiveApplication(PrimitiveApplication.PLUS,
                 new Variable(varY), new WildConstant()));
 
 
@@ -269,7 +159,7 @@ namespace GeneAutomate.BDD.Tests
                 Expression goal1 = new PrimitiveApplication(PrimitiveApplication.EQUAL,
                         new Variable(varX), new IntConstant(3));
 
-                goal1 = new PrimitiveApplication(PrimitiveApplication.AND, goal1, new PrimitiveApplication(PrimitiveApplication.EQUAL,new Variable(varY), new IntConstant(9)));
+                goal1 = new PrimitiveApplication(PrimitiveApplication.AND, goal1, new PrimitiveApplication(PrimitiveApplication.EQUAL, new Variable(varY), new IntConstant(9)));
 
                 //Encode 2 goals to BDD
                 CUDDNode goal1DD = CUDD.Function.Or(goal1.TranslateBoolExpToBDD(encoder.model).GuardDDs);
@@ -370,7 +260,7 @@ namespace GeneAutomate.BDD.Tests
 
             var automata = new GeneNode()
             {
-                CurrentCondition = new Condition() { { "a", false }, {"b", false} },
+                CurrentCondition = new Condition() { { "a", false }, { "b", false } },
                 NodeName = "n0",
                 Transitions = new List<GeneTransition>()
                 {
@@ -433,7 +323,7 @@ namespace GeneAutomate.BDD.Tests
 
             var automata = new GeneNode()
             {
-                CurrentCondition = new Condition() { { "a", true }, {"b", false} },
+                CurrentCondition = new Condition() { { "a", true }, { "b", false } },
                 NodeName = "n0",
                 Transitions = new List<GeneTransition>()
                 {
@@ -465,7 +355,7 @@ namespace GeneAutomate.BDD.Tests
 
             var automata = new GeneNode()
             {
-                CurrentCondition = new Condition() { { "a", true }},
+                CurrentCondition = new Condition() { { "a", true } },
                 NodeName = "n0",
                 Transitions = new List<GeneTransition>()
                 {
@@ -508,7 +398,7 @@ namespace GeneAutomate.BDD.Tests
 
             var automata = new GeneNode()
             {
-                CurrentCondition = new Condition() {  },
+                CurrentCondition = new Condition() { },
                 NodeName = "n0",
                 Transitions = new List<GeneTransition>()
                 {
@@ -526,7 +416,7 @@ namespace GeneAutomate.BDD.Tests
                                     {
                                         CurrentCondition =new Condition() {{"a", false}},
                                         NodeName = "n2",
-                                      
+
                                     }
                                 }
                             }
@@ -614,7 +504,7 @@ namespace GeneAutomate.BDD.Tests
                                     {
                                         CurrentCondition = new Condition() { {"a", false }},
                                         NodeName = "n2",
-                                       
+
                                     }
                                 }
                             }
@@ -740,7 +630,7 @@ namespace GeneAutomate.BDD.Tests
                                 new GeneTransition()
                                 {
                                     Node = new GeneNode()
-                                    {                                           
+                                    {
                                         CurrentCondition = new Condition() { {"a", true }, { "b", false} },
                                         NodeName = "n2",
                                         Transitions = new List<GeneTransition>()
@@ -813,7 +703,7 @@ namespace GeneAutomate.BDD.Tests
 
             var automata = new GeneNode()
             {
-                CurrentCondition = new Condition() { { "a", true }, { "b", false }, {"c", true} },
+                CurrentCondition = new Condition() { { "a", true }, { "b", false }, { "c", true } },
                 NodeName = "n0",
                 Transitions = new List<GeneTransition>()
                 {
