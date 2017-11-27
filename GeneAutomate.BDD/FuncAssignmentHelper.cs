@@ -10,23 +10,52 @@ namespace GeneAutomate.BDD
     {
         public Expression CreateFuncAssignment(string to, List<GeneLink> froms, int i, int funcNumber)
         {
+            FuncHelperInner func = new FuncHelperInner(to, froms,i);
+
             Expression pos = null;
             Expression neg = null;
             switch (funcNumber)
             {
                 case 0:
-                    pos = IsAllUp(to, froms.Positives(), i);
-                    neg = IsAllDown(to, froms.Negatives(), i);
-                    break;
+                    return And(func.AllActivators(), func.NoRepressors());
                 case 1:
-                    pos = IsAnyUp(to, froms.Positives(), i);
-                    neg = IsAllDown(to, froms.Negatives(), i);
-                    break;
+                    return And(func.NotNoActivators(), func.NoRepressors());
                 case 2:
-                    pos = IsAllUp(to, froms.Positives(), i);
-                    neg = IsAnyUp(to, froms.Negatives(), i);
-                    break;
-                
+                    return And(func.AllActivators(), func.NotAllRepressors());
+                case 3:
+                    var a = And(func.NoRepressors(), func.NotNoActivators());
+                    var b = And(func.NotAllRepressors(), func.AllActivators());
+                    return Or(a, b);
+                case 4:
+                    return func.AllActivators();
+                case 5:
+                    return And(func.AllActivators(), And(func.NoRepressors(), func.NotNoActivators()));
+                case 6:
+                    return And(func.NoRepressors(), func.NotNoActivators());
+                case 7:
+                    return Or(And(func.NotNoActivators(), func.NotAllRepressors()), func.AllActivators());
+                case 8:
+                    return func.NotNoActivators();
+                case 9:
+                    return func.NoRepressors();
+                case 10:
+                    return And(func.NoRepressors(), And(func.NotAllRepressors(), func.AllActivators()));
+                case 11:
+                    return Or(func.NoRepressors(), And(func.NotNoActivators(), func.NotAllRepressors()));
+                case 12:
+                    return func.NotAllRepressors();
+                case 13:
+                    return Or(func.NoRepressors(), func.AllActivators());
+                case 14:
+                    return Or(
+                        Or(func.NoRepressors(),func.AllActivators()), 
+                        And(func.NotAllRepressors(), func.NotNoActivators()));
+                case 15:
+                    return Or(func.NotAllRepressors(), func.AllActivators());
+                case 16:
+                    return Or(func.NoRepressors(), func.NotNoActivators());
+                case 17:
+                    return Or(func.NotAllRepressors(), func.NotNoActivators());
             }
 
             if (pos == null)
@@ -43,53 +72,17 @@ namespace GeneAutomate.BDD
 
         }
 
-        public Expression IsAllUp(string to, List<GeneLink> froms, int i)
-        {
-            return AppyToAll(froms, i, true, PrimitiveApplication.AND);
 
+        public Expression Or(Expression a, Expression b)
+        {
+            return new PrimitiveApplication(PrimitiveApplication.OR, a, b);
         }
 
-
-        public Expression IsAllDown(string to, List<GeneLink> froms, int i)
+        public Expression And(Expression a, Expression b)
         {
-            return AppyToAll(froms, i, false, PrimitiveApplication.AND);
-        }
-
-        public Expression IsAnyUp(string to, List<GeneLink> froms, int i)
-        {
-            return AppyToAll(froms, i, true, PrimitiveApplication.OR);
-
-        }
-
-        public Expression IsAnyDown(string to, List<GeneLink> froms, int i)
-        {
-            return AppyToAll(froms, i, false, PrimitiveApplication.OR);
-        }
-
-        public static int z = 0;
-
-        private static Expression AppyToAll(List<GeneLink> froms, int i, 
-            bool value, string func)
-        {
-            Expression app = null;
-
-            froms.ForEach(f =>
-            {
-                var primitiveApplication = //BddHelper.SetBooleanValue(i, value, f.From); 
-                new Variable(Formater.FormatParameter(f.From, i));
-                //BddHelper.SetBooleanValue(i, value, f.From);
-
-                if (app == null)
-                {
-                    app = primitiveApplication;
-                }
-                else
-                {
-                    app = new PrimitiveApplication(func, app, primitiveApplication);
-                }
-            });
-
-            return app;
+            return new PrimitiveApplication(PrimitiveApplication.AND, a, b);
         }
     }
+
+
 }

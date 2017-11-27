@@ -61,8 +61,11 @@
   <ItemGroup>
     <Compile Include="BDDSolverTests.cs" />
     <Compile Include="FunctionBddSolverTestsAndFunc.cs" />
+    <Compile Include="FunctionBddSolverTestsFuncNum3.cs" />
+    <Compile Include="FunctionBddSolverTestsOrFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RealCaseBDDSolverTests.cs" />
+    <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeneAutomate.BDD\GeneAutomate.BDD.csproj">
