@@ -17,6 +17,100 @@ namespace GeneAutomate.BDD.Tests
 {
     public abstract class AbstractBddTest
     {
+        public List<TetParameters> TetsParameters = new List<TetParameters>()
+        {
+            new TetParameters()
+            {
+                CaseNumber = 0,
+                FirstCondition =  new Condition()
+                {
+                   { "b", false }, {"c", false }, {"d", false }, {"e" ,false }
+                },
+                Expected_A_Value = true,
+                IsValidPath = false
+            },
+            new TetParameters()
+            {
+                CaseNumber = 1,
+                FirstCondition =  new Condition()
+                {
+                   { "b", true }, {"c", false }, {"d", false },  { "e", false }
+                },
+                Expected_A_Value = true,
+                IsValidPath = true
+            },
+            new TetParameters()
+            {
+                CaseNumber = 2,
+                FirstCondition =  new Condition()
+                {
+                   { "b", true }, {"c", true }, {"d", false },  { "e", false }
+                },
+                Expected_A_Value = true,
+                IsValidPath = true
+            },
+            new TetParameters()
+            {
+                CaseNumber = 3,
+                FirstCondition =  new Condition()
+                {
+                   { "b", false }, {"c", false }, {"d", true },  { "e", false }
+                },
+                Expected_A_Value = true,
+                IsValidPath = false
+            },
+            new TetParameters()
+            {
+                CaseNumber = 4,
+                FirstCondition =  new Condition()
+                {
+                   { "b", true }, {"c", false }, {"d", true },  { "e", false }
+                },
+                Expected_A_Value = true,
+                IsValidPath = false
+            },
+            new TetParameters()
+            {
+                CaseNumber = 5,
+                FirstCondition =  new Condition()
+                {
+                   { "b", true }, {"c", true }, {"d", true },  { "e", false }
+                },
+                Expected_A_Value = true,
+                IsValidPath = true
+            },
+            new TetParameters()
+            {
+                CaseNumber = 6,
+                FirstCondition =  new Condition()
+                {
+                   { "b", false }, {"c", false }, {"d", true },  { "e", true }
+                },
+                Expected_A_Value = true,
+                IsValidPath = false
+            },
+            new TetParameters()
+            {
+                CaseNumber = 7,
+                FirstCondition =  new Condition()
+                {
+                   { "b", true }, {"c", false }, {"d", true },  { "e", true }
+                },
+                Expected_A_Value = true,
+                IsValidPath = false
+            },
+            new TetParameters()
+            {
+                CaseNumber = 8,
+                FirstCondition =  new Condition()
+                {
+                   { "b", true }, {"c", true }, {"d", true },  { "e", true }
+                },
+                Expected_A_Value = true,
+                IsValidPath = false
+            }
+        };
+
         protected static Logger logger = LogManager.GetCurrentClassLogger();
 
         protected TestContext m_testContext;

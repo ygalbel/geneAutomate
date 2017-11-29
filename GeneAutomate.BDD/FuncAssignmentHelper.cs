@@ -16,6 +16,14 @@ namespace GeneAutomate.BDD
             Expression neg = null;
             switch (funcNumber)
             {
+                case -1:
+                    return func.AllActivators();
+                case -2:
+                    return func.NoRepressors();
+                case -3:
+                    return func.NotNoActivators();
+                case -4:
+                    return func.NotAllRepressors();
                 case 0:
                     return And(func.AllActivators(), func.NoRepressors());
                 case 1:
@@ -29,9 +37,9 @@ namespace GeneAutomate.BDD
                 case 4:
                     return func.AllActivators();
                 case 5:
-                    return And(func.AllActivators(), And(func.NoRepressors(), func.NotNoActivators()));
+                    return Or(func.AllActivators(), And(func.NoRepressors(), func.NotNoActivators()));
                 case 6:
-                    return And(func.NoRepressors(), func.NotNoActivators());
+                    return And(func.NotNoActivators(), func.NotAllRepressors());
                 case 7:
                     return Or(And(func.NotNoActivators(), func.NotAllRepressors()), func.AllActivators());
                 case 8:
@@ -39,7 +47,7 @@ namespace GeneAutomate.BDD
                 case 9:
                     return func.NoRepressors();
                 case 10:
-                    return And(func.NoRepressors(), And(func.NotAllRepressors(), func.AllActivators()));
+                    return Or(func.NoRepressors(), And(func.NotAllRepressors(), func.AllActivators()));
                 case 11:
                     return Or(func.NoRepressors(), And(func.NotNoActivators(), func.NotAllRepressors()));
                 case 12:

@@ -10,7 +10,6 @@ namespace GeneAutomate.BDD
         private readonly List<GeneLink> _froms;
         private readonly int _i;
 
-        
 
         public FuncHelperInner(string to, List<GeneLink> froms, int i)
         {
@@ -45,7 +44,7 @@ namespace GeneAutomate.BDD
 
         public Expression NoRepressors()
         {
-            return AppyToAll(_froms.Negatives(), _i, false, PrimitiveApplication.OR);
+            return AppyToAll(_froms.Negatives(), _i, false, PrimitiveApplication.AND);
         }
 
      

@@ -71,12 +71,26 @@ namespace GeneAutomate.BDD
 
                 var state1 = lts.AddState();
                 states.Add(state1);
+                //var goal2 = CreateExpressionBasedOnAutomata(tempAutomata);
+
+                var dictValues = CreateDictBasedOnAutomata(tempAutomata);
                 var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok,
-                        availableFunctions, depth, Mode.Assignment);
-                var goal2 = CreateExpressionBasedOnAutomata(tempAutomata);
+                        availableFunctions, depth, Mode.Assignment, dictValues);
 
-                seq = new Sequence(seq, goal2);
+                if (dictValues.Any())
+                {
+                    dictValues.ToList().ForEach(f =>
+                    {
+                        var curr = new Assignment(f.Key, new BoolConstant( f.Value));
+                        seq =new Sequence(seq, curr);
 
+                    });
+                }
+
+                  
+
+                //seq =  new Sequence(seq, goal2);
+              //  //
                 logger.Info("Assignments: " + seq);
 
                 var trans1 =
@@ -99,7 +113,7 @@ namespace GeneAutomate.BDD
                 var goal3 = CreateExpressionsFromBooleanNetwork(booleanNetwok,
                         availableFunctions, depth, Mode.Equal);
 
-                goal = new PrimitiveApplication(PrimitiveApplication.AND, goal, goal3);
+                goal = new PrimitiveApplication(PrimitiveApplication.AND, goal3, goal);
                 logger.Info("Goal: " + goal);
                 path = IsExistPath(goal, encoder, path, initDD, systemBDD, letters, ref reach1);
                 path.Clear();
@@ -112,7 +126,10 @@ namespace GeneAutomate.BDD
 
 
         private static Expression CreateExpressionsFromBooleanNetwork(List<GeneLink> booleanNetwok,
-                                                                        Dictionary<string, List<int>> availableFunctions, int depth, Mode mode)
+                                                 Dictionary<string, List<int>> availableFunctions, 
+                                                 int depth, 
+                                                 Mode mode,
+                                                 Dictionary<string,bool> values=null )
         {
             Expression seq = null;
 
@@ -120,7 +137,7 @@ namespace GeneAutomate.BDD
 
             for (int i = 0; i < depth - 1; i++)
             {
-                var ass = CreateFunctionApplication(availableFunctions, toDictionary, i, mode);
+                var ass = CreateFunctionApplication(availableFunctions, toDictionary, i, mode, values);
 
                 seq = AddIfExist(seq, ass, mode);
             }
@@ -188,9 +205,13 @@ namespace GeneAutomate.BDD
             Dictionary<string, List<int>> availableFunctions,
             IEnumerable<IGrouping<string, GeneLink>> toDictionary,
             int i,
-            Mode mode)
+            Mode mode,
+            Dictionary<string,bool> values )
         {
             Expression res = null;
+
+
+
 
             toDictionary.ToList().ForEach(ff =>
             {
@@ -209,19 +230,25 @@ namespace GeneAutomate.BDD
 
                     var availableFunc = availableFunctions[to];
                     var funcAssignmentHelper = new FuncAssignmentHelper();
+                    var toFormatted = Formater.FormatParameter(to, i + 1);
 
                     availableFunc.ForEach(f =>
                     {
                         ass =
                             funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f);
+
+                        if (values != null && values.ContainsKey(toFormatted))
+                        {
+                            ass = new PrimitiveApplication(PrimitiveApplication.AND, ass, new BoolConstant(values[toFormatted]));
+                            values.Remove(toFormatted);
+                        }
                     });
 
-                    var toFormatted = Formater.FormatParameter(to, i + 1);
 
                     if (mode == Mode.Equal)
                     {
                         res = new PrimitiveApplication(PrimitiveApplication.EQUAL, new Variable(toFormatted),
-                                new PrimitiveApplication(PrimitiveApplication.AND, ass));
+                               new PrimitiveApplication(PrimitiveApplication.EQUAL,  ass));
                     }
                     else
                     {
@@ -431,6 +458,42 @@ namespace GeneAutomate.BDD
             return goal1;
         }
 
+        private static Dictionary<string,bool> CreateDictBasedOnAutomata(GeneNode automata)
+        {
+            Dictionary<string, bool> result = new Dictionary<string, bool>();
+
+            if (automata == null || automata.Transitions == null || !automata.Transitions.Any())
+            {
+                return null;
+            }
+
+            int i = 0;
+            automata.Visit(l =>
+            {
+                var tr = GetTransitions(l);
+
+                if (tr == null)
+                {
+                    return;
+
+                }
+
+                tr
+                    .ForEach(
+                        f =>
+                        {
+                            var key = Formater.FormatParameter(f.Key, i);
+                            var value = f.Value.Value;
+
+                            result[key] = value;
+                        });
+                i++;
+            });
+
+
+            return result;
+        }
+
         private static List<KeyValuePair<string, bool?>> GetTransitions(GeneNode l)
         {
             return l?.CurrentCondition.Where(f => f.Value.HasValue).ToList();
@@ -490,7 +553,7 @@ namespace GeneAutomate.BDD
 
 
         private static Func<string, Expression, Expression> AssignmentFunction = (to, from) =>
-                  new Assignment(to,from);
+                  new Assignment(to, from);
 
 
         private static Func<string, Expression, Expression> EqualityFunction = (to, from) =>
