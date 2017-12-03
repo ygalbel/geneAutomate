@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.Models;
+using Newtonsoft.Json;
 using NLog;
 using PAT.Common.Classes.CUDDLib;
 using PAT.Common.Classes.Expressions.ExpressionClass;
@@ -17,9 +18,9 @@ namespace GeneAutomate.BDD.Tests
 {
     public abstract class AbstractBddTest
     {
-        public List<TetParameters> TetsParameters = new List<TetParameters>()
+        public List<TestParameters> TetsParameters = new List<TestParameters>()
         {
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 0,
                 FirstCondition =  new Condition()
@@ -29,7 +30,7 @@ namespace GeneAutomate.BDD.Tests
                 Expected_A_Value = true,
                 IsValidPath = false
             },
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 1,
                 FirstCondition =  new Condition()
@@ -39,7 +40,7 @@ namespace GeneAutomate.BDD.Tests
                 Expected_A_Value = true,
                 IsValidPath = true
             },
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 2,
                 FirstCondition =  new Condition()
@@ -49,7 +50,7 @@ namespace GeneAutomate.BDD.Tests
                 Expected_A_Value = true,
                 IsValidPath = true
             },
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 3,
                 FirstCondition =  new Condition()
@@ -59,7 +60,7 @@ namespace GeneAutomate.BDD.Tests
                 Expected_A_Value = true,
                 IsValidPath = false
             },
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 4,
                 FirstCondition =  new Condition()
@@ -69,7 +70,7 @@ namespace GeneAutomate.BDD.Tests
                 Expected_A_Value = true,
                 IsValidPath = false
             },
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 5,
                 FirstCondition =  new Condition()
@@ -79,7 +80,7 @@ namespace GeneAutomate.BDD.Tests
                 Expected_A_Value = true,
                 IsValidPath = true
             },
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 6,
                 FirstCondition =  new Condition()
@@ -89,7 +90,7 @@ namespace GeneAutomate.BDD.Tests
                 Expected_A_Value = true,
                 IsValidPath = false
             },
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 7,
                 FirstCondition =  new Condition()
@@ -99,7 +100,7 @@ namespace GeneAutomate.BDD.Tests
                 Expected_A_Value = true,
                 IsValidPath = false
             },
-            new TetParameters()
+            new TestParameters()
             {
                 CaseNumber = 8,
                 FirstCondition =  new Condition()
@@ -110,6 +111,94 @@ namespace GeneAutomate.BDD.Tests
                 IsValidPath = false
             }
         };
+
+        public void RunNegativeTest(Dictionary<int, List<int>> resultValues)
+        {
+            var fault = new List<Tuple<int, int>>();
+            var solver = new BDDSolver();
+            resultValues.ToList().ForEach((rv) =>
+            {
+                TetsParameters.ForEach(tp =>
+                {
+                    var functionNum = rv.Key;
+                    var expectedValue = rv.Value[tp.CaseNumber];
+
+
+                    var log = $" function num: {functionNum}, case number {tp.CaseNumber}, expectedValue : {expectedValue}";
+                    logger.Info(log);
+                    Trace.WriteLine(log);
+                    var firstCondition = tp.FirstCondition;
+
+                    var secondCondition = new Condition() { { "a", expectedValue == 0 } }; /**CHANGE1**/
+
+                    var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
+
+                    var booleanNetwork = CreateBooleanNetwork();
+
+                    var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
+                    var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+
+                    if (res)
+                    {
+                        fault.Add(new Tuple<int, int>(functionNum, tp.CaseNumber));
+                        logger.Warn("failed in this case");
+                    }
+                });
+            }
+            );
+            Assert.IsTrue(fault.Count == 0, JsonConvert.SerializeObject(fault)); /** Change2 **/
+        }
+
+        protected void RunPositiveTest(Dictionary<int, List<int>> resultValues)
+        {
+            var fault = new List<Tuple<int, int>>();
+
+            var solver = new BDDSolver();
+            resultValues.ToList().ForEach((rv) =>
+            {
+                TetsParameters.ForEach(tp =>
+                {
+                    var functionNum = rv.Key;
+                    var expectedValue = rv.Value[tp.CaseNumber];
+
+
+                    var log = $" function num: {functionNum}, case number {tp.CaseNumber}, expectedValue : {expectedValue}";
+                    logger.Info(log);
+                    Trace.WriteLine(log);
+                    var firstCondition = tp.FirstCondition;
+
+                    var secondCondition = new Condition() { { "a", expectedValue == 1 } };
+
+                    var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
+
+                    var booleanNetwork = CreateBooleanNetwork();
+
+                    var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
+                    var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+                    if (!res)
+                    {
+                        fault.Add(new Tuple<int, int>(functionNum, tp.CaseNumber));
+                        logger.Warn("failed in this case");
+                    }
+                });
+            }
+            );
+
+            Assert.IsTrue(fault.Count == 0, JsonConvert.SerializeObject(fault)); /** Change2 **/
+
+        }
+
+        protected static List<GeneLink> CreateBooleanNetwork()
+        {
+            return new List<GeneLink>()
+            {
+                new GeneLink() {From = "b", To = "a", IsPositive = true},
+                new GeneLink() {From = "c", To = "a", IsPositive = true},
+                new GeneLink() {From = "d", To = "a", IsPositive = false},
+                new GeneLink() {From = "e", To = "a", IsPositive = false},
+
+            };
+        }
 
         protected static Logger logger = LogManager.GetCurrentClassLogger();
 

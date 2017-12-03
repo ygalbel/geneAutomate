@@ -74,15 +74,17 @@ namespace GeneAutomate.BDD
                 //var goal2 = CreateExpressionBasedOnAutomata(tempAutomata);
 
                 var dictValues = CreateDictBasedOnAutomata(tempAutomata);
-                var seq = CreateExpressionsFromBooleanNetwork(booleanNetwok,
-                        availableFunctions, depth, Mode.Assignment, dictValues);
+                Expression seq = null;
+
+                /*CreateExpressionsFromBooleanNetwork(booleanNetwok,
+                        availableFunctions, depth, Mode.Assignment, dictValues);*/
 
                 if (dictValues.Any())
                 {
                     dictValues.ToList().ForEach(f =>
                     {
-                        var curr = new Assignment(f.Key, new BoolConstant( f.Value));
-                        seq =new Sequence(seq, curr);
+                        Expression curr = new Assignment(f.Key, new BoolConstant( f.Value));
+                        seq = seq == null ? curr : new Sequence(seq, curr);
 
                     });
                 }
@@ -113,7 +115,7 @@ namespace GeneAutomate.BDD
                 var goal3 = CreateExpressionsFromBooleanNetwork(booleanNetwok,
                         availableFunctions, depth, Mode.Equal);
 
-                goal = new PrimitiveApplication(PrimitiveApplication.AND, goal3, goal);
+                goal = new PrimitiveApplication(PrimitiveApplication.AND, goal, goal3);
                 logger.Info("Goal: " + goal);
                 path = IsExistPath(goal, encoder, path, initDD, systemBDD, letters, ref reach1);
                 path.Clear();
@@ -211,8 +213,6 @@ namespace GeneAutomate.BDD
             Expression res = null;
 
 
-
-
             toDictionary.ToList().ForEach(ff =>
             {
                 Expression ass = null;
@@ -237,18 +237,18 @@ namespace GeneAutomate.BDD
                         ass =
                             funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f);
 
-                        if (values != null && values.ContainsKey(toFormatted))
-                        {
-                            ass = new PrimitiveApplication(PrimitiveApplication.AND, ass, new BoolConstant(values[toFormatted]));
-                            values.Remove(toFormatted);
-                        }
+                        //if (values != null && values.ContainsKey(toFormatted))
+                        //{
+                        //    ass = new PrimitiveApplication(PrimitiveApplication.AND, ass, new BoolConstant(values[toFormatted]));
+                        //    values.Remove(toFormatted);
+                        //}
                     });
 
 
                     if (mode == Mode.Equal)
                     {
                         res = new PrimitiveApplication(PrimitiveApplication.EQUAL, new Variable(toFormatted),
-                               new PrimitiveApplication(PrimitiveApplication.EQUAL,  ass));
+                               ass);
                     }
                     else
                     {

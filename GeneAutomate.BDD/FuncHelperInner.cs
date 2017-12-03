@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GeneAutomate.Models;
 using PAT.Common.Classes.Expressions.ExpressionClass;
 
@@ -39,7 +40,7 @@ namespace GeneAutomate.BDD
         /// <returns></returns>
         public Expression NotAllRepressors()
         {
-            return AppyToAll(_froms.Negatives(), _i, false, PrimitiveApplication.OR);
+            return AppyToAll(_froms.Negatives(), _i, true, PrimitiveApplication.OR);
         }
 
         public Expression NoRepressors()
@@ -47,7 +48,26 @@ namespace GeneAutomate.BDD
             return AppyToAll(_froms.Negatives(), _i, false, PrimitiveApplication.AND);
         }
 
-     
+
+        
+
+
+        public Expression OrPositiveIsTrue()
+        {
+            return AppyToAll(_froms.Positives(), _i, true, PrimitiveApplication.OR);
+        }
+
+        public Expression OrNegativeIsTrue()
+        {
+            return AppyToAll(_froms.Negatives(), _i, true, PrimitiveApplication.OR);
+        }
+
+        public Expression AndPositiveIsTrue()
+        {
+            return AppyToAll(_froms.Positives(), _i, true, PrimitiveApplication.AND);
+        }
+
+
 
         private static Expression AppyToAll(List<GeneLink> froms, int i, 
             bool value, string func)
@@ -56,9 +76,12 @@ namespace GeneAutomate.BDD
 
             froms.ForEach(f =>
             {
-                var primitiveApplication = //BddHelper.SetBooleanValue(i, value, f.From); 
-                   new PrimitiveApplication(PrimitiveApplication.EQUAL, new Variable(Formater.FormatParameter(f.From, i)), new BoolConstant(value));
-                //BddHelper.SetBooleanValue(i, value, f.From);
+                var formatParameter = Formater.FormatParameter(f.From, i);
+
+                Expression primitiveApplication =  
+                new PrimitiveApplication(PrimitiveApplication.EQUAL,
+                            new Variable(formatParameter), 
+                            new BoolConstant(true));
 
                 if (app == null)
                 {
@@ -66,16 +89,16 @@ namespace GeneAutomate.BDD
                 }
                 else
                 {
-                    app = new PrimitiveApplication(func, app, primitiveApplication);
+                    app =  new PrimitiveApplication(func, app, primitiveApplication);
                 }
             });
 
-            //if (value == false)
-            //{
-            //    app = new PrimitiveApplication(PrimitiveApplication.NOT, app);
-                
-            //}
-            return app;
+            if (!value)
+            {
+                app = new PrimitiveApplication(PrimitiveApplication.NOT, app);
+            }
+
+            return  app;
         }
     }
 }

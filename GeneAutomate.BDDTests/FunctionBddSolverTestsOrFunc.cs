@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using GeneAutomate.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 
 namespace GeneAutomate.BDD.Tests
 {
-    public class TetParameters
+    public class TestParameters
     {
         public int CaseNumber { get; set; }
         public Condition FirstCondition { get; set; }
@@ -16,12 +18,176 @@ namespace GeneAutomate.BDD.Tests
         public bool IsValidPath { get; set; }
     }
 
+    [TestClass]
+    public class FunctionBddOrOperatorTests : AbstractBddTest
+    {
+        [ClassInitialize]
+        public static void ClassInit(TestContext context)
+        {
+            FuncAssignmentHelper.dict.Add(44, (func) => func.OrNegativeIsTrue());
+            FuncAssignmentHelper.dict.Add(45, (func) => func.OrPositiveIsTrue());
+
+        }
+
+        [TestMethod]
+        public void TestOrFirstCase()
+        {
+            var firstCondition  = new Condition()
+                {
+                   { "b", false }, {"c", false }, {"d", false }, {"e" ,false }
+                };
+
+            RunSingle(firstCondition, false);
+        }
+
+        [TestInitialize]
+        public void Init()
+        {
+            logger.Info("start " + this.TestContext.TestName);
+        }
+
+        [TestMethod]
+        public void TestOrSecondCase()
+        {
+            var firstCondition = new Condition()
+                {
+                   { "b", false }, {"c", false }, {"d", true }, {"e" ,false }
+                };
+
+            RunSingle(firstCondition, true);
+        }
+
+        [TestMethod]
+        public void TestOrThirdCase()
+        {
+            var firstCondition = new Condition()
+                {
+                   { "b", false }, {"c", false }, {"d", false }, {"e" ,true }
+                };
+
+            RunSingle(firstCondition, true);
+        }
+
+        [TestMethod]
+        public void TestOrFourthCase()
+        {
+            var firstCondition = new Condition()
+                {
+                   { "b", false }, {"c", false }, {"d", true }, {"e" ,true }
+                };
+
+            RunSingle(firstCondition, true);
+        }
+
+        private static void RunSingle(Condition firstCondition, bool firstValue)
+        {
+            var solver = new BDDSolver();
+            var secondCondition = new Condition() {{"a", firstValue } };
+
+            var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
+
+            var booleanNetwork = CreateBooleanNetwork();
+
+            var availableFunctions = new Dictionary<string, List<int>>() {{"a", new List<int>() {44}}};
+            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+
+            Assert.IsTrue(res);
+
+            secondCondition = new Condition() {{"a", !firstValue}};
+            automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
+            res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+
+            Assert.IsFalse(res);
+        }
+    }
+
+
+    [TestClass]
+    public class FunctionBddAndOperatorTests : AbstractBddTest
+    {
+        [ClassInitialize]
+        public static void ClassInit(TestContext context)
+        {
+            FuncAssignmentHelper.dict.Add(47, (func) => func.AndPositiveIsTrue());
+
+        }
+
+        [TestMethod]
+        public void TestAndFirstCase()
+        {
+            var firstCondition = new Condition()
+                {
+                   { "b", false }, {"c", false }, {"d", false }, {"e" ,false }
+                };
+
+            RunSingle(firstCondition, false);
+        }
+
+        [TestInitialize]
+        public void Init()
+        {
+            logger.Info("start " + this.TestContext.TestName);
+        }
+
+        [TestMethod]
+        public void TestAndSecondCase()
+        {
+            var firstCondition = new Condition()
+                {
+                   { "b", false }, {"c", true }, {"d", false }, {"e" ,false }
+                };
+
+            RunSingle(firstCondition, false);
+        }
+
+        [TestMethod]
+        public void TestAndThirdCase()
+        {
+            var firstCondition = new Condition()
+                {
+                   { "b", true }, {"c", false }, {"d", false }, {"e" ,false }
+                };
+
+            RunSingle(firstCondition, false);
+        }
+
+        [TestMethod]
+        public void TestAndFourthCase()
+        {
+            var firstCondition = new Condition()
+                {
+                   { "b", true }, {"c", true }, {"d", false }, {"e" ,false }
+                };
+
+            RunSingle(firstCondition, true);
+        }
+
+        private static void RunSingle(Condition firstCondition, bool firstValue)
+        {
+            var solver = new BDDSolver();
+            var secondCondition = new Condition() { { "a", firstValue } };
+
+            var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
+
+            var booleanNetwork = CreateBooleanNetwork();
+
+            var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { 47 } } };
+            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+
+            Assert.IsTrue(res);
+
+            secondCondition = new Condition() { { "a", !firstValue } };
+            automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
+            res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+
+            Assert.IsFalse(res);
+        }
+    }
+
 
     [TestClass]
     public class FunctionBddSolverTestsComplexFunctions : AbstractBddTest
     {
-
-     
 
         private Dictionary<int, List<int>> resultValues = new Dictionary<int, List<int>>()
         {
@@ -56,79 +222,22 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestFullCaseNumber()
         {
-            var solver = new BDDSolver();
-            resultValues.ToList().ForEach((rv) =>
-                {
-                    TetsParameters.ForEach(tp =>
-                    {
-                        var functionNum = rv.Key;
-                        var expectedValue = rv.Value[tp.CaseNumber];
-
-
-                        var log = $" function num: {functionNum}, case number {tp.CaseNumber}, expectedValue : {expectedValue}";
-                        logger.Info(log);
-                        Trace.WriteLine(log);
-                        var firstCondition = tp.FirstCondition;
-
-                        var secondCondition = new Condition() { { "a", expectedValue == 1 } };
-
-                        var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
-
-                        var booleanNetwork = CreateBooleanNetwork();
-
-                        var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
-                        var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
-                        Assert.IsTrue(res);
-                    });
-                }
-            );
-            
+            var resultValues = this.resultValues;
+            RunPositiveTest(resultValues);
         }
+
+        
 
 
         [TestMethod]
         public void TestFullCaseNumberNegative()
         {
-            var solver = new BDDSolver();
-            resultValues.ToList().ForEach((rv) =>
-            {
-                TetsParameters.ForEach(tp =>
-                {
-                    var functionNum = rv.Key;
-                    var expectedValue = rv.Value[tp.CaseNumber];
-
-
-                    var log = $" function num: {functionNum}, case number {tp.CaseNumber}, expectedValue : {expectedValue}";
-                    logger.Info(log);
-                    Trace.WriteLine(log);
-                    var firstCondition = tp.FirstCondition;
-
-                    var secondCondition = new Condition() { { "a", expectedValue == 0 } }; /**CHANGE1**/
-
-                    var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
-
-                    var booleanNetwork = CreateBooleanNetwork();
-
-                    var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
-                    var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
-                    Assert.IsFalse(res); /** Change2 **/
-                });
-            }
-            );
-
+            RunNegativeTest(resultValues);
         }
 
-        private static List<GeneLink> CreateBooleanNetwork()
-        {
-            return new List<GeneLink>()
-            {
-                new GeneLink() {From = "b", To = "a", IsPositive = true},
-                new GeneLink() {From = "c", To = "a", IsPositive = true},
-                new GeneLink() {From = "d", To = "a", IsPositive = false},
-                new GeneLink() {From = "e", To = "a", IsPositive = false},
+        
 
-            };
-        }
+        
         
     }
 
@@ -158,79 +267,19 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestFullCaseNumber()
         {
-            var solver = new BDDSolver();
-            resultValues.ToList().ForEach((rv) =>
-            {
-                TetsParameters.ForEach(tp =>
-                {
-                    var functionNum = rv.Key;
-                    var expectedValue = rv.Value[tp.CaseNumber];
-
-
-                    var log = $" function num: {functionNum}, case number {tp.CaseNumber}, expectedValue : {expectedValue}";
-                    logger.Info(log);
-                    Trace.WriteLine(log);
-                    var firstCondition = tp.FirstCondition;
-
-                    var secondCondition = new Condition() { { "a", expectedValue == 1 } };
-
-                    var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
-
-                    var booleanNetwork = CreateBooleanNetwork();
-
-                    var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
-                    var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
-                    Assert.IsTrue(res);
-                });
-            }
-            );
-
+            RunPositiveTest(resultValues);
         }
+
+
 
 
         [TestMethod]
         public void TestFullCaseNumberNegative()
         {
-            var solver = new BDDSolver();
-            resultValues.ToList().ForEach((rv) =>
-            {
-                TetsParameters.ForEach(tp =>
-                {
-                    var functionNum = rv.Key;
-                    var expectedValue = rv.Value[tp.CaseNumber];
-
-
-                    var log = $" function num: {functionNum}, case number {tp.CaseNumber}, expectedValue : { expectedValue == 0 }";
-                    logger.Info(log);
-                    Trace.WriteLine(log);
-                    var firstCondition = tp.FirstCondition;
-
-                    var secondCondition = new Condition() { { "a", expectedValue == 0 } }; /**CHANGE1**/
-
-                    var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
-
-                    var booleanNetwork = CreateBooleanNetwork();
-
-                    var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
-                    var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
-                    Assert.IsFalse(res); /** Change2 **/
-                });
-            }
-            );
-
+            RunNegativeTest(resultValues);
         }
 
-        private static List<GeneLink> CreateBooleanNetwork()
-        {
-            return new List<GeneLink>()
-            {
-                new GeneLink() {From = "b", To = "a", IsPositive = true},
-                new GeneLink() {From = "c", To = "a", IsPositive = true},
-                new GeneLink() {From = "d", To = "a", IsPositive = false},
-                new GeneLink() {From = "e", To = "a", IsPositive = false},
 
-            };
-        }
 
     }
 
