@@ -72,33 +72,73 @@ namespace GeneAutomate.BDD
         private static Expression AppyToAll(List<GeneLink> froms, int i, 
             bool value, string func)
         {
-            Expression app = null;
-
-            froms.ForEach(f =>
+            if (func == PrimitiveApplication.AND)
             {
-                var formatParameter = Formater.FormatParameter(f.From, i);
 
-                Expression primitiveApplication =  
-                new PrimitiveApplication(PrimitiveApplication.EQUAL,
-                            new Variable(formatParameter), 
-                            new BoolConstant(true));
 
-                if (app == null)
+                Expression app = null;
+
+                froms.ForEach(f =>
                 {
-                    app = primitiveApplication;
-                }
-                else
-                {
-                    app =  new PrimitiveApplication(func, app, primitiveApplication);
-                }
-            });
+                    var formatParameter = Formater.FormatParameter(f.From, i);
 
-            if (!value)
+                    Expression primitiveApplication =
+                        new Variable(formatParameter);
+
+                    if (app == null)
+                    {
+                        app = primitiveApplication;
+                    }
+                    else
+                    {
+                        app = new PrimitiveApplication(func, app, primitiveApplication);
+
+                    }
+                });
+
+                if (!value)
+                {
+                    app = new PrimitiveApplication(PrimitiveApplication.NOT, app);
+                }
+
+                return new PrimitiveApplication(func, app);
+            }
+            else // or
             {
-                app = new PrimitiveApplication(PrimitiveApplication.NOT, app);
+
+                Expression app = null;
+
+                froms.ForEach(f =>
+                {
+                    var formatParameter = Formater.FormatParameter(f.From, i);
+
+                    Expression primitiveApplication =
+                        new Variable(formatParameter);
+                    
+
+                    if (app == null)
+                    {
+                        app = primitiveApplication;
+                    }
+                    else
+                    {
+                        app = new PrimitiveApplication(PrimitiveApplication.OR, 
+                            app, 
+                            primitiveApplication);
+
+                    }
+                });
+
+                if (!value)
+                {
+                    app = new PrimitiveApplication(PrimitiveApplication.NOT, app);
+                }
+
+                return new PrimitiveApplication(PrimitiveApplication.OR, app, new BoolConstant(true));
             }
 
-            return  app;
+
+            return null;
         }
     }
 }

@@ -15,7 +15,7 @@ using Expression = PAT.Common.Classes.Expressions.ExpressionClass.Expression;
 
 namespace GeneAutomate.BDD
 {
-    public class BDDSolver
+    public class BDDSolver : IBDDSolver
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 

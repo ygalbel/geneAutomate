@@ -52,6 +52,7 @@
     <Compile Include="BooleanBdd.cs" />
     <Compile Include="Formater.cs" />
     <Compile Include="FuncHelperInner.cs" />
+    <Compile Include="IBDDSolver.cs" />
     <Compile Include="ListGeneNodeExtensions.cs" />
     <Compile Include="FuncAssignmentHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
