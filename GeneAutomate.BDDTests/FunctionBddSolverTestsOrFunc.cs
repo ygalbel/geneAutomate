@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -81,7 +82,7 @@ namespace GeneAutomate.BDD.Tests
 
         private static void RunSingle(Condition firstCondition, bool firstValue)
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
             var secondCondition = new Condition() {{"a", firstValue } };
 
             var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
@@ -164,7 +165,7 @@ namespace GeneAutomate.BDD.Tests
 
         private static void RunSingle(Condition firstCondition, bool firstValue)
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
             var secondCondition = new Condition() { { "a", firstValue } };
 
             var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);

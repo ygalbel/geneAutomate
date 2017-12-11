@@ -73,7 +73,7 @@ namespace GeneAutomate.BDD
                 states.Add(state1);
                 //var goal2 = CreateExpressionBasedOnAutomata(tempAutomata);
 
-                var dictValues = CreateDictBasedOnAutomata(tempAutomata);
+                var dictValues = BDDLogicHelper.CreateDictBasedOnAutomata(tempAutomata);
                 Expression seq = null;
 
                 /*CreateExpressionsFromBooleanNetwork(booleanNetwok,
@@ -456,42 +456,6 @@ namespace GeneAutomate.BDD
 
             logger.Info("Goal: " + goal1);
             return goal1;
-        }
-
-        private static Dictionary<string,bool> CreateDictBasedOnAutomata(GeneNode automata)
-        {
-            Dictionary<string, bool> result = new Dictionary<string, bool>();
-
-            if (automata == null || automata.Transitions == null || !automata.Transitions.Any())
-            {
-                return null;
-            }
-
-            int i = 0;
-            automata.Visit(l =>
-            {
-                var tr = GetTransitions(l);
-
-                if (tr == null)
-                {
-                    return;
-
-                }
-
-                tr
-                    .ForEach(
-                        f =>
-                        {
-                            var key = Formater.FormatParameter(f.Key, i);
-                            var value = f.Value.Value;
-
-                            result[key] = value;
-                        });
-                i++;
-            });
-
-
-            return result;
         }
 
         private static List<KeyValuePair<string, bool?>> GetTransitions(GeneNode l)

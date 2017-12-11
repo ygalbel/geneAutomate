@@ -33,7 +33,7 @@ namespace GeneAutomate.BDD.Tests
 
         private static bool IsExistPath(string experimentName)
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var parser = new FileParser();
 
@@ -65,7 +65,7 @@ namespace GeneAutomate.BDD.Tests
             int i = 0;
             automates.ToList().ForEach(a =>
             {
-                var solver = new BDDSolver();
+                var solver = NinjectHelper.Get<IBDDSolver>();
 
                 logger.Info("Start " + (i++));
                 sos &= solver.IsValidPath(a.Value, res);

@@ -14,7 +14,7 @@ namespace GeneAutomate.Controllers
     {
         public IHttpActionResult GetData()
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var parser = new FileParser();
 

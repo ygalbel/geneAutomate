@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
 using Newtonsoft.Json;
 using NLog;
@@ -115,7 +116,7 @@ namespace GeneAutomate.BDD.Tests
         public void RunNegativeTest(Dictionary<int, List<int>> resultValues)
         {
             var fault = new List<Tuple<int, int>>();
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
             resultValues.ToList().ForEach((rv) =>
             {
                 TetsParameters.ForEach(tp =>
@@ -153,7 +154,7 @@ namespace GeneAutomate.BDD.Tests
         {
             var fault = new List<Tuple<int, int>>();
 
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
             resultValues.ToList().ForEach((rv) =>
             {
                 TetsParameters.ForEach(tp =>
@@ -408,7 +409,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestSimpleCaseNegativeFromTrueToFalseBDDSolver()
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -439,7 +440,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestSimpleCaseNegativeFromFalseToTrueBDDSolver()
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -471,7 +472,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestSimpleCasePositiveBDDSolver()
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -502,7 +503,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestSCaseWithTwoParametersBDDSolver()
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -534,7 +535,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestCaseWithOneParametersAndOneStepsIn_Time_2_BDDSolverShouldPass()
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -577,7 +578,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestPositiveConnectionCantPassWithNegativeValue()
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -621,7 +622,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestCaseWithOneParametersAndTwoStepsIn_Time_2_BDDSolverShouldPass()
         {
-            var solver = new BDDSolver();
+            var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -665,7 +666,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestCaseWithOneParameterAndTwoStepsBDDSolverShouldFailedErrorInMiddle()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -708,7 +709,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestCaseWithOneParameterAndTwoStepsSameAsAboveStartFromNegative()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -751,7 +752,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestCaseWithOneParameterAndTwoStepsBDDSolverShouldFailedErrorInLast()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -794,7 +795,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestCaseWithTwoParametersAndTwoStepsBDDSolverShouldFailed()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -849,7 +850,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestSCaseWithTwoParametersAndTwoRulesBDDSolver()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -882,7 +883,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestSCaseWithThreeParametersAndThreeRulesBDDSolver()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -927,7 +928,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestSCaseWithMultipleParametersButMissingRulesBDDSolver()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -973,7 +974,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestSCaseWithMultipleParametersAddSomeParamsMissingInSomeNodes()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
@@ -1021,7 +1022,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestNotOperatorIWorking()
         {
-            var solver = new BDDSolver();
+           var solver = NinjectHelper.Get<IBDDSolver>();
 
             var automata = new GeneNode()
             {
