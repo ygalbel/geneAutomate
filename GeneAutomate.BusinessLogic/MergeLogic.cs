@@ -58,7 +58,7 @@ namespace GeneAutomate.BusinessLogic
 
         private bool IsBddValid(GeneNode geneNode, List<GeneLink> booleanNetwok)
         {
-            return new BDDSolver().IsValidPath(geneNode, booleanNetwok);
+            return NinjectHelper.Get<IBDDSolver>().IsValidPath(geneNode, booleanNetwok);
         }
 
         public List<GeneNode> GetMerges(List<GeneNode> nodes)

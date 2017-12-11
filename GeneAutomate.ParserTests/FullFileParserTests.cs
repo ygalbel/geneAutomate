@@ -66,6 +66,7 @@ namespace GeneAutomate.ParserTests
 
         }
 
+        [Ignore]
         [TestMethod]
         public void TestCanParseToys2()
         {
