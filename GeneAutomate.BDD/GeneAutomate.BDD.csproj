@@ -54,11 +54,14 @@
   <ItemGroup>
     <Compile Include="BDDLogicHelper.cs" />
     <Compile Include="BDDSharpSolver.cs" />
+    <Compile Include="BDDSharp\FuncAssignmentHelper.cs" />
+    <Compile Include="BDDSharp\FuncHelperInner.cs" />
     <Compile Include="BDDSolver.cs" />
     <Compile Include="BooleanBdd.cs" />
     <Compile Include="Formater.cs" />
     <Compile Include="FuncHelperInner.cs" />
     <Compile Include="IBDDSolver.cs" />
+    <Compile Include="IFuncHelperInner.cs" />
     <Compile Include="ListGeneNodeExtensions.cs" />
     <Compile Include="FuncAssignmentHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,6 +91,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

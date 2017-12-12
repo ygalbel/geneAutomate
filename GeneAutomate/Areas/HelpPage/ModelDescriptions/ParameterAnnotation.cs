@@ -2,7 +2,7 @@ using System;
 
 namespace GeneAutomate.Areas.HelpPage.ModelDescriptions
 {
-    public class ParameterAnnotation
+    public class ParameterAnnotation    
     {
         public Attribute AnnotationAttribute { get; set; }
 

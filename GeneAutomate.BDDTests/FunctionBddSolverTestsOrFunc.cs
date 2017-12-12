@@ -109,7 +109,7 @@ namespace GeneAutomate.BDD.Tests
         [ClassInitialize]
         public static void ClassInit(TestContext context)
         {
-            FuncAssignmentHelper.dict.Add(47, (func) => func.AndPositiveIsTrue());
+           // FuncAssignmentHelper.dict.Add(47, (func) => func.AndPositiveIsTrue());
 
         }
 

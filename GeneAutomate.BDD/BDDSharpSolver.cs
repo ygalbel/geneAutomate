@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeneAutomate.BDD.BDDSharp;
 using GeneAutomate.Models;
 using NLog;
 using UCLouvain.BDDSharp;
@@ -13,14 +14,16 @@ namespace GeneAutomate.BDD
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+
+        private Dictionary<string,BDDNode> nodeStore = new Dictionary<string, BDDNode>();
+
         public bool IsValidPath(GeneNode automata, List<GeneLink> booleanNetwok, Dictionary<string, List<int>> availableFunctions = null)
         {
             var letters = new List<string>();
-
-            int z = 0;
-            var manager = new BDDManager(z);
             var depth = automata.NodeLength;
 
+            int z = 0;
+            var manager = new BDDManager(50);
             automata.GetAllConditionLetters(letters);
 
 
@@ -31,75 +34,209 @@ namespace GeneAutomate.BDD
             List<BDDNode> nodes = new List<BDDNode>();
             int i = 0;
             Dictionary<string, Tuple<int,BDDNode>> letterIndexes = new Dictionary<string, Tuple<int,BDDNode>>();
-            foreach (var l in letters.Distinct().ToList())
+
+            BDDNode assignmentsBDDNode = null;
+            /*foreach (var l in letters.Distinct().ToList())
             {
                 var bddNode = manager.Create(i, manager.One, manager.Zero);
                 letterIndexes[l] = new Tuple<int, BDDNode>(i, bddNode);
+                nodeStore[l] = bddNode;
                 nodes.Add(bddNode);
                 i++;
-            }
+
+                if (assignmentsBDDNode == null)
+                {
+                    assignmentsBDDNode = bddNode;
+                }
+                else
+                {
+                    assignmentsBDDNode = manager.And(assignmentsBDDNode, bddNode);
+                }
+            }*/
             logger.Info(string.Join(",", letters));
 
             var assignments = BDDLogicHelper.CreateDictBasedOnAutomata(automata);
+            var last = manager.One;
             assignments.ToList().ForEach(a =>
             {
-                manager.Create(i++, 
-                    manager.Equal(letterIndexes[a.Key].Item2, a.Value ? manager.One : manager.Zero), 
-                    manager.Zero);
-            });
+                BDDNode bddNode = null;
 
-            throw new NotImplementedException();
+                if (a.Value)
+                {
+                    bddNode = manager.Create(i++, last, manager.Zero);
+                }
+                else
+                {
+                    bddNode = manager.Create(i++, manager.Zero, last);
+                }
+
+                last = bddNode;
+                letterIndexes[a.Key] = new Tuple<int, BDDNode>(i, bddNode);
+                nodeStore[a.Key]= bddNode;
+                /*if (assignmentsBDDNode == null)
+                {
+                    assignmentsBDDNode = node;
+                }
+                else
+                {
+                    assignmentsBDDNode = manager.And(assignmentsBDDNode, node);
+                }*/
+            });
+            assignmentsBDDNode = last;
+
+            var relations = 
+                CreateExpressionsFromBooleanNetwork(manager, booleanNetwok, availableFunctions, depth);
+                
+            var root = manager.And(assignmentsBDDNode, relations);
+
+
+         //   var res = manager.Reduce(root);
+
+            Dictionary<BDDNode, string> reverseHash = nodeStore.ToDictionary(a => a.Value, a => a.Key);
+
+            reverseHash[relations] = "RELATIONS";
+            reverseHash[assignmentsBDDNode] = "ASSIGNMENTS";
+
+
+            // reverseHash.Add(root, "ROOT");
+            Func<BDDNode, string> labelFunction = node => 
+            reverseHash.ContainsKey(node) ? 
+                        reverseHash[node] + $"({node.Id})" :
+                        $"({node.Key.Item1},{node.Key.Item2})";
+            logger.Info(manager.ToDot(root, labelFunction, show_all:true));
+
+            var truth = BuildThruthTable(manager, root,i);
+            return truth.Any(a => a.Value);
+
+     //       CheckThruthTable(truth, res);
+
+            //return true;
+        }
+
+        protected Dictionary<string, bool> BuildThruthTable(BDDManager manager, BDDNode root, int i)
+        {
+            var truth = new Dictionary<string, bool>();
+            AddThruthValue("", root, truth, i);
+            return truth;
+        }
+
+        protected void CheckThruthTable(Dictionary<string, bool> matrix, BDDNode node)
+        {
+            foreach (var kv in matrix)
+            {
+                Dictionary<int, bool> interpretation = BuildInterpretation(kv.Key);
+                bool value = EvaluateBDD(node, interpretation);
+                //Assert.AreEqual(matrix[kv.Key], value);
+            }
+        }
+
+        void AddThruthValue(string key, BDDNode node, Dictionary<string, bool> matrix, int acc)
+        {
+            if (acc == 0)
+            {
+                Dictionary<int, bool> interpretation = BuildInterpretation(key);
+                bool value = EvaluateBDD(node, interpretation);
+                matrix.Add(key, value);
+                return;
+            }
+
+            AddThruthValue(key + "0", node, matrix, acc - 1);
+            AddThruthValue(key + "1", node, matrix, acc - 1);
+        }
+
+        private static Dictionary<int, bool> BuildInterpretation(string key)
+        {
+            int index = 0;
+            var interpretation = new Dictionary<int, bool>();
+            foreach (var v in key)
+            {
+                interpretation.Add(index, v == '1');
+                index++;
+            }
+
+            return interpretation;
+        }
+
+        bool EvaluateBDD(BDDNode root, Dictionary<int, bool> interpretation)
+        {
+            if (root.IsOne)
+            {
+                return true;
+            }
+            else if (root.IsZero)
+            {
+                return false;
+            }
+            else
+            {
+                var b = interpretation[root.Index];
+                if (b)
+                    return EvaluateBDD(root.High, interpretation);
+                else
+                    return EvaluateBDD(root.Low, interpretation);
+            }
         }
 
 
-        private static void CreateExpressionsFromBooleanNetwork(
+        private BDDNode CreateExpressionsFromBooleanNetwork(
             BDDManager manager,
                                                  List<GeneLink> booleanNetwok,
                                                  Dictionary<string, List<int>> availableFunctions,
                                                  int depth,
-                                                 Mode mode,
                                                  Dictionary<string, bool> values = null)
         {
             var toDictionary = booleanNetwok.GroupBy(a => a.To);
 
+            BDDNode seq = null;
+
             for (int i = 0; i < depth - 1; i++)
             {
-                var ass = CreateFunctionApplication(availableFunctions, toDictionary, i, mode, values);
+                var ass = CreateFunctionApplication(manager,availableFunctions, toDictionary, i,values);
 
-                seq = AddIfExist(seq, ass, mode);
+                if (seq == null)
+                {
+                    seq = ass;
+
+                }
+                else
+                {
+                    seq = manager.And(seq, ass);
+                }
+               
             }
 
             return seq;
         }
 
-        private static BDDNode CreateFunctionApplication(
+        private  BDDNode CreateFunctionApplication(
             BDDManager manager,
             Dictionary<string, List<int>> availableFunctions,
             IEnumerable<IGrouping<string, GeneLink>> toDictionary,
             int i,
-            Mode mode,
             Dictionary<string, bool> values)
         {
-            Expression res = null;
+            BDDNode res = null;
 
 
             toDictionary.ToList().ForEach(ff =>
             {
                 BDDNode ass = null;
-                var to = ff.Key;
                 var froms = ff.Where(a => !a.IsOptional).ToList();
 
                 // can be null!!
+                var to = Formater.FormatParameter(ff.Key, i + 1);
 
-                if (availableFunctions == null || !availableFunctions.ContainsKey(to))
+                if (availableFunctions == null || !availableFunctions.ContainsKey(ff.Key))
                 {
-                    res = manager.Create() (res, CreateAssignment(ff.FirstOrDefault(), i, GetFunction(mode)), mode);
+                    var from1 = Formater.FormatParameter(ff.FirstOrDefault().From, i);
+                    //TODO: NOT!
+                    res = manager.Equal(nodeStore[from1], nodeStore[to]);
                 }
-                else
+                else // real functions
                 {
 
-                    var availableFunc = availableFunctions[to];
-                    var funcAssignmentHelper = new FuncAssignmentHelper();
+                    var availableFunc = availableFunctions[ff.Key];
+                    var funcAssignmentHelper = new BddNodeFuncAssignmentHelper(manager, nodeStore);
                     var toFormatted = Formater.FormatParameter(to, i + 1);
 
                     availableFunc.ForEach(f =>
@@ -107,24 +244,8 @@ namespace GeneAutomate.BDD
                         ass =
                             funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f);
 
-                        //if (values != null && values.ContainsKey(toFormatted))
-                        //{
-                        //    ass = new PrimitiveApplication(PrimitiveApplication.AND, ass, new BoolConstant(values[toFormatted]));
-                        //    values.Remove(toFormatted);
-                        //}
+                        res = manager.Equal(nodeStore[to], ass);
                     });
-
-
-                    if (mode == Mode.Equal)
-                    {
-                        res = new PrimitiveApplication(PrimitiveApplication.EQUAL, new Variable(toFormatted),
-                               ass);
-                    }
-                    else
-                    {
-
-                        res = GetFunction(mode).Invoke(toFormatted, ass);
-                    }
 
                 }
             });

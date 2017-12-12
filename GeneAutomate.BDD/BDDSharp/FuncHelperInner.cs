@@ -1,0 +1,115 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using GeneAutomate.Models;
+using PAT.Common.Classes.Expressions.ExpressionClass;
+using UCLouvain.BDDSharp;
+
+namespace GeneAutomate.BDD.BDDSharp
+{
+    public class BDDNodeFuncHelperInner : FuncHelperInnerBase<BDDNode>
+    {
+        private const string OR = "OR";
+        private const string AND = "AND";
+        private readonly string _to;
+        private readonly List<GeneLink> _froms;
+        private readonly int _i;
+        private readonly BDDManager _manager;
+        private readonly Dictionary<string, BDDNode> _nodeStore;
+
+
+        public BDDNodeFuncHelperInner(string to, List<GeneLink> froms, int i, BDDManager manager, Dictionary<string,BDDNode> nodeStore)
+        {
+            _to = to;
+            _froms = froms;
+            _i = i;
+            _manager = manager;
+            _nodeStore = nodeStore;
+        }
+
+        public override BDDNode AllActivators()
+        {
+            return AppyToAll(_froms.Positives(), _i, true, AND);
+
+        }
+
+        public override BDDNode NotNoActivators()
+        {
+            return AppyToAll(_froms.Positives(), _i, true, OR);
+
+        }
+
+        /// <summary>
+        /// Any of them is true
+        /// </summary>
+        /// <param name="to"></param>
+        /// <param name="froms"></param>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public override BDDNode NotAllRepressors()
+        {
+            return AppyToAll(_froms.Negatives(), _i, true, OR);
+        }
+
+        public override BDDNode NoRepressors()
+        {
+            return AppyToAll(_froms.Negatives(), _i, false, AND);
+        }
+
+        public override BDDNode OrPositiveIsTrue()
+        {
+            return AppyToAll(_froms.Positives(), _i, true, OR);
+        }
+        public override BDDNode OrNegativeIsTrue()
+        {
+            return AppyToAll(_froms.Negatives(), _i, true, OR);
+        }
+        public override BDDNode AndPositiveIsTrue()
+        {
+            return AppyToAll(_froms.Positives(), _i, true, AND);
+        }
+
+        private BDDNode AppyToAll(List<GeneLink> froms, int i,
+            bool value, string func)
+        {
+            BDDNode app = null;
+            foreach (var f in froms)
+            {
+                var formatParameter = Formater.FormatParameter(f.From, i);
+
+                var node1 = _nodeStore[formatParameter];
+
+                if (app == null)
+                {
+                    app = node1;
+                }
+                else
+                {
+                    if (func == OR)
+                    {
+                        app = _manager.Or(node1, app);
+                        _nodeStore.Add("OR " + 
+                            _nodeStore.FirstOrDefault(d => d.Value == node1).Key +
+                            " " + 
+                            _nodeStore.FirstOrDefault(d => d.Value == app).Key, node1);
+
+                    }
+                    else if(func == AND)
+                    {
+                        app = _manager.And(node1, app);
+                        _nodeStore.Add("AND " + 
+                            _nodeStore.FirstOrDefault(d => d.Value == node1).Key + 
+                            " "+
+                            _nodeStore.FirstOrDefault(d => d.Value == app).Key, app);
+                    }
+                }
+            }
+
+            if (!value)
+            {
+                app = _manager.Not(app);
+            }
+
+            return app;
+        }
+    }
+}

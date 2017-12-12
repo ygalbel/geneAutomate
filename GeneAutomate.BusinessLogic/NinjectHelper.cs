@@ -15,7 +15,7 @@ namespace GeneAutomate.BusinessLogic
     {
         public override void Load()
         {
-            Bind<IBDDSolver>().To<BDDSolver>();
+            Bind<IBDDSolver>().To<BDDSharpSolver>();
         }
     }
     public static  class NinjectHelper

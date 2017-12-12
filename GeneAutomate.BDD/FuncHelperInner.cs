@@ -5,7 +5,9 @@ using PAT.Common.Classes.Expressions.ExpressionClass;
 
 namespace GeneAutomate.BDD
 {
-    public class FuncHelperInner
+
+
+    public class FuncHelperInner : FuncHelperInnerBase<Expression>
     {
         private readonly string _to;
         private readonly List<GeneLink> _froms;
@@ -19,13 +21,13 @@ namespace GeneAutomate.BDD
             _i = i;
         }
 
-        public Expression AllActivators()
+        public override Expression AllActivators()
         {
             return AppyToAll(_froms.Positives(), _i, true, PrimitiveApplication.AND);
 
         }
 
-        public Expression NotNoActivators()
+        public override Expression NotNoActivators()
         {
             return AppyToAll(_froms.Positives(), _i, true, PrimitiveApplication.OR);
 
@@ -38,36 +40,28 @@ namespace GeneAutomate.BDD
         /// <param name="froms"></param>
         /// <param name="i"></param>
         /// <returns></returns>
-        public Expression NotAllRepressors()
+        public override Expression NotAllRepressors()
         {
             return AppyToAll(_froms.Negatives(), _i, true, PrimitiveApplication.OR);
         }
 
-        public Expression NoRepressors()
+        public override Expression NoRepressors()
         {
             return AppyToAll(_froms.Negatives(), _i, false, PrimitiveApplication.AND);
         }
 
-
-        
-
-
-        public Expression OrPositiveIsTrue()
+        public override Expression OrPositiveIsTrue()
         {
             return AppyToAll(_froms.Positives(), _i, true, PrimitiveApplication.OR);
         }
-
-        public Expression OrNegativeIsTrue()
+        public override Expression OrNegativeIsTrue()
         {
             return AppyToAll(_froms.Negatives(), _i, true, PrimitiveApplication.OR);
         }
-
-        public Expression AndPositiveIsTrue()
+        public override Expression AndPositiveIsTrue()
         {
             return AppyToAll(_froms.Positives(), _i, true, PrimitiveApplication.AND);
         }
-
-
 
         private static Expression AppyToAll(List<GeneLink> froms, int i, 
             bool value, string func)

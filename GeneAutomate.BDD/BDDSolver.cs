@@ -458,7 +458,7 @@ namespace GeneAutomate.BDD
             return goal1;
         }
 
-        private static List<KeyValuePair<string, bool?>> GetTransitions(GeneNode l)
+        public static List<KeyValuePair<string, bool?>> GetTransitions(GeneNode l)
         {
             return l?.CurrentCondition.Where(f => f.Value.HasValue).ToList();
         }
