@@ -76,7 +76,11 @@ namespace GeneAutomate.BDD.BDDSharp
             {
                 var formatParameter = Formater.FormatParameter(f.From, i);
 
-                var node1 = _nodeStore[formatParameter];
+                var param = _nodeStore[formatParameter];
+
+                var node1 = 
+                    BDDSharpSolver.CreateNodeBasedOnAutomata(formatParameter, param.OriginalValue, _manager,
+                    _manager.One, param.Index);
 
                 if (app == null)
                 {
@@ -86,7 +90,7 @@ namespace GeneAutomate.BDD.BDDSharp
                 {
                     if (func == OR)
                     {
-                        app = _manager.Or(node1, app);
+                        app = _manager.Or(app,node1);
                         _nodeStore.Add("OR " + 
                             _nodeStore.FirstOrDefault(d => d.Value == node1).Key +
                             " " + 
@@ -95,11 +99,12 @@ namespace GeneAutomate.BDD.BDDSharp
                     }
                     else if(func == AND)
                     {
-                        app = _manager.And(node1, app);
+                        var oldApp = app;
+                        app = _manager.And(app, node1);
                         _nodeStore.Add("AND " + 
                             _nodeStore.FirstOrDefault(d => d.Value == node1).Key + 
                             " "+
-                            _nodeStore.FirstOrDefault(d => d.Value == app).Key, app);
+                            _nodeStore.FirstOrDefault(d => d.Value == oldApp).Key, app);
                     }
                 }
             }

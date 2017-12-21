@@ -15,7 +15,7 @@ namespace GeneAutomate.BDD
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
 
-        private Dictionary<string,BDDNode> nodeStore = new Dictionary<string, BDDNode>();
+        private Dictionary<string, BDDNode> nodeStore = new Dictionary<string, BDDNode>();
 
         public bool IsValidPath(GeneNode automata, List<GeneLink> booleanNetwok, Dictionary<string, List<int>> availableFunctions = null)
         {
@@ -33,7 +33,7 @@ namespace GeneAutomate.BDD
 
             List<BDDNode> nodes = new List<BDDNode>();
             int i = 0;
-            Dictionary<string, Tuple<int,BDDNode>> letterIndexes = new Dictionary<string, Tuple<int,BDDNode>>();
+            Dictionary<string, Tuple<int, BDDNode>> letterIndexes = new Dictionary<string, Tuple<int, BDDNode>>();
 
             BDDNode assignmentsBDDNode = null;
             /*foreach (var l in letters.Distinct().ToList())
@@ -59,20 +59,12 @@ namespace GeneAutomate.BDD
             var last = manager.One;
             assignments.ToList().ForEach(a =>
             {
-                BDDNode bddNode = null;
-
-                if (a.Value)
-                {
-                    bddNode = manager.Create(i++, last, manager.Zero);
-                }
-                else
-                {
-                    bddNode = manager.Create(i++, manager.Zero, last);
-                }
+                BDDNode bddNode =  CreateNodeBasedOnAutomata(a.Key,a.Value, manager, last, i);
+                i++;
 
                 last = bddNode;
                 letterIndexes[a.Key] = new Tuple<int, BDDNode>(i, bddNode);
-                nodeStore[a.Key]= bddNode;
+                nodeStore[a.Key] = bddNode;
                 /*if (assignmentsBDDNode == null)
                 {
                     assignmentsBDDNode = node;
@@ -84,33 +76,58 @@ namespace GeneAutomate.BDD
             });
             assignmentsBDDNode = last;
 
-            var relations = 
+            var relations =
                 CreateExpressionsFromBooleanNetwork(manager, booleanNetwok, availableFunctions, depth);
-                
-            var root = manager.And(assignmentsBDDNode, relations);
+
+            var root =  relations;
 
 
-         //   var res = manager.Reduce(root);
+            //  root = manager.Reduce(root);
 
             Dictionary<BDDNode, string> reverseHash = nodeStore.ToDictionary(a => a.Value, a => a.Key);
 
-            reverseHash[relations] = "RELATIONS";
-            reverseHash[assignmentsBDDNode] = "ASSIGNMENTS";
-
 
             // reverseHash.Add(root, "ROOT");
-            Func<BDDNode, string> labelFunction = node => 
-            reverseHash.ContainsKey(node) ? 
-                        reverseHash[node] + $"({node.Id})" :
-                        $"({node.Key.Item1},{node.Key.Item2})";
-            logger.Info(manager.ToDot(root, labelFunction, show_all:true));
+            Func<BDDNode, string> labelFunction = node =>
+            reverseHash.ContainsKey(node) ?
+                        reverseHash[node] + $"({node.Index})" :
+                        $"({ reverseHash.FirstOrDefault(a => a.Key.Index == node.Index).Value})";
+            logger.Info(manager.ToDot(root, labelFunction, show_all: true));
 
-            var truth = BuildThruthTable(manager, root,i);
+            IEnumerable<KeyValuePair<string, bool>> truth = BuildThruthTable(manager, root, i);
+
+            assignments.ToList().ForEach(a =>
+            {
+                var index = letterIndexes[a.Key].Item2.Index;
+                truth = truth.Where(d => d.Key[index] == (a.Value ? '1' : '0'));
+            });
+
             return truth.Any(a => a.Value);
 
-     //       CheckThruthTable(truth, res);
+            //       CheckThruthTable(truth, res);
 
             //return true;
+        }
+
+        public static BDDNode CreateNodeBasedOnAutomata
+            (string key, bool value,
+            BDDManager manager, BDDNode last,
+            int i)
+        {
+
+            BDDNode nodeBasedOnAutomata;
+            if (value)
+            {
+                nodeBasedOnAutomata = manager.Create(i, last, manager.Zero, key);
+            }
+            else
+            {
+
+                nodeBasedOnAutomata = manager.Create(i, manager.Zero, last, key);
+            }
+
+            nodeBasedOnAutomata.OriginalValue = value;
+            return nodeBasedOnAutomata;
         }
 
         protected Dictionary<string, bool> BuildThruthTable(BDDManager manager, BDDNode root, int i)
@@ -191,7 +208,7 @@ namespace GeneAutomate.BDD
 
             for (int i = 0; i < depth - 1; i++)
             {
-                var ass = CreateFunctionApplication(manager,availableFunctions, toDictionary, i,values);
+                var ass = CreateFunctionApplication(manager, availableFunctions, toDictionary, i, values);
 
                 if (seq == null)
                 {
@@ -202,13 +219,13 @@ namespace GeneAutomate.BDD
                 {
                     seq = manager.And(seq, ass);
                 }
-               
+
             }
 
             return seq;
         }
 
-        private  BDDNode CreateFunctionApplication(
+        private BDDNode CreateFunctionApplication(
             BDDManager manager,
             Dictionary<string, List<int>> availableFunctions,
             IEnumerable<IGrouping<string, GeneLink>> toDictionary,

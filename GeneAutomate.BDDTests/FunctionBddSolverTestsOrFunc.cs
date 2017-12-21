@@ -118,7 +118,7 @@ namespace GeneAutomate.BDD.Tests
         {
             var firstCondition = new Condition()
                 {
-                   { "b", false }, {"c", false }, {"d", false }, {"e" ,false }
+                   { "b", false }, {"c", false }
                 };
 
             RunSingle(firstCondition, false);
@@ -179,6 +179,7 @@ namespace GeneAutomate.BDD.Tests
 
             secondCondition = new Condition() { { "a", !firstValue } };
             automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
+            solver = NinjectHelper.Get<IBDDSolver>();
             res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
 
             Assert.IsFalse(res);
