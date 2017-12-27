@@ -57,32 +57,35 @@ namespace GeneAutomate.BDD
 
             var assignments = BDDLogicHelper.CreateDictBasedOnAutomata(automata);
             var last = manager.One;
+
+            nodeStore["1"] = manager.One;
+            nodeStore["0"] = manager.Zero;
             assignments.ToList().ForEach(a =>
             {
-                BDDNode bddNode =  CreateNodeBasedOnAutomata(a.Key,a.Value, manager, last, i);
+                BDDNode bddNode =  CreateNodeBasedOnAutomata(a.Key,a.Value, manager, i);
                 i++;
 
                 last = bddNode;
                 letterIndexes[a.Key] = new Tuple<int, BDDNode>(i, bddNode);
                 nodeStore[a.Key] = bddNode;
-                /*if (assignmentsBDDNode == null)
+                if (assignmentsBDDNode == null)
                 {
-                    assignmentsBDDNode = node;
+                    assignmentsBDDNode = bddNode;
                 }
                 else
                 {
-                    assignmentsBDDNode = manager.And(assignmentsBDDNode, node);
-                }*/
+                    assignmentsBDDNode = manager.And(assignmentsBDDNode, bddNode);
+                }
             });
-            assignmentsBDDNode = last;
 
             var relations =
-                CreateExpressionsFromBooleanNetwork(manager, booleanNetwok, availableFunctions, depth);
+                CreateExpressionsFromBooleanNetwork(manager, booleanNetwok, availableFunctions, depth, manager.One);
 
-            var root =  relations;
+// /           assignmentsBDDNode = manager.Reduce(assignmentsBDDNode);
+
+            var root =  manager.And(relations, assignmentsBDDNode);
 
 
-            //  root = manager.Reduce(root);
 
             Dictionary<BDDNode, string> reverseHash = nodeStore.ToDictionary(a => a.Value, a => a.Key);
 
@@ -92,7 +95,16 @@ namespace GeneAutomate.BDD
             reverseHash.ContainsKey(node) ?
                         reverseHash[node] + $"({node.Index})" :
                         $"({ reverseHash.FirstOrDefault(a => a.Key.Index == node.Index).Value})";
-            logger.Info(manager.ToDot(root, labelFunction, show_all: true));
+
+            logger.Info("ROOT");
+            logger.Info(manager.ToDot(root, show_all:false));
+
+            logger.Info("relations");
+            logger.Info(manager.ToDot(relations, show_all: false));
+
+            logger.Info("assignments");
+            logger.Info(manager.ToDot(assignmentsBDDNode, show_all: false));
+
 
             IEnumerable<KeyValuePair<string, bool>> truth = BuildThruthTable(manager, root, i);
 
@@ -111,19 +123,19 @@ namespace GeneAutomate.BDD
 
         public static BDDNode CreateNodeBasedOnAutomata
             (string key, bool value,
-            BDDManager manager, BDDNode last,
+            BDDManager manager, 
             int i)
         {
 
             BDDNode nodeBasedOnAutomata;
             if (value)
             {
-                nodeBasedOnAutomata = manager.Create(i, last, manager.Zero, key);
+                nodeBasedOnAutomata = manager.Create(i, manager.One, manager.Zero, key);
             }
             else
             {
 
-                nodeBasedOnAutomata = manager.Create(i, manager.Zero, last, key);
+                nodeBasedOnAutomata = manager.Create(i, manager.Zero, manager.One, key);
             }
 
             nodeBasedOnAutomata.OriginalValue = value;
@@ -200,7 +212,7 @@ namespace GeneAutomate.BDD
                                                  List<GeneLink> booleanNetwok,
                                                  Dictionary<string, List<int>> availableFunctions,
                                                  int depth,
-                                                 Dictionary<string, bool> values = null)
+                                                 BDDNode root)
         {
             var toDictionary = booleanNetwok.GroupBy(a => a.To);
 
@@ -208,7 +220,7 @@ namespace GeneAutomate.BDD
 
             for (int i = 0; i < depth - 1; i++)
             {
-                var ass = CreateFunctionApplication(manager, availableFunctions, toDictionary, i, values);
+                var ass = CreateFunctionApplication(manager, availableFunctions, toDictionary, i, root);
 
                 if (seq == null)
                 {
@@ -230,7 +242,7 @@ namespace GeneAutomate.BDD
             Dictionary<string, List<int>> availableFunctions,
             IEnumerable<IGrouping<string, GeneLink>> toDictionary,
             int i,
-            Dictionary<string, bool> values)
+            BDDNode root)
         {
             BDDNode res = null;
 
@@ -253,15 +265,32 @@ namespace GeneAutomate.BDD
                 {
 
                     var availableFunc = availableFunctions[ff.Key];
-                    var funcAssignmentHelper = new BddNodeFuncAssignmentHelper(manager, nodeStore);
+                    var funcAssignmentHelper = new BddNodeFuncAssignmentHelper(manager, nodeStore, root);
                     var toFormatted = Formater.FormatParameter(to, i + 1);
 
                     availableFunc.ForEach(f =>
-                    {
+                    {   
                         ass =
                             funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f);
 
-                        res = manager.Equal(nodeStore[to], ass);
+                        Dictionary<BDDNode, string> reverseHash = nodeStore.ToDictionary(a => a.Value, a => a.Key);
+
+
+                        // reverseHash.Add(root, "ROOT");
+                        Func<BDDNode, string> labelFunction = node =>
+                        reverseHash.ContainsKey(node) ?
+                                    reverseHash[node] + $"({node.Index})" :
+                                    $"({ reverseHash.FirstOrDefault(a => a.Key.Index == node.Index).Value})";
+
+                        logger.Info("TEMP");
+                        logger.Info(manager.ToDot(ass, show_all: false));
+
+
+                        var leftSide =
+                    BDDSharpSolver.CreateNodeBasedOnAutomata(
+                                to, true, manager,
+                                nodeStore[to].Index);
+                        res = manager.Equal(ass, leftSide);
                     });
 
                 }

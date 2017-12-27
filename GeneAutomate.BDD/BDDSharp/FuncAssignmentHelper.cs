@@ -11,11 +11,13 @@ namespace GeneAutomate.BDD.BDDSharp
     {
         private readonly BDDManager _manager;
         private readonly Dictionary<string, BDDNode> _nodes;
+        private readonly BDDNode _root;
 
-        public BddNodeFuncAssignmentHelper(BDDManager manager, Dictionary<string,BDDNode> nodes)
+        public BddNodeFuncAssignmentHelper(BDDManager manager, Dictionary<string,BDDNode> nodes, BDDNode root)
         {
             _manager = manager;
             _nodes = nodes;
+            _root = root;
         }
         public override BDDNode Or(BDDNode a, BDDNode b)
         {
@@ -36,7 +38,7 @@ namespace GeneAutomate.BDD.BDDSharp
             string to, List<GeneLink> froms,
             int i, int funcNumber)
         {
-            BDDNodeFuncHelperInner func = new BDDNodeFuncHelperInner(to, froms, i, _manager, _nodes);
+            BDDNodeFuncHelperInner func = new BDDNodeFuncHelperInner(to, froms, i, _manager, _nodes, _root);
             return dict[funcNumber].Invoke(func);
         }
     }

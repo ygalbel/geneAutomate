@@ -118,7 +118,7 @@ namespace GeneAutomate.BDD.Tests
         {
             var firstCondition = new Condition()
                 {
-                   { "b", false }, {"c", false }
+                   { "b", false }, {"c", false }, {"d", false }, {"e" ,false }
                 };
 
             RunSingle(firstCondition, false);

@@ -15,15 +15,17 @@ namespace GeneAutomate.BDD.BDDSharp
         private readonly int _i;
         private readonly BDDManager _manager;
         private readonly Dictionary<string, BDDNode> _nodeStore;
+        private readonly BDDNode _root;
 
 
-        public BDDNodeFuncHelperInner(string to, List<GeneLink> froms, int i, BDDManager manager, Dictionary<string,BDDNode> nodeStore)
+        public BDDNodeFuncHelperInner(string to, List<GeneLink> froms, int i, BDDManager manager, Dictionary<string, BDDNode> nodeStore, BDDNode root)
         {
             _to = to;
             _froms = froms;
             _i = i;
             _manager = manager;
             _nodeStore = nodeStore;
+            _root = root;
         }
 
         public override BDDNode AllActivators()
@@ -78,34 +80,42 @@ namespace GeneAutomate.BDD.BDDSharp
 
                 var param = _nodeStore[formatParameter];
 
-                var node1 = 
-                    BDDSharpSolver.CreateNodeBasedOnAutomata(formatParameter, param.OriginalValue, _manager,
-                    _manager.One, param.Index);
+                var node1 =
+                    BDDSharpSolver.CreateNodeBasedOnAutomata(
+                        formatParameter, true, _manager,
+                     param.Index);
 
-                if (app == null)
+                if (func == OR)
                 {
-                    app = node1;
+                    if (app == null)
+                    {
+                        app = node1;
+                    }
+                    else
+                    {
+                        app = _manager.Or(app, node1);
+                    }
+                    _nodeStore.Add("OR " +
+                        _nodeStore.FirstOrDefault(d => d.Value == node1).Key +
+                        " " +
+                        _nodeStore.FirstOrDefault(d => d.Value == app).Key, node1);
+
                 }
                 else
+                if (func == AND)
                 {
-                    if (func == OR)
+                    if (app == null)
                     {
-                        app = _manager.Or(app,node1);
-                        _nodeStore.Add("OR " + 
-                            _nodeStore.FirstOrDefault(d => d.Value == node1).Key +
-                            " " + 
-                            _nodeStore.FirstOrDefault(d => d.Value == app).Key, node1);
-
+                        app = node1;
                     }
-                    else if(func == AND)
+                    else
                     {
-                        var oldApp = app;
                         app = _manager.And(app, node1);
-                        _nodeStore.Add("AND " + 
-                            _nodeStore.FirstOrDefault(d => d.Value == node1).Key + 
-                            " "+
-                            _nodeStore.FirstOrDefault(d => d.Value == oldApp).Key, app);
                     }
+                    /*_nodeStore.Add("AND " +
+                        _nodeStore.FirstOrDefault(d => d.Value == node1).Key +
+                        " " +
+                        _nodeStore.FirstOrDefault(d => d.Value == oldApp).Key, app);*/
                 }
             }
 
