@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GeneAutomate.BDD.BDDSharp;
 using GeneAutomate.Models;
+using Ninject.Infrastructure.Disposal;
 using NLog;
 using UCLouvain.BDDSharp;
 
@@ -130,15 +131,15 @@ namespace GeneAutomate.BDD
             BDDNode nodeBasedOnAutomata;
             if (value)
             {
-                nodeBasedOnAutomata = manager.Create(i, manager.One, manager.Zero, key);
+                nodeBasedOnAutomata = manager.Create(i, manager.One, manager.Zero);
             }
             else
             {
 
-                nodeBasedOnAutomata = manager.Create(i, manager.Zero, manager.One, key);
+                nodeBasedOnAutomata = manager.Create(i, manager.Zero, manager.One);
             }
 
-            nodeBasedOnAutomata.OriginalValue = value;
+            //nodeBasedOnAutomata.OriginalValue = value;
             return nodeBasedOnAutomata;
         }
 
@@ -298,5 +299,18 @@ namespace GeneAutomate.BDD
 
             return res;
         }
+    }
+
+    public static class BddManagerExtenstions
+    {
+        public static BDDNode Not(this BDDManager manager, BDDNode node)
+        {
+            return manager.Negate(node);
+        }
+
+        public static BDDNode Equal(this BDDManager manager, BDDNode a, BDDNode b)
+        {
+            return manager.ITE(a, b, manager.Not(b));
+        }   
     }
 }

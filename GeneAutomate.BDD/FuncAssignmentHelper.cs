@@ -39,7 +39,9 @@ namespace GeneAutomate.BDD
         protected void Init()
         {
             dict = new Dictionary<int, Func<FuncHelperInnerBase<T>, T>>()
-            { { 47, (func) => func.AndPositiveIsTrue()},
+            {{45, (func) => func.OrPositiveIsTrue()},
+                { 44, (func) => func.OrNegativeIsTrue()},
+                { 47, (func) => func.AndPositiveIsTrue()},
                 {-1, (func) => func.AllActivators() },
                 {-2, (func) => func.NoRepressors() },
                 {-3, (func) => func.NotNoActivators() },

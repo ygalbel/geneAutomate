@@ -22,13 +22,7 @@ namespace GeneAutomate.BDD.Tests
     [TestClass]
     public class FunctionBddOrOperatorTests : AbstractBddTest
     {
-        [ClassInitialize]
-        public static void ClassInit(TestContext context)
-        {
-            FuncAssignmentHelper.dict.Add(44, (func) => func.OrNegativeIsTrue());
-            FuncAssignmentHelper.dict.Add(45, (func) => func.OrPositiveIsTrue());
-
-        }
+       
 
         [TestMethod]
         public void TestOrFirstCase()

@@ -95,11 +95,6 @@ namespace GeneAutomate.BDD.BDDSharp
                     {
                         app = _manager.Or(app, node1);
                     }
-                    _nodeStore.Add("OR " +
-                        _nodeStore.FirstOrDefault(d => d.Value == node1).Key +
-                        " " +
-                        _nodeStore.FirstOrDefault(d => d.Value == app).Key, node1);
-
                 }
                 else
                 if (func == AND)
@@ -112,10 +107,6 @@ namespace GeneAutomate.BDD.BDDSharp
                     {
                         app = _manager.And(app, node1);
                     }
-                    /*_nodeStore.Add("AND " +
-                        _nodeStore.FirstOrDefault(d => d.Value == node1).Key +
-                        " " +
-                        _nodeStore.FirstOrDefault(d => d.Value == oldApp).Key, app);*/
                 }
             }
 
