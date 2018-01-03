@@ -32,87 +32,76 @@ namespace GeneAutomate.BDD
             letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => Formater.FormatParameter(l, n)))
                 .ToList();
 
-            List<BDDNode> nodes = new List<BDDNode>();
-            int i = 0;
-            Dictionary<string, Tuple<int, BDDNode>> letterIndexes = new Dictionary<string, Tuple<int, BDDNode>>();
+            int nodeNumber = 0;
 
-            BDDNode assignmentsBDDNode = null;
-            /*foreach (var l in letters.Distinct().ToList())
-            {
-                var bddNode = manager.Create(i, manager.One, manager.Zero);
-                letterIndexes[l] = new Tuple<int, BDDNode>(i, bddNode);
-                nodeStore[l] = bddNode;
-                nodes.Add(bddNode);
-                i++;
-
-                if (assignmentsBDDNode == null)
-                {
-                    assignmentsBDDNode = bddNode;
-                }
-                else
-                {
-                    assignmentsBDDNode = manager.And(assignmentsBDDNode, bddNode);
-                }
-            }*/
             logger.Info(string.Join(",", letters));
 
             var assignments = BDDLogicHelper.CreateDictBasedOnAutomata(automata);
-            var last = manager.One;
 
             nodeStore["1"] = manager.One;
             nodeStore["0"] = manager.Zero;
-            assignments.ToList().ForEach(a =>
-            {
-                BDDNode bddNode =  CreateNodeBasedOnAutomata(a.Key,a.Value, manager, i);
-                i++;
 
-                last = bddNode;
-                letterIndexes[a.Key] = new Tuple<int, BDDNode>(i, bddNode);
-                nodeStore[a.Key] = bddNode;
-                if (assignmentsBDDNode == null)
+            var assignmentsBDDNode = CreateAssignmentsBddNodes(assignments, manager, ref nodeNumber);
+            BDDNode functionNodes = null;
+
+            CreateFunctionsKeys(availableFunctions).ToList().ForEach(f =>
+            {
+                BDDNode currentNodeOr = null;
+                List<BDDNode> currents = new List<BDDNode>();
+                f.Value.ForEach(d =>
                 {
-                    assignmentsBDDNode = bddNode;
+                    var c = manager.Create(nodeNumber++, 1, 0);
+                    nodeStore[d] = c;
+                    currents.Add(c);
+
+                    if (currentNodeOr == null)
+                    {
+                        currentNodeOr = c;
+                    }
+                    else
+                    {
+                        currentNodeOr = manager.Or(c, currentNodeOr);
+                    }
+                });
+
+                currentNodeOr = manager.Equal(manager.One, currentNodeOr);
+
+                if (functionNodes == null)
+                {
+                    functionNodes = currentNodeOr;
                 }
                 else
                 {
-                    assignmentsBDDNode = manager.And(assignmentsBDDNode, bddNode);
+                    functionNodes = manager.And(functionNodes, currentNodeOr);
                 }
+
             });
+
 
             var relations =
                 CreateExpressionsFromBooleanNetwork(manager, booleanNetwok, availableFunctions, depth, manager.One);
 
-// /           assignmentsBDDNode = manager.Reduce(assignmentsBDDNode);
-
-            var root =  manager.And(relations, assignmentsBDDNode);
-
+            relations = manager.And(relations, functionNodes);
+            var root = manager.And(relations, assignmentsBDDNode);
 
 
-            Dictionary<BDDNode, string> reverseHash = nodeStore.ToDictionary(a => a.Value, a => a.Key);
+            //// LOG PART
+            LogToDotFormat(root, manager);
+
+            //logger.Info("relations");
+            //logger.Info(manager.ToDot(relations, show_all: false));
+
+            //logger.Info("assignments");
+            //logger.Info(manager.ToDot(assignmentsBDDNode, show_all: false));
 
 
-            // reverseHash.Add(root, "ROOT");
-            Func<BDDNode, string> labelFunction = node =>
-            reverseHash.ContainsKey(node) ?
-                        reverseHash[node] + $"({node.Index})" :
-                        $"({ reverseHash.FirstOrDefault(a => a.Key.Index == node.Index).Value})";
-
-            logger.Info("ROOT");
-            logger.Info(manager.ToDot(root, show_all:false));
-
-            logger.Info("relations");
-            logger.Info(manager.ToDot(relations, show_all: false));
-
-            logger.Info("assignments");
-            logger.Info(manager.ToDot(assignmentsBDDNode, show_all: false));
-
-
-            IEnumerable<KeyValuePair<string, bool>> truth = BuildThruthTable(manager, root, i);
+            IEnumerable<KeyValuePair<string, bool>> truth = BuildThruthTable(manager, root, nodeNumber);
 
             assignments.ToList().ForEach(a =>
             {
-                var index = letterIndexes[a.Key].Item2.Index;
-                truth = truth.Where(d => d.Key[index] == (a.Value ? '1' : '0'));
+                var index = nodeStore[a.Key].Index;
+                truth = truth.Where(d => 
+                    d.Key[index] == (a.Value ? '1' : '0'));
             });
 
             return truth.Any(a => a.Value);
@@ -122,9 +111,58 @@ namespace GeneAutomate.BDD
             //return true;
         }
 
+        private void LogToDotFormat(BDDNode root, BDDManager manager)
+        {
+            Dictionary<BDDNode, string> reverseHash = nodeStore.ToDictionary(a => a.Value, a => a.Key);
+
+            Func<BDDNode, string> labelFunction = node =>
+                reverseHash.ContainsKey(node)
+                    ? reverseHash[node] + $"({node.Index})"
+                    : $"({reverseHash.FirstOrDefault(a => a.Key.Index == node.Index).Value})";
+
+            logger.Info("ROOT");
+            logger.Info(manager.ToDot(root, show_all: false, labelFunction: labelFunction));
+        }
+
+        public static Dictionary<string,List<string>> CreateFunctionsKeys(Dictionary<string, List<int>> availableFunctions)
+        {
+            return (from af in availableFunctions
+                    let k = af.Key
+                    from val in af.Value
+                    select new {key = k, value = CreateFunctionKey(val, k)}).GroupBy(a => a.key)
+                .ToDictionary(a => a.Key, a => new List<string>(a.Select(v => v.value)));
+        }
+
+        private static string CreateFunctionKey(int funcNumber, string key)
+        {
+            return $"#F{funcNumber}_{key}";
+        }
+
+        private BDDNode CreateAssignmentsBddNodes(Dictionary<string, bool> assignments, BDDManager manager, ref int i)
+        {
+            BDDNode assignmentsBDDNode = null;
+            foreach (var a in assignments.ToList())
+            {
+                BDDNode bddNode = CreateNodeBasedOnAutomata(a.Key, a.Value, manager, i);
+                i++;
+
+                nodeStore[a.Key] = bddNode;
+                if (assignmentsBDDNode == null)
+                {
+                    assignmentsBDDNode = bddNode;
+                }
+                else
+                {
+                    assignmentsBDDNode = manager.And(assignmentsBDDNode, bddNode);
+                }
+            }
+
+            return assignmentsBDDNode;
+        }
+
         public static BDDNode CreateNodeBasedOnAutomata
             (string key, bool value,
-            BDDManager manager, 
+            BDDManager manager,
             int i)
         {
 
@@ -270,27 +308,16 @@ namespace GeneAutomate.BDD
                     var toFormatted = Formater.FormatParameter(to, i + 1);
 
                     availableFunc.ForEach(f =>
-                    {   
+                    {
                         ass =
                             funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f);
 
-                        Dictionary<BDDNode, string> reverseHash = nodeStore.ToDictionary(a => a.Value, a => a.Key);
-
-
-                        // reverseHash.Add(root, "ROOT");
-                        Func<BDDNode, string> labelFunction = node =>
-                        reverseHash.ContainsKey(node) ?
-                                    reverseHash[node] + $"({node.Index})" :
-                                    $"({ reverseHash.FirstOrDefault(a => a.Key.Index == node.Index).Value})";
-
-                        logger.Info("TEMP");
-                        logger.Info(manager.ToDot(ass, show_all: false));
-
+                        ass = manager.And(nodeStore[CreateFunctionKey(f, ff.Key)], ass);
 
                         var leftSide =
-                    BDDSharpSolver.CreateNodeBasedOnAutomata(
-                                to, true, manager,
-                                nodeStore[to].Index);
+                                BDDSharpSolver.CreateNodeBasedOnAutomata(
+                                                    to, true, manager,
+                                                    nodeStore[to].Index);
                         res = manager.Equal(ass, leftSide);
                     });
 
@@ -311,6 +338,6 @@ namespace GeneAutomate.BDD
         public static BDDNode Equal(this BDDManager manager, BDDNode a, BDDNode b)
         {
             return manager.ITE(a, b, manager.Not(b));
-        }   
+        }
     }
 }
