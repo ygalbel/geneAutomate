@@ -49,12 +49,12 @@ namespace GeneAutomate.BDD.BDDSharp
         /// <returns></returns>
         public override BDDNode NotAllRepressors()
         {
-            return AppyToAll(_froms.Negatives(), _i, true, OR);
+            return AppyToAll(_froms.Negatives(), _i, false, AND);
         }
 
         public override BDDNode NoRepressors()
         {
-            return AppyToAll(_froms.Negatives(), _i, false, AND);
+            return AppyToAll(_froms.Negatives(), _i, false, OR);
         }
 
         public override BDDNode OrPositiveIsTrue()
