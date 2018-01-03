@@ -22,15 +22,12 @@ namespace GeneAutomate.BDD.BDDSharp
         public override BDDNode Or(BDDNode a, BDDNode b)
         {
             var bddNode = _manager.Or(a,b);
-            _nodes.Add("OR" + _nodes.FirstOrDefault(d => d.Value == a).Key + _nodes.FirstOrDefault(d => d.Value == b).Key, bddNode);
             return bddNode;
         }
 
         public override BDDNode And(BDDNode a, BDDNode b)
         {
             var bddNode = _manager.And(a, b);
-            _nodes.Add("AND" + _nodes.FirstOrDefault(d => d.Value == a).Key + _nodes.FirstOrDefault(d => d.Value == b).Key, bddNode);
-
             return bddNode;
         }
 
