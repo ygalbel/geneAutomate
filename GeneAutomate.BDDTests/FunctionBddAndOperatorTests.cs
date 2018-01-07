@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Generic;
 using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
 
 namespace GeneAutomate.BDD.Tests
 {
     [TestClass]
-    public class FunctionBddOrOperatorTests : AbstractBddTest
+    public class FunctionBddAndOperatorTests : AbstractBddTest
     {
-       
+        [ClassInitialize]
+        public static void ClassInit(TestContext context)
+        {
+            // FuncAssignmentHelper.dict.Add(47, (func) => func.AndPositiveIsTrue());
+
+        }
 
         [TestMethod]
-        public void TestOrFirstCase()
+        public void TestAndFirstCase()
         {
-            var firstCondition  = new Condition()
-                {
-                   { "b", false }, {"c", false }, {"d", false }, {"e" ,false }
-                };
+            var firstCondition = new Condition()
+            {
+                { "b", false }, {"c", false }, {"d", false }, {"e" ,false }
+            };
 
             RunSingle(firstCondition, false);
         }
@@ -32,54 +33,55 @@ namespace GeneAutomate.BDD.Tests
         }
 
         [TestMethod]
-        public void TestOrSecondCase()
+        public void TestAndSecondCase()
         {
             var firstCondition = new Condition()
-                {
-                   { "b", false }, {"c", false }, {"d", true }, {"e" ,false }
-                };
+            {
+                { "b", false }, {"c", true }, {"d", false }, {"e" ,false }
+            };
 
-            RunSingle(firstCondition, true);
+            RunSingle(firstCondition, false);
         }
 
         [TestMethod]
-        public void TestOrThirdCase()
+        public void TestAndThirdCase()
         {
             var firstCondition = new Condition()
-                {
-                   { "b", false }, {"c", false }, {"d", false }, {"e" ,true }
-                };
+            {
+                { "b", true }, {"c", false }, {"d", false }, {"e" ,false }
+            };
 
-            RunSingle(firstCondition, true);
+            RunSingle(firstCondition, false);
         }
 
         [TestMethod]
-        public void TestOrFourthCase()
+        public void TestAndFourthCase()
         {
             var firstCondition = new Condition()
-                {
-                   { "b", false }, {"c", false }, {"d", true }, {"e" ,true }
-                };
+            {
+                { "b", true }, {"c", true }, {"d", false }, {"e" ,false }
+            };
 
             RunSingle(firstCondition, true);
-        }
+        }   
 
         private static void RunSingle(Condition firstCondition, bool firstValue)
         {
             var solver = NinjectHelper.Get<IBDDSolver>();
-            var secondCondition = new Condition() {{"a", firstValue } };
+            var secondCondition = new Condition() { { "a", firstValue } };
 
             var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
 
             var booleanNetwork = CreateBooleanNetwork();
 
-            var availableFunctions = new Dictionary<string, List<int>>() {{"a", new List<int>() {44}}};
+            var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { 47 } } };
             var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
 
             Assert.IsTrue(res);
 
-            secondCondition = new Condition() {{"a", !firstValue}};
+            secondCondition = new Condition() { { "a", !firstValue } };
             automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
+            solver = NinjectHelper.Get<IBDDSolver>();
             res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
 
             Assert.IsFalse(res);

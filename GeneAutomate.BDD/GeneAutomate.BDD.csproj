@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BDDLogicHelper.cs" />
+    <Compile Include="BddManagerExtenstions.cs" />
     <Compile Include="BDDSharpSolver.cs" />
     <Compile Include="BDDSharp\FuncAssignmentHelper.cs" />
     <Compile Include="BDDSharp\FuncHelperInner.cs" />

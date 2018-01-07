@@ -18,14 +18,13 @@ namespace GeneAutomate.BDD.BDDSharp
         private readonly BDDNode _root;
 
 
-        public BDDNodeFuncHelperInner(string to, List<GeneLink> froms, int i, BDDManager manager, Dictionary<string, BDDNode> nodeStore, BDDNode root)
+        public BDDNodeFuncHelperInner(string to, List<GeneLink> froms, int i, BDDManager manager, Dictionary<string, BDDNode> nodeStore)
         {
             _to = to;
             _froms = froms;
             _i = i;
             _manager = manager;
             _nodeStore = nodeStore;
-            _root = root;
         }
 
         public override BDDNode AllActivators()
