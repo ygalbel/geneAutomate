@@ -8,5 +8,7 @@ namespace GeneAutomate.Parser
         public Dictionary<string, Condition> Conditions = new Dictionary<string, Condition>();
 
         public Dictionary<string, Experiment> Experiments = new Dictionary<string, Experiment>();
+
+        public Dictionary<string, List<int>> Functions = new Dictionary<string, List<int>>();
     }
 }

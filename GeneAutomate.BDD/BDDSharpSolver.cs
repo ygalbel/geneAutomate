@@ -15,9 +15,6 @@ namespace GeneAutomate.BDD
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-
-        
-
         public bool IsValidPath(GeneNode automata, List<GeneLink> booleanNetwok, Dictionary<string, List<int>> availableFunctions = null)
         {
             var nodeStore = new Dictionary<string, BDDNode>();
@@ -28,13 +25,11 @@ namespace GeneAutomate.BDD
             var manager = new BDDManager(50);
             automata.GetAllConditionLetters(letters);
 
-
             letters =
-            letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => Formater.FormatParameter(l, n)))
+            letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => Formatter.FormatParameter(l, n)))
                 .ToList();
 
             int nodeNumber = 0;
-
             logger.Info(string.Join(",", letters));
 
             var assignments = BDDLogicHelper.CreateDictBasedOnAutomata(automata);
@@ -42,42 +37,10 @@ namespace GeneAutomate.BDD
             nodeStore["1"] = manager.One;
             nodeStore["0"] = manager.Zero;
 
-            var assignmentsBDDNode = CreateAssignmentsBddNodes(assignments, manager,nodeStore, ref nodeNumber);
-            BDDNode functionNodes = null;
+            var assignmentsBDDNode = CreateAssignmentsBddNodes(assignments, manager, nodeStore, ref nodeNumber);
 
-            var functionsKeys = CreateFunctionsKeys(availableFunctions);
-            functionsKeys.ToList().ForEach(f =>
-            {
-                BDDNode currentNodeOr = null;
-                List<BDDNode> currents = new List<BDDNode>();
-                f.Value.ForEach(d =>
-                {
-                    var c = manager.Create(nodeNumber++, 1, 0);
-                    nodeStore[d] = c;
-                    currents.Add(c);
-
-                    if (currentNodeOr == null)
-                    {
-                        currentNodeOr = c;
-                    }
-                    else
-                    {
-                        currentNodeOr = manager.Or(c, currentNodeOr);
-                    }
-                });
-
-                currentNodeOr = manager.Equal(manager.One, currentNodeOr);
-
-                if (functionNodes == null)
-                {
-                    functionNodes = currentNodeOr;
-                }
-                else
-                {
-                    functionNodes = manager.And(functionNodes, currentNodeOr);
-                }
-            });
-
+            BDDNode functionNodes = CreateFunctionKeys(availableFunctions, manager, nodeStore, ref nodeNumber);
+            CreateOptionalKeys(manager, booleanNetwok, nodeNumber, nodeStore);
 
             var relations =
                 CreateExpressionsFromBooleanNetwork(manager, booleanNetwok, availableFunctions, depth, nodeStore);
@@ -96,12 +59,12 @@ namespace GeneAutomate.BDD
             //logger.Info(manager.ToDot(assignmentsBDDNode, show_all: false));
 
 
-            IEnumerable<KeyValuePair<string, bool>> truth = BuildThruthTable(manager, root, nodeNumber);
+            IEnumerable<KeyValuePair<string, bool>> truth = BuildThruthTable(manager, root, nodeStore.Count -2); // remove zero and one
 
             assignments.ToList().ForEach(a =>
             {
                 var index = nodeStore[a.Key].Index;
-                truth = truth.Where(d => 
+                truth = truth.Where(d =>
                     d.Key[index] == (a.Value ? '1' : '0'));
             });
 
@@ -114,6 +77,45 @@ namespace GeneAutomate.BDD
             //       CheckThruthTable(truth, res);
 
             //return true;
+        }
+
+        private void CreateOptionalKeys(BDDManager manager, List<GeneLink> booleanNetwok, int nodeNumber, Dictionary<string, BDDNode> nodeStore)
+        {
+            foreach (var geneLink in booleanNetwok)
+            {
+                if (geneLink.IsOptional)
+                {
+                    var key = Formatter.OptionalRelation(geneLink.From, geneLink.To);
+                    var node = manager.Create(nodeNumber++, manager.One, manager.Zero);
+                    nodeStore[key] = node;
+                }    
+            }
+        }
+
+        private static BDDNode CreateFunctionKeys(Dictionary<string, List<int>> availableFunctions, 
+            BDDManager manager, 
+            Dictionary<string, BDDNode> nodeStore, ref int nodeNumber)
+        {
+            BDDNode functionNodes = null;
+            var functionsKeys = CreateFunctionsKeys(availableFunctions);
+            foreach (var f in functionsKeys.ToList())
+            {
+                BDDNode currentNodeOr = null;
+                List<BDDNode> currents = new List<BDDNode>();
+                foreach (var d in f.Value)
+                {
+                    var c = manager.Create(nodeNumber++, 1, 0);
+                    nodeStore[d] = c;
+                    currents.Add(c);
+
+                    currentNodeOr = manager.OrSafe(currentNodeOr, c);
+                }
+
+                currentNodeOr = manager.Equal(manager.One, currentNodeOr);
+                functionNodes = manager.AndSafe(functionNodes, currentNodeOr);
+            }
+
+            return functionNodes;
         }
 
         private void LogValidPathes(List<KeyValuePair<string, bool>> pathes, Dictionary<string, BDDNode> nodeStore)
@@ -136,14 +138,14 @@ namespace GeneAutomate.BDD
                     logger.Info($"{reverseHash[i]} - {ch}");
                     i++;
                 }
-               
+
                 logger.Info($"=============================");
             });
             logger.Warn("Finish");
 
         }
 
-        private void LogToDotFormat(BDDNode root, BDDManager manager, Dictionary<string,BDDNode> nodeStore)
+        private void LogToDotFormat(BDDNode root, BDDManager manager, Dictionary<string, BDDNode> nodeStore)
         {
             Dictionary<BDDNode, string> reverseHash = nodeStore.ToDictionary(a => a.Value, a => a.Key);
 
@@ -156,21 +158,16 @@ namespace GeneAutomate.BDD
             logger.Info(manager.ToDot(root, show_all: false, labelFunction: labelFunction));
         }
 
-        public static Dictionary<string,List<string>> CreateFunctionsKeys(Dictionary<string, List<int>> availableFunctions)
+        public static Dictionary<string, List<string>> CreateFunctionsKeys(Dictionary<string, List<int>> availableFunctions)
         {
             return (from af in availableFunctions
                     let k = af.Key
                     from val in af.Value
-                    select new {key = k, value = CreateFunctionKey(val, k)}).GroupBy(a => a.key)
+                    select new { key = k, value = Formatter.Function(val, k) }).GroupBy(a => a.key)
                 .ToDictionary(a => a.Key, a => new List<string>(a.Select(v => v.value)));
         }
 
-        private static string CreateFunctionKey(int funcNumber, string key)
-        {
-            return $"#F{funcNumber}_{key}";
-        }
-
-        private BDDNode CreateAssignmentsBddNodes(Dictionary<string, bool> assignments, 
+        private BDDNode CreateAssignmentsBddNodes(Dictionary<string, bool> assignments,
             BDDManager manager, Dictionary<string, BDDNode> nodeStore, ref int i)
         {
             BDDNode assignmentsBDDNode = null;
@@ -179,16 +176,8 @@ namespace GeneAutomate.BDD
             {
                 BDDNode bddNode = CreateNodeBasedOnAutomata(a.Key, a.Value, manager, i);
                 i++;
-
                 nodeStore[a.Key] = bddNode;
-                if (assignmentsBDDNode == null)
-                {
-                    assignmentsBDDNode = bddNode;
-                }
-                else
-                {
-                    assignmentsBDDNode = manager.And(assignmentsBDDNode, bddNode);
-                }
+                assignmentsBDDNode = manager.AndSafe(assignmentsBDDNode, bddNode);
             }
 
             return assignmentsBDDNode;
@@ -199,7 +188,6 @@ namespace GeneAutomate.BDD
             BDDManager manager,
             int i)
         {
-
             BDDNode nodeBasedOnAutomata;
             if (value)
             {
@@ -207,11 +195,9 @@ namespace GeneAutomate.BDD
             }
             else
             {
-
                 nodeBasedOnAutomata = manager.Create(i, manager.Zero, manager.One);
             }
 
-            //nodeBasedOnAutomata.OriginalValue = value;
             return nodeBasedOnAutomata;
         }
 
@@ -285,7 +271,7 @@ namespace GeneAutomate.BDD
             List<GeneLink> booleanNetwok,
             Dictionary<string, List<int>> availableFunctions,
             int depth,
-            Dictionary<string,BDDNode> nodeStore)
+            Dictionary<string, BDDNode> nodeStore)
         {
             var toDictionary = booleanNetwok.GroupBy(a => a.To);
 
@@ -294,17 +280,7 @@ namespace GeneAutomate.BDD
             for (int i = 0; i < depth - 1; i++)
             {
                 var ass = CreateFunctionApplication(manager, availableFunctions, toDictionary, i, nodeStore);
-
-                if (seq == null)
-                {
-                    seq = ass;
-
-                }
-                else
-                {
-                    seq = manager.And(seq, ass);
-                }
-
+                seq = manager.AndSafe(seq, ass);
             }
 
             return seq;
@@ -315,29 +291,28 @@ namespace GeneAutomate.BDD
             Dictionary<string, List<int>> availableFunctions,
             IEnumerable<IGrouping<string, GeneLink>> toDictionary,
             int i,
-            Dictionary<string,BDDNode> nodeStore)
+            Dictionary<string, BDDNode> nodeStore)
         {
             BDDNode res = null;
-
 
             toDictionary.ToList().ForEach(ff =>
             {
                 BDDNode ass = null;
-                var froms = ff.Where(a => !a.IsOptional).ToList();
+                var froms = ff.ToList();
 
                 // can be null!!
-                var to = Formater.FormatParameter(ff.Key, i + 1);
+                var to = Formatter.FormatParameter(ff.Key, i + 1);
 
                 if (availableFunctions == null || !availableFunctions.ContainsKey(ff.Key))
                 {
-                    var from1 = Formater.FormatParameter(ff.FirstOrDefault().From, i);
+                    var from1 = Formatter.FormatParameter(ff.FirstOrDefault().From, i);
                     //TODO: NOT!
                     res = manager.Equal(nodeStore[from1], nodeStore[to]);
                 }
                 else // real functions
                 {
                     var availableFunc = availableFunctions[ff.Key];
-                    var funcAssignmentHelper = 
+                    var funcAssignmentHelper =
                         new BddNodeFuncAssignmentHelper(manager, nodeStore);
                     BDDNode rightSide = null;
 
@@ -351,20 +326,12 @@ namespace GeneAutomate.BDD
                         ass =
                             funcAssignmentHelper.CreateFuncAssignment(to, froms, i, f);
 
-                        ass = manager.And(nodeStore[CreateFunctionKey(f, ff.Key)], ass);
-
-                        if (rightSide == null)
-                        {
-                            rightSide = ass;
-                        }
-                        else
-                        {
-                            rightSide= manager.Or(rightSide, ass);
-                        }
+                        ass = manager.And(nodeStore[Formatter.Function(f, ff.Key)], ass);
+                        rightSide = manager.OrSafe(rightSide, ass);
                     });
 
-                    logger.Info("Right Side");
-                    LogToDotFormat(rightSide, manager, nodeStore);
+                    //logger.Info("Right Side");
+                    //LogToDotFormat(rightSide, manager, nodeStore);
 
                     res = manager.Equal(leftSide, rightSide);
 

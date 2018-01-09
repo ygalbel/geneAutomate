@@ -48,7 +48,7 @@ namespace GeneAutomate.BDD
 
                 tempAutomata.GetAllConditionLetters(letters);
 
-                letters = letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => Formater.FormatParameter(l, n))).ToList();
+                letters = letters.SelectMany(l => Enumerable.Range(0, depth).ToList().Select(n => Formatter.FormatParameter(l, n))).ToList();
 
                 logger.Info(tempAutomata.NodeLength + 1);
 
@@ -163,8 +163,8 @@ namespace GeneAutomate.BDD
                 toDictionary.ToList().ForEach(ff =>
                 {
                     var b = ff.FirstOrDefault();
-                    var from = Formater.FormatParameter(b.From, i);
-                    var to = Formater.FormatParameter(b.To, i + 1);
+                    var from = Formatter.FormatParameter(b.From, i);
+                    var to = Formatter.FormatParameter(b.To, i + 1);
 
                     if (b.IsPositive)
                     {
@@ -230,7 +230,7 @@ namespace GeneAutomate.BDD
 
                     var availableFunc = availableFunctions[to];
                     var funcAssignmentHelper = new FuncAssignmentHelper();
-                    var toFormatted = Formater.FormatParameter(to, i + 1);
+                    var toFormatted = Formatter.FormatParameter(to, i + 1);
 
                     availableFunc.ForEach(f =>
                     {
@@ -437,7 +437,7 @@ namespace GeneAutomate.BDD
                         f =>
                         {
                             var primitiveApplication =
-                            new Assignment(Formater.FormatParameter(f.Key, i), new BoolConstant(f.Value.Value));
+                            new Assignment(Formatter.FormatParameter(f.Key, i), new BoolConstant(f.Value.Value));
 
                             if (goal1 == null)
                             {
@@ -490,8 +490,8 @@ namespace GeneAutomate.BDD
             Func<string, Expression, Expression> accumulatorFunc)
         {
             Expression ass;
-            var from = Formater.FormatParameter(b.From, i);
-            var to = Formater.FormatParameter(b.To, i + 1);
+            var from = Formatter.FormatParameter(b.From, i);
+            var to = Formatter.FormatParameter(b.To, i + 1);
 
             if (b.IsPositive)
             {

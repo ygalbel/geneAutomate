@@ -75,37 +75,30 @@ namespace GeneAutomate.BDD.BDDSharp
             BDDNode app = null;
             foreach (var f in froms)
             {
-                var formatParameter = Formater.FormatParameter(f.From, i);
+                var formatParameter = Formatter.FormatParameter(f.From, i);
 
-                var param = _nodeStore[formatParameter];
-
-                var node1 =
-                    BDDSharpSolver.CreateNodeBasedOnAutomata(
-                        formatParameter, true, _manager,
-                     param.Index);
+                var node1 = FetchNode(formatParameter);
 
                 if (func == OR)
                 {
-                    if (app == null)
+                    if (f.IsOptional)
                     {
-                        app = node1;
+                        var relationParameter = Formatter.OptionalRelation(f.From, _to);
+                        node1 = _manager.OrOptional(FetchNode(relationParameter), node1);
                     }
-                    else
-                    {
-                        app = _manager.Or(app, node1);
-                    }
+
+                    app = _manager.OrSafe(app, node1);
                 }
                 else
                 if (func == AND)
                 {
-                    if (app == null)
+                    if (f.IsOptional)
                     {
-                        app = node1;
+                        var relationParameter = Formatter.OptionalRelation(f.From, _to.Split('_')[0]);
+                        node1 = _manager.AndOptional(FetchNode(relationParameter), node1);
                     }
-                    else
-                    {
-                        app = _manager.And(app, node1);
-                    }
+
+                    app = _manager.AndSafe(app, node1);
                 }
             }
 
@@ -115,6 +108,17 @@ namespace GeneAutomate.BDD.BDDSharp
             }
 
             return app;
+        }
+
+        private BDDNode FetchNode(string formatParameter)
+        {
+            var param = _nodeStore[formatParameter];
+
+            var node1 =
+                BDDSharpSolver.CreateNodeBasedOnAutomata(
+                    formatParameter, true, _manager,
+                    param.Index);
+            return node1;
         }
     }
 }

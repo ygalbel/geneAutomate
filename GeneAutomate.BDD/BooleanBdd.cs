@@ -7,7 +7,7 @@ namespace GeneAutomate.BDD
         public static PrimitiveApplication SetBooleanValue(int i, bool value, string parameter)
         {
             return new PrimitiveApplication(PrimitiveApplication.EQUAL,
-                new Variable(Formater.FormatParameter(parameter, i)),
+                new Variable(Formatter.FormatParameter(parameter, i)),
                 new BoolConstant(value));
         }
     }

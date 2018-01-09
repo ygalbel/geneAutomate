@@ -6,6 +6,6 @@ namespace GeneAutomate.BDD
     public interface IBDDSolver
     {
         bool IsValidPath(GeneNode automata, List<GeneLink> booleanNetwok, 
-            Dictionary<string, List<int>> availableFunctions = null);
+            Dictionary<string, List<int>> availableFunctions=null);
     }
 }

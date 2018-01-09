@@ -12,8 +12,6 @@ namespace GeneAutomate.BDD.Tests
     [TestClass]
     public class FunctionBddOrOperatorTests : AbstractBddTest
     {
-       
-
         [TestMethod]
         public void TestOrFirstCase()
         {

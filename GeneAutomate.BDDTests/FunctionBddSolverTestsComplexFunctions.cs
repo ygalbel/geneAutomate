@@ -6,7 +6,6 @@ namespace GeneAutomate.BDD.Tests
     [TestClass]
     public class FunctionBddSolverTestsComplexFunctions : AbstractBddTest
     {
-
         private Dictionary<int, List<int>> resultValues = new Dictionary<int, List<int>>()
         {
             {0, new List<int>()  {0, 0, 1, 0, 0, 0, 0, 0, 0}},

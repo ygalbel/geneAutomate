@@ -6,8 +6,6 @@ namespace GeneAutomate.BDD.Tests
     [TestClass]
     public class FunctionBddSolverTestsSimpleFunctions : AbstractBddTest
     {
-
-
         private Dictionary<int, List<int>> resultValues = new Dictionary<int, List<int>>()
         {
             {-1, new List<int>()  {0, 0, 1, 0, 0, 1, 0, 0, 1}}, // all Activators
@@ -22,16 +20,11 @@ namespace GeneAutomate.BDD.Tests
             base.TestInit();
         }
 
-
-
         [TestMethod]
         public void TestFullCaseNumber()
         {
             RunPositiveTest(resultValues);
         }
-
-
-
 
         [TestMethod]
         public void TestFullCaseNumberNegative()

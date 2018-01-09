@@ -67,9 +67,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AbstractBddTest.cs" />
     <Compile Include="BDDSharpSolverTests.cs" />
     <Compile Include="BDDSolverTests.cs" />
-    <Compile Include="FunctionBddAndOperatorTests.cs" />
+    <Compile Include="FunctionBddSolverAndOptionalRelationOperatorTests.cs" />
+    <Compile Include="FunctionBddSolverAndOperatorTests.cs" />
     <Compile Include="FunctionBddSolverTestsAndFunc.cs" />
     <Compile Include="FunctionBddSolverTestsComplexFunctions.cs" />
     <Compile Include="FunctionBddSolverTestsFuncNum3.cs" />

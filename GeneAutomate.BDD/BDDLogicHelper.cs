@@ -30,7 +30,7 @@ namespace GeneAutomate.BDD
                     .ForEach(
                         f =>
                         {
-                            var key = Formater.FormatParameter(f.Key, i);
+                            var key = Formatter.FormatParameter(f.Key, i);
                             var value = f.Value.Value;
 
                             result[key] = value;

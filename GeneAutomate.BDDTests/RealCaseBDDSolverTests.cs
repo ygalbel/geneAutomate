@@ -38,11 +38,14 @@ namespace GeneAutomate.BDD.Tests
             var parser = new FileParser();
 
             var data = new ParseRuleResponse();
-            var res = parser.GetConditionAndExperiments($"{experimentName}.net", $"{experimentName}.spec", out data);
+            var res = parser
+                .GetConditionAndExperiments($"{experimentName}.net", 
+                    $"{experimentName}.spec", out data);
 
             var automates =
                 data.Experiments.ToDictionary(s => s.Key,
-                    s => new AutomataFromExperimentCreator().CreateAutomata(s.Value));
+                    s => new AutomataFromExperimentCreator()
+                        .CreateAutomata(s.Value));
 
             var sos = solver.IsValidPath(automates.First().Value, res);
             return sos;

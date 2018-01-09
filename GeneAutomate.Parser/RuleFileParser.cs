@@ -18,8 +18,6 @@ namespace GeneAutomate.Parser
         public ParseRuleResponse ParseRules(string path, List<string> variables)
         {
             var lines = File.ReadLines(path);
-
-
             var conditions = new Dictionary<string, Condition>();
             var experiment = new Dictionary<string, Experiment>();
 
@@ -38,7 +36,16 @@ namespace GeneAutomate.Parser
                 HandleExperiments(line, experiment, conditions);
             }
 
-            return new ParseRuleResponse() { Conditions = conditions, Experiments = experiment };
+            return new ParseRuleResponse()
+            {
+                Conditions = conditions,
+                Experiments = experiment,
+            };
+        }
+
+        private Dictionary<string, List<int>> ParseFunctionFromLine(string line)
+        {
+            throw new NotImplementedException();
         }
 
         private void HandleExperiments(string line, Dictionary<string, Experiment> experiment, Dictionary<string, Condition> conditions)

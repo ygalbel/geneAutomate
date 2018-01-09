@@ -74,7 +74,7 @@ namespace GeneAutomate.BDD
 
                 froms.ForEach(f =>
                 {
-                    var formatParameter = Formater.FormatParameter(f.From, i);
+                    var formatParameter = Formatter.FormatParameter(f.From, i);
 
                     Expression primitiveApplication =
                         new Variable(formatParameter);
@@ -104,7 +104,7 @@ namespace GeneAutomate.BDD
 
                 froms.ForEach(f =>
                 {
-                    var formatParameter = Formater.FormatParameter(f.From, i);
+                    var formatParameter = Formatter.FormatParameter(f.From, i);
 
                     Expression primitiveApplication =
                         new Variable(formatParameter);

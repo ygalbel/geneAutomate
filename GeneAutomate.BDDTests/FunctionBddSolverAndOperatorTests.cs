@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GeneAutomate.BDD.Tests
 {
     [TestClass]
-    public class FunctionBddAndOperatorTests : AbstractBddTest
+    public class FunctionBddSolverAndOperatorTests : AbstractBddTest
     {
         [ClassInitialize]
         public static void ClassInit(TestContext context)
