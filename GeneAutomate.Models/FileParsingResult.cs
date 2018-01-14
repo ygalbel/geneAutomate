@@ -20,5 +20,7 @@ namespace GeneAutomate.Models
 
         [JsonIgnore]
         public List<GeneNode> MergeObjects { get; set; }
+
+        public Dictionary<string, List<int>> Functions { get; set; }
     }
 }

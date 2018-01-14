@@ -130,8 +130,8 @@ namespace GeneAutomate.BDD.Tests
                         var booleanNetwork = CreateBooleanNetwork();
 
                         var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
-                        var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
-
+                        var res = solver.IsValidPath(automata,
+                            new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions });
                         if (res)
                         {
                             fault.Add(new Tuple<int, int>(functionNum, tp.CaseNumber));
@@ -168,7 +168,8 @@ namespace GeneAutomate.BDD.Tests
                         var booleanNetwork = CreateBooleanNetwork();
 
                         var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
-                        var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+                        var res = solver.IsValidPath(automata,
+                            new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions });
                         if (!res)
                         {
                             fault.Add(new Tuple<int, int>(functionNum, tp.CaseNumber));

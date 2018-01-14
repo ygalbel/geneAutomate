@@ -58,7 +58,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             };
 
             var mergeLogic = new AutomataMergeLogic();
-            var res = mergeLogic.CreateValidLoopMerge(automata1, booleanNetwok);
+            var res = mergeLogic.CreateValidLoopMerge(automata1, new GeneFullRules() { GeneLinks =booleanNetwok});
             Assert.IsNotNull(res);
         }
 
@@ -112,7 +112,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             };
 
             var mergeLogic = new AutomataMergeLogic();
-            var res = mergeLogic.ApplyAllPossibleLoops(automata1, booleanNetwok);
+            var res = mergeLogic.ApplyAllPossibleLoops(automata1, new GeneFullRules() { GeneLinks = booleanNetwok});
             Assert.IsNotNull(res);
         }
 
@@ -166,7 +166,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             };
 
             var mergeLogic = new AutomataMergeLogic();
-            var res = mergeLogic.ApplyAllPossibleLoops(automata1, booleanNetwok);
+            var res = mergeLogic.ApplyAllPossibleLoops(automata1, new GeneFullRules() { GeneLinks = booleanNetwok});
 
             Assert.AreEqual(res.Transitions.First().Node.NodeName, "a1 ^ a3 ^ a2", res.Transitions.First().Node.NodeName);
             Assert.IsNotNull(res);

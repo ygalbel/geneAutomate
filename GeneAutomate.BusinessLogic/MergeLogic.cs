@@ -22,12 +22,10 @@ namespace GeneAutomate.BusinessLogic
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
 
-        BooleanNetworkValidator validator = new BooleanNetworkValidator();
-
         MergeResultCache _cache = new MergeResultCache();
         private readonly MergeLogicAlghoritms _mergeLogicAlghoritms = new MergeLogicAlghoritms();
 
-        public List<GeneNode> GetValidMerges(GeneNode automata1, GeneNode automata2, List<GeneLink> booleanNetwok)
+        public List<GeneNode> GetValidMerges(GeneNode automata1, GeneNode automata2, GeneFullRules booleanNetwok)
         {
             var possibleMerges = GetMerges(automata1, automata2);
 
@@ -37,8 +35,7 @@ namespace GeneAutomate.BusinessLogic
 
             possibleMerges.ForEach(m =>
                 {
-                    // firstly check simple logic, and only after check with CUDD, because it's expensive
-                    if (validator.IsValidAutomata(m, null, booleanNetwok) && IsBddValid(m, booleanNetwok))
+                    if (IsBddValid(m, booleanNetwok))
                     {
                         logger.Info($"Merge for {m.NodeName} is valid");
                         validMerges.Add(m);
@@ -56,7 +53,7 @@ namespace GeneAutomate.BusinessLogic
             return validMerges;
         }
 
-        private bool IsBddValid(GeneNode geneNode, List<GeneLink> booleanNetwok)
+        private bool IsBddValid(GeneNode geneNode, GeneFullRules booleanNetwok)
         {
             return NinjectHelper.Get<IBDDSolver>().IsValidPath(geneNode, booleanNetwok);
         }
@@ -71,7 +68,7 @@ namespace GeneAutomate.BusinessLogic
             return merges.SelectMany(a => a).ToList();
         }
 
-        public List<GeneNode> GetValidMerges(List<GeneNode> nodes, List<GeneLink> booleanNetwok)
+        public List<GeneNode> GetValidMerges(List<GeneNode> nodes, GeneFullRules booleanNetwok)
         {
             var merges = from n1 in nodes
                          from n2 in nodes
@@ -87,7 +84,7 @@ namespace GeneAutomate.BusinessLogic
 
 
         public void GetFinalMerges(Stack<GeneNode> availableNodes, 
-            List<GeneLink> booleanNetwok, 
+            GeneFullRules booleanNetwok, 
             List<GeneNode> foundResults,
             BackTrackingNode node)
         {
@@ -225,7 +222,7 @@ namespace GeneAutomate.BusinessLogic
                    _cache.AlreadySeenMerges.ContainsKey(key);
         }
 
-        public GeneNode CreateValidLoopMerge(GeneNode node, List<GeneLink> booleanNetwok)
+        public GeneNode CreateValidLoopMerge(GeneNode node, GeneFullRules booleanNetwok)
         {
             var cloned = CloneHelper.Clone(node);
             var t1 = cloned;
@@ -319,7 +316,7 @@ namespace GeneAutomate.BusinessLogic
             return firstMerged.Intersect(secondMerged).Any();
         }
 
-        public GeneNode ApplyAllPossibleLoops(GeneNode node, List<GeneLink> booleanNetwok)
+        public GeneNode ApplyAllPossibleLoops(GeneNode node, GeneFullRules booleanNetwok)
         {
             var current = node;
             GeneNode last = null;

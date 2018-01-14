@@ -114,14 +114,16 @@ namespace GeneAutomate.BDD.Tests
             var availableFunctions = new Dictionary<string, List<int>>()
                 { {"a", new List<int>() {45, 47}}};
 
-            var res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+            var res = solver.IsValidPath(automata,
+                new GeneFullRules() {GeneLinks = booleanNetwork, Functions = availableFunctions});
 
             Assert.AreEqual(res, firstHavePath);
 
             secondCondition = new Condition() {{"a", !firstValue}};
             automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
 
-            res = solver.IsValidPath(automata, booleanNetwork, availableFunctions);
+            res = solver.IsValidPath(automata,
+                new GeneFullRules() {GeneLinks = booleanNetwork, Functions = availableFunctions});
 
             Assert.AreEqual(res, secondHavePath);
         }

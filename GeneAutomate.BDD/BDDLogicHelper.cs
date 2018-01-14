@@ -18,7 +18,7 @@ namespace GeneAutomate.BDD
             int i = 0;
             automata.Visit(l =>
             {
-                var tr = BDDSolver.GetTransitions(l);
+                var tr = GetTransitions(l);
 
                 if (tr == null)
                 {
@@ -40,6 +40,11 @@ namespace GeneAutomate.BDD
 
 
             return result;
+        }
+
+        public static List<KeyValuePair<string, bool?>> GetTransitions(GeneNode l)
+        {
+            return l?.CurrentCondition.Where(f => f.Value.HasValue).ToList();
         }
     }
 }

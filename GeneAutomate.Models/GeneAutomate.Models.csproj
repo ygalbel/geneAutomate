@@ -59,6 +59,7 @@
     <Compile Include="Experiment.cs" />
     <Compile Include="FileParsingResult.cs" />
     <Compile Include="GeneAutomata.cs" />
+    <Compile Include="GeneFullRules.cs" />
     <Compile Include="GeneLink.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="ParseRuleResponse.cs" />

@@ -66,9 +66,11 @@ namespace GeneAutomate.Parser
 
             logger.Info("BackTracing");
             logger.Info(JsonConvert.SerializeObject(backTrackingAutomata, Formatting.Indented));
+
             return new FileParsingResult()
             {
-                GeneLinks = links,
+                GeneLinks = links.GeneLinks,
+                Functions = links.Functions,
                 Conditions = conditionAndExperiments.Conditions,
                 Experiments = conditionAndExperiments.Experiments,
                 Automates = automatesView,
@@ -85,7 +87,7 @@ namespace GeneAutomate.Parser
             return !res.Any(m => m.GetAllMergedExperiment().Contains(geneNode.GetExperimentName()));
         }
 
-        public List<GeneLink> GetConditionAndExperiments(string netPath, string specPath,
+        public GeneFullRules GetConditionAndExperiments(string netPath, string specPath,
             out ParseRuleResponse conditionAndExperiments)
         {
             var links = GeneLinks(netPath);
@@ -98,7 +100,7 @@ namespace GeneAutomate.Parser
                 .ParseRules(specPath, links.GetAllNodes());
 
             conditionAndExperiments.Functions = function;
-            return links;
+            return new GeneFullRules() {GeneLinks = links, Functions = function};
         }
 
         private Dictionary<string, List<int>> MergeFunctions(

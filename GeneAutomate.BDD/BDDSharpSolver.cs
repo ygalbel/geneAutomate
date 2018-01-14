@@ -15,14 +15,14 @@ namespace GeneAutomate.BDD
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public bool IsValidPath(GeneNode automata, List<GeneLink> booleanNetwok, Dictionary<string, List<int>> availableFunctions = null)
+        public bool IsValidPath(GeneNode automata, GeneFullRules booleanNetwok)
         {
             var nodeStore = new Dictionary<string, BDDNode>();
             var letters = new List<string>();
             var depth = automata.NodeLength;
 
             int z = 0;
-            var manager = new BDDManager(50);
+            var manager = new BDDManager(10000);
             automata.GetAllConditionLetters(letters);
 
             letters =
@@ -39,16 +39,19 @@ namespace GeneAutomate.BDD
 
             var assignmentsBDDNode = CreateAssignmentsBddNodes(assignments, manager, nodeStore, ref nodeNumber);
 
-            BDDNode functionNodes = CreateFunctionKeys(availableFunctions, manager, nodeStore, ref nodeNumber);
-            CreateOptionalKeys(manager, booleanNetwok, nodeNumber, nodeStore);
+            BDDNode functionNodes = CreateFunctionKeys(booleanNetwok.Functions, manager, nodeStore, ref nodeNumber);
+            CreateOptionalKeys(manager, booleanNetwok.GeneLinks, nodeNumber, nodeStore);
+
+            AddMissingNodes(manager,nodeStore, letters,ref nodeNumber);
 
             var relations =
-                CreateExpressionsFromBooleanNetwork(manager, booleanNetwok, availableFunctions, depth, nodeStore);
+                CreateExpressionsFromBooleanNetwork(manager, booleanNetwok.GeneLinks, booleanNetwok.Functions, depth, nodeStore);
 
             relations = manager.And(relations, functionNodes);
             var root = manager.And(relations, assignmentsBDDNode);
 
 
+            root = manager.Reduce(root);
             //// LOG PART
             LogToDotFormat(root, manager, nodeStore);
 
@@ -59,7 +62,7 @@ namespace GeneAutomate.BDD
             //logger.Info(manager.ToDot(assignmentsBDDNode, show_all: false));
 
 
-            IEnumerable<KeyValuePair<string, bool>> truth = BuildThruthTable(manager, root, nodeStore.Count -2); // remove zero and one
+         /*  IEnumerable<KeyValuePair<string, bool>> truth = BuildThruthTable(manager, root, nodeStore.Count -2); // remove zero and one
 
             assignments.ToList().ForEach(a =>
             {
@@ -71,13 +74,24 @@ namespace GeneAutomate.BDD
             var pathes = truth.Where(a => a.Value).ToList();
 
             LogValidPathes(pathes, nodeStore);
-
-            return pathes.Any();
+            */
+            return !root.Equals(manager.Zero);
 
             //       CheckThruthTable(truth, res);
 
             //return true;
         }
+
+        private void AddMissingNodes(BDDManager manager, Dictionary<string, BDDNode> nodeStore, List<string> letters, ref int nodeNumber)
+        {
+            var alreadyCreated = nodeStore.Keys;
+            foreach (var l in letters.Where(a => !alreadyCreated.Contains(a)).ToList())
+            {
+                var node = manager.Create(nodeNumber++, 1, 1);
+                nodeStore[l] = node;
+            }
+        }
+
 
         private void CreateOptionalKeys(BDDManager manager, List<GeneLink> booleanNetwok, int nodeNumber, Dictionary<string, BDDNode> nodeStore)
         {

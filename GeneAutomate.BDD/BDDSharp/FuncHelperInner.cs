@@ -83,7 +83,7 @@ namespace GeneAutomate.BDD.BDDSharp
                 {
                     if (f.IsOptional)
                     {
-                        var relationParameter = Formatter.OptionalRelation(f.From, _to);
+                        var relationParameter = Formatter.OptionalRelation(f.From, _to.Split('_')[0]);
                         node1 = _manager.OrOptional(FetchNode(relationParameter), node1);
                     }
 
@@ -102,7 +102,7 @@ namespace GeneAutomate.BDD.BDDSharp
                 }
             }
 
-            if (!value)
+            if (!value && froms.Any())
             {
                 app = _manager.Not(app);
             }

@@ -25,6 +25,11 @@ namespace GeneAutomate.BDD.BDDSharp
 
         public override BDDNode And(BDDNode a, BDDNode b)
         {
+            if (b == null)
+            {
+                return a;
+            }
+
             var bddNode = _manager.And(a, b);
             return bddNode;
         }
