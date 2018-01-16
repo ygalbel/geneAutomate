@@ -31,6 +31,14 @@ namespace GeneAutomate.BDD.Tests
             Assert.IsTrue(res);
         }
 
+        [TestMethod]
+        public void TestKrumsiekBddSolver()
+        {
+            var experimentName = "Krumsiek";
+            var res = IsExistPath(experimentName);
+            Assert.IsTrue(res);
+        }
+
         private static bool IsExistPath(string experimentName)
         {
             var solver = NinjectHelper.Get<IBDDSolver>();
@@ -58,24 +66,10 @@ namespace GeneAutomate.BDD.Tests
             var parser = new FileParser();
 
             var data = new ParseRuleResponse();
-            var res = parser.GetConditionAndExperiments($"herrmann.net", $"herrmann.spec", out data);
+            var res = parser.ParseFiles($"herrmann.net", $"herrmann.spec");
+            
 
-            var automates =
-                data.Experiments.ToDictionary(s => s.Key,
-                    s => new AutomataFromExperimentCreator().CreateAutomata(s.Value));
-
-            bool sos = true;
-            int i = 0;
-            automates.ToList().ForEach(a =>
-            {
-                var solver = NinjectHelper.Get<IBDDSolver>();
-
-                logger.Info("Start " + (i++));
-                sos &= solver.IsValidPath(a.Value, res);
-                
-            });
-
-            Assert.IsFalse(sos);
+            Assert.IsFalse(res.MergeObjects.Any());
         }
     }
 }

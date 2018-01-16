@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -150,7 +151,7 @@ namespace GeneAutomate.BDD.Tests
             var solver = NinjectHelper.Get<IBDDSolver>();
             resultValues.ToList().ForEach((rv) =>
                 {
-                    TetsParameters.ForEach(tp =>
+                    TetsParameters.ForEach( tp =>
                     {
                         var functionNum = rv.Key;
                         var expectedValue = rv.Value[tp.CaseNumber];

@@ -31,7 +31,7 @@ namespace GeneAutomate.BDD.Tests
         [TestMethod]
         public void TestAndSecondCase()
         {
-            // b is optional, so both pathes are valid
+            // b is optional, so both pathes are valid  
             var firstCondition = new Condition()
             {
                 { "b", true }, {"c", false }, {"d", false }, {"e" ,false }

@@ -51,9 +51,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UCLouvain.BDDSharp, Version=1.0.6467.24057, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.5\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BDDLogicHelper.cs" />
@@ -77,6 +74,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BDDSharp\BDDSharp\UCLouvain.BDDSharp.csproj">
+      <Project>{0f303658-80ad-4637-b587-bd076a80dcf5}</Project>
+      <Name>UCLouvain.BDDSharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneAutomate.Models\GeneAutomate.Models.csproj">
       <Project>{63AF470E-A7EF-4F5F-A6BB-9D18909BDEBB}</Project>
       <Name>GeneAutomate.Models</Name>
