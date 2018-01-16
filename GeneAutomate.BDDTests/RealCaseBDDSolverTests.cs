@@ -10,10 +10,15 @@ using NLog;
 namespace GeneAutomate.BDD.Tests
 {
     [TestClass]
-    public class RealCaseBDDSolverTests
+    public class RealCaseBDDSolverTests : AbstractBddTest
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        [TestInitialize]
+        public void Init()
+        {
+            logger.Info("start " + this.TestContext.TestName);
+        }
 
         [TestMethod]
         public void TestToyCaseBddSolver()
@@ -66,10 +71,24 @@ namespace GeneAutomate.BDD.Tests
             var parser = new FileParser();
 
             var data = new ParseRuleResponse();
-            var res = parser.ParseFiles($"herrmann.net", $"herrmann.spec");
-            
+            var res = parser.GetConditionAndExperiments($"herrmann.net", $"herrmann.spec", out data);
 
-            Assert.IsFalse(res.MergeObjects.Any());
+            var automates =
+                data.Experiments.ToDictionary(s => s.Key,
+                    s => new AutomataFromExperimentCreator().CreateAutomata(s.Value));
+
+            bool sos = true;
+            int i = 0;
+            automates.ToList().ForEach(a =>
+            {
+                var solver = NinjectHelper.Get<IBDDSolver>();
+
+                logger.Info("Start " + (i++));
+                sos &= solver.IsValidPath(a.Value, res);
+                
+            });
+
+            Assert.IsFalse(sos);
         }
     }
 }

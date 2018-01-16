@@ -79,37 +79,65 @@ namespace GeneAutomate.BDD
             return GetValidPath(manager, root.Low, c, false) ?? GetValidPath(manager, root.High, c, true);
         }
 
-    //    public static bool FindOneValidPath(this BDDManager manager, List<int> res, BDDNode node)
-    //    {
-    //        if (node == null)
-    //        {
-    //            return false;
-    //        }
 
-    //        var current = new List<int>(res);
-    //        current.Add(node.Index);
-    //        List<int> temp = null;
+        public static bool GetValidPathes(this BDDManager manager, BDDNode root, List<BDDNode> current, List<List<BDDNode>> foundUntilNow, bool? value)
+        {
+            var c = new List<BDDNode>(current);
 
-    //         var rr = manager.FindOneValidPath(current, node.Low);
+            if (value.HasValue)
+            {
+                c.LastOrDefault().Value = value;
+            }
 
-    //        if (!rr)
-    //        {
-    //            current =new List<int>(res);
-    //            rr = manager.FindOneValidPath(current, node.High);
-    //        }
+            c.Add(new BDDNode() { Index = root.Index });
 
-    //        if (temp == null && node.High != null)
-    //        {
-    //            temp = FindOneValidPath(current, node.High);
-    //        }
+            if (root == manager.One)
+            {
+                foundUntilNow.Add(current);
+                return true;
+            }
+            else if (root == manager.Zero)
+            {
+                return false;
+            }
 
-    //        if (node.High == null && node.Low == null)
-    //        {
-    //            if(node == manager.One)
-    //        }
+            var lows = GetValidPathes(manager, root.Low, c, foundUntilNow, false);
+            var highs = GetValidPathes(manager, root.High, c, foundUntilNow, true);
 
-    //        return temp;
-    //    }
+            return lows || highs;
+        }
+
+        //    public static bool FindOneValidPath(this BDDManager manager, List<int> res, BDDNode node)
+        //    {
+        //        if (node == null)
+        //        {
+        //            return false;
+        //        }
+
+        //        var current = new List<int>(res);
+        //        current.Add(node.Index);
+        //        List<int> temp = null;
+
+        //         var rr = manager.FindOneValidPath(current, node.Low);
+
+        //        if (!rr)
+        //        {
+        //            current =new List<int>(res);
+        //            rr = manager.FindOneValidPath(current, node.High);
+        //        }
+
+        //        if (temp == null && node.High != null)
+        //        {
+        //            temp = FindOneValidPath(current, node.High);
+        //        }
+
+        //        if (node.High == null && node.Low == null)
+        //        {
+        //            if(node == manager.One)
+        //        }
+
+        //        return temp;
+        //    }
     }
 
     

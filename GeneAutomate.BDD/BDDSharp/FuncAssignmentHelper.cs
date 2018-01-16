@@ -12,14 +12,14 @@ namespace GeneAutomate.BDD.BDDSharp
         private readonly BDDManager _manager;
         private readonly Dictionary<string, BDDNode> _nodes;
 
-        public BddNodeFuncAssignmentHelper(BDDManager manager, Dictionary<string,BDDNode> nodes)
+        public BddNodeFuncAssignmentHelper(BDDManager manager, Dictionary<string, BDDNode> nodes)
         {
             _manager = manager;
             _nodes = nodes;
         }
         public override BDDNode Or(BDDNode a, BDDNode b)
         {
-            var bddNode = _manager.Or(a,b);
+            var bddNode = _manager.Or(a, b);
             return bddNode;
         }
 
@@ -28,6 +28,11 @@ namespace GeneAutomate.BDD.BDDSharp
             if (b == null)
             {
                 return a;
+            }
+
+            if (a == null)
+            {
+                return b;
             }
 
             var bddNode = _manager.And(a, b);

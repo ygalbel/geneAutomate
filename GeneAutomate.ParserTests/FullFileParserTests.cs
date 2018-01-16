@@ -31,16 +31,15 @@ namespace GeneAutomate.ParserTests
         }
 
 
-        [TestMethod] public void TestCanParseToyOriginalCase()
+        [TestMethod]
+        public void TestCanParseToyOriginalCase()
         {
             var parser = new FileParser();
 
             var data = new ParseRuleResponse();
             var res = parser.ParseFiles($"toy.net", $"toy.spec");
-
-            
-
             Assert.IsTrue(res.MergeObjects.Count > 0);
+            Assert.IsTrue(res.MergeObjects.All(a => a.MergeName.Contains("^")));
 
             var txt = new RuleFileWriter().CreateSpecString(res.MergeObjects);
 
@@ -52,11 +51,8 @@ namespace GeneAutomate.ParserTests
         public void TestCanParsePluripotencySmallCase()
         {
             var parser = new FileParser();
-
             var data = new ParseRuleResponse();
             var res = parser.ParseFiles($"pluripotency_small.net", $"pluripotency_small.spec");
-
-
 
             Assert.IsTrue(res.MergeObjects.Count > 0);
 

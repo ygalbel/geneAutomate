@@ -58,7 +58,18 @@ namespace GeneAutomate.BusinessLogic.Tests
             };
 
             var mergeLogic = new AutomataMergeLogic();
-            var res = mergeLogic.CreateValidLoopMerge(automata1, new GeneFullRules() { GeneLinks =booleanNetwok});
+            var res = mergeLogic.ApplyAllPossibleLoops(automata1, new GeneFullRules()
+            {
+                GeneLinks = booleanNetwok,
+                Functions = new Dictionary<string, List<int>>()
+                {
+                    {"S1", new List<int>() {0} },
+                    {"S2", new List<int>() {0} },
+                    {"A", new List<int>() {0} },
+                    {"B", new List<int>() {0} },
+                }
+            });
+
             Assert.IsNotNull(res);
         }
 
@@ -112,7 +123,14 @@ namespace GeneAutomate.BusinessLogic.Tests
             };
 
             var mergeLogic = new AutomataMergeLogic();
-            var res = mergeLogic.ApplyAllPossibleLoops(automata1, new GeneFullRules() { GeneLinks = booleanNetwok});
+            var res = mergeLogic.ApplyAllPossibleLoops(automata1, new GeneFullRules() { GeneLinks = booleanNetwok, Functions = new Dictionary<string, List<int>>()
+            {
+                {"S1", new List<int>() {0} },
+                {"S2", new List<int>() {0} },
+                {"A", new List<int>() {0} },
+                {"B", new List<int>() {0} },
+            }
+            });
             Assert.IsNotNull(res);
         }
 
@@ -166,7 +184,17 @@ namespace GeneAutomate.BusinessLogic.Tests
             };
 
             var mergeLogic = new AutomataMergeLogic();
-            var res = mergeLogic.ApplyAllPossibleLoops(automata1, new GeneFullRules() { GeneLinks = booleanNetwok});
+            var res = mergeLogic.ApplyAllPossibleLoops(automata1, new GeneFullRules()
+            {
+                GeneLinks = booleanNetwok,
+                Functions = new Dictionary<string, List<int>>()
+                {
+                    {"S1", new List<int>() {0} },
+                    {"S2", new List<int>() {0} },
+                    {"A", new List<int>() {0} },
+                    {"B", new List<int>() {0} },
+                }
+            });
 
             Assert.AreEqual(res.Transitions.First().Node.NodeName, "a1 ^ a3 ^ a2", res.Transitions.First().Node.NodeName);
             Assert.IsNotNull(res);

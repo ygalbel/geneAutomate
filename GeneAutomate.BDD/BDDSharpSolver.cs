@@ -79,14 +79,26 @@ namespace GeneAutomate.BDD
             //var pathes = truth.Where(a => a.Value).ToList();
 
            // LogValidPathes(pathes, nodeStore);
-            var path = manager.GetValidPath(root, new List<BDDNode>(), null);
-            LogValidPath(path, nodeStore);
-            return path != null;
+            List<List<BDDNode>> pathes = new List<List<BDDNode>>();
+            var path = manager.GetValidPath(root, new List<BDDNode>(),  null) ?? Enumerable.Empty<BDDNode>();
+            LogValidPathes(pathes, nodeStore);
+            return path.Any();
 
             //       CheckThruthTable(truth, res);
 
             //return true;
         }
+
+        private void LogValidPathes(List<List<BDDNode>> pathes, Dictionary<string, BDDNode> nodeStore)
+        {
+            logger.Info("Found " + pathes.Count + " pathes");
+            pathes.ForEach(p =>
+            {
+                logger.Info("========================");
+                LogValidPath(p, nodeStore);
+            });
+        }
+
 
         private void LogValidPath(List<BDDNode> path, Dictionary<string, BDDNode> nodeStore)
         {
