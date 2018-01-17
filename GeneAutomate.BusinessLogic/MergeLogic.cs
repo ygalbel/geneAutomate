@@ -19,10 +19,13 @@ namespace GeneAutomate.BusinessLogic
 
     public class AutomataMergeLogic
     {
+        public const string LoopSign = "^";
+        public const string MergeSign = "~";
+
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-
         MergeResultCache _cache = new MergeResultCache();
+
         private readonly MergeLogicAlghoritms _mergeLogicAlghoritms = new MergeLogicAlghoritms();
 
         public List<GeneNode> GetValidMerges(GeneNode automata1, GeneNode automata2, GeneFullRules booleanNetwok)
@@ -81,7 +84,6 @@ namespace GeneAutomate.BusinessLogic
 
             return validMerges;
         }
-
 
         public void GetFinalMerges(Stack<GeneNode> availableNodes, 
             GeneFullRules booleanNetwok, 
@@ -177,7 +179,7 @@ namespace GeneAutomate.BusinessLogic
 
         public List<GeneNode> GetMerges(GeneNode automata1, GeneNode automata2, bool usePositiveAlgo)
         {
-            var key = $"{automata1.MergeName} ~ {automata2.MergeName} - {usePositiveAlgo}";
+            var key = $"{automata1.MergeName} {MergeSign} {automata2.MergeName} - {usePositiveAlgo}";
             if (KeyAlreadyInCache(automata1, automata2, key))
             {
                 logger.Info($"Already found {key} in cache");
@@ -238,8 +240,6 @@ namespace GeneAutomate.BusinessLogic
                 var newCondition = CreateMergedCondition(lastNode.CurrentCondition,
                     t1.CurrentCondition, true);
 
-
-
                 if (newCondition != null)
                 {
                     var currentNode = CloneHelper.Clone(cloned);
@@ -249,15 +249,8 @@ namespace GeneAutomate.BusinessLogic
 
                     t1 = currentNode.Find(t1);
                     lastNode = currentNode.Find(lastNode);
+                    
                     // now we can work on cloned
-
-                    //          var mergeName = $"{t1.NodeName} ^ {lastNode.NodeName}";
-                    //        t1.NodeName = mergeName;
-
-                    ////  both sides take new condition
-                    //t1.CurrentCondition = newCondition;
-                    //lastNode.CurrentCondition = newCondition;
-
                     cloned = ApplyMergeToAllChildrens(tt1, tlastNode, cloned);
 
                     if (cloned != null && IsBddValid(cloned, booleanNetwok))
@@ -266,7 +259,6 @@ namespace GeneAutomate.BusinessLogic
                         tlastNode.IsInLoop = true;
                         cloned.MergeName = cloned.NodeName;
                         return cloned;
-                        
                     }
 
                     cloned = currentNode;
@@ -296,7 +288,7 @@ namespace GeneAutomate.BusinessLogic
                 }
 
                 //t1.Transitions.First().Condition = newCondition;
-                var mergeName = $"{t1.NodeName} ^ {t2.NodeName}";
+                var mergeName = $"{t1.NodeName} {LoopSign} {t2.NodeName}";
                 t1.NodeName = mergeName;
                 t1.CurrentCondition = newCondition;
                 t2.CurrentCondition = newCondition;

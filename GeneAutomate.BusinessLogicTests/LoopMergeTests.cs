@@ -71,6 +71,7 @@ namespace GeneAutomate.BusinessLogic.Tests
             });
 
             Assert.IsNotNull(res);
+            Assert.IsTrue(res.Transitions.First().Node.NodeName.Contains("^"));
         }
 
         [TestMethod]
@@ -132,6 +133,8 @@ namespace GeneAutomate.BusinessLogic.Tests
             }
             });
             Assert.IsNotNull(res);
+            Assert.IsTrue(res.Transitions.First().Node.NodeName.Contains("^"));
+
         }
 
         [TestMethod]
@@ -196,7 +199,7 @@ namespace GeneAutomate.BusinessLogic.Tests
                 }
             });
 
-            Assert.AreEqual(res.Transitions.First().Node.NodeName, "a1 ^ a3 ^ a2", res.Transitions.First().Node.NodeName);
+            Assert.AreEqual(res.NodeName, "a0 ^ a2", res.Transitions.First().Node.NodeName);
             Assert.IsNotNull(res);
         }
     }
