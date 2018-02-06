@@ -62,6 +62,21 @@ namespace GeneAutomate.ParserTests
 
         }
 
+        [TestMethod]
+        public void TestCanParsePluripotencyCase()
+        {
+            var parser = new FileParser();
+            var data = new ParseRuleResponse();
+            var res = parser.ParseFiles($"pluripotency.net", $"pluripotency.spec");
+
+            Assert.IsTrue(res.MergeObjects.Count > 0);
+
+            var txt = new RuleFileWriter().CreateSpecString(res.MergeObjects);
+
+            logger.Info(txt);
+
+        }
+
         [Ignore]
         [TestMethod]
         public void TestCanParseToys2()

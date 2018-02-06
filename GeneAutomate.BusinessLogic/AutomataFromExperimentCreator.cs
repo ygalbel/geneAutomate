@@ -18,6 +18,9 @@ namespace GeneAutomate.BusinessLogic
             GeneNode tempNode = null;
             GeneNode fatherNode = null;
 
+            List<string> overExpressed = new List<string>();
+            List<string> knockoutGenes = new List<string>();
+
             for (int i = minTime; i <= maxTime; i++)
             {
                 tempNode = new GeneNode()
@@ -26,6 +29,21 @@ namespace GeneAutomate.BusinessLogic
                     CurrentCondition = GetConditionForThisIndex(exp, i)
 
                 };
+
+                if (tempNode.CurrentCondition != null)
+                {
+                    overExpressed.AddRange(tempNode.CurrentCondition.OverExpressedGenes);
+                    knockoutGenes.AddRange(tempNode.CurrentCondition.KnockedOutGenes);
+
+                    if (knockoutGenes.Any())
+                    {
+                        int z = 0;
+                    }
+
+                    tempNode.CurrentCondition.OverExpressedGenes = overExpressed;
+                    tempNode.CurrentCondition.KnockedOutGenes = knockoutGenes;
+                }
+
 
                 // not firstCase
                 if (fatherNode != null)

@@ -96,6 +96,7 @@ namespace GeneAutomate.Parser
 
         private static string tempLine;
         private static bool isOnMultipleLineCondition = false;
+
         private Condition HandleConditions(List<string> variables, string line)
         {
 
@@ -208,10 +209,32 @@ namespace GeneAutomate.Parser
             {
                 if (!string.IsNullOrWhiteSpace(r))
                 {
-                    var s = r.Split('=');
-                    var name = s[0].Trim();
-                    var value = s[1].Trim() == "1";
-                    row[name] = value;
+                    if (r.Contains("(")) // function
+                    {
+                        var s = r.Split('=');
+                        var name = s[0].Trim();
+
+                        var functionName = name.Split('(')[0];
+                        var fullName = name.Split('(')[1].Replace(")","");
+                        var value = s[1].Trim() == "1";
+
+                        if (functionName == "FE" && value)
+                        {
+                            row.OverExpressedGenes.Add(fullName);
+                        }
+                        else if (functionName == "KO" && value)
+                        {
+                            row.KnockedOutGenes.Add(fullName);
+                        }
+
+                    }
+                    else
+                    {
+                        var s = r.Split('=');
+                        var name = s[0].Trim();
+                        var value = s[1].Trim() == "1";
+                        row[name] = value;
+                    }
                 }
                 else
                 {

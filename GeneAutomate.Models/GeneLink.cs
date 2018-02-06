@@ -13,6 +13,10 @@ namespace GeneAutomate.Models
 
         public bool IsPositive { get; set; }
 
+        public bool IsKnockout { get; set; }
+
+        public bool IsOverExpression { get; set; }
+
         public bool IsOptional { get; set; }
     }
 }
