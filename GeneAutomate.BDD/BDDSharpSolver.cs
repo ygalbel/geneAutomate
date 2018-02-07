@@ -79,9 +79,8 @@ namespace GeneAutomate.BDD
             //var pathes = truth.Where(a => a.Value).ToList();
 
            // LogValidPathes(pathes, nodeStore);
-            List<List<BDDNode>> pathes = new List<List<BDDNode>>();
             var path = manager.GetValidPath(root, new List<BDDNode>(),  null) ?? Enumerable.Empty<BDDNode>();
-            LogValidPathes(pathes, nodeStore);
+            LogValidPathes(path, nodeStore);
             return path.Any();
 
             //       CheckThruthTable(truth, res);
@@ -89,18 +88,18 @@ namespace GeneAutomate.BDD
             //return true;
         }
 
-        private void LogValidPathes(List<List<BDDNode>> pathes, Dictionary<string, BDDNode> nodeStore)
+        private void LogValidPathes(IEnumerable<BDDNode> path, Dictionary<string, BDDNode> nodeStore)
         {
-            logger.Info("Found " + pathes.Count + " pathes");
-            pathes.ForEach(p =>
-            {
+            //logger.Info("Found " + pathes.Count + " pathes");
+            //pathes.ForEach(p =>
+            //{
                 logger.Info("========================");
-                LogValidPath(p, nodeStore);
-            });
+                LogValidPath(path, nodeStore);
+            //});
         }
 
 
-        private void LogValidPath(List<BDDNode> path, Dictionary<string, BDDNode> nodeStore)
+        private void LogValidPath(IEnumerable<BDDNode> path, Dictionary<string, BDDNode> nodeStore)
         {
             if (path == null)
             {
@@ -328,11 +327,12 @@ namespace GeneAutomate.BDD
 
             BDDNode seq = null;
 
-            for (int i = 0; i < depth - 1; i++)
+            Parallel.For(0, depth - 1, (i) =>
             {
                 var ass = CreateFunctionApplication(manager, availableFunctions, toDictionary, i, nodeStore);
                 seq = manager.AndSafe(seq, ass);
-            }
+            });
+            
 
             return seq;
         }

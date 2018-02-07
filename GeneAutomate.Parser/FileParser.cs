@@ -20,6 +20,7 @@ namespace GeneAutomate.Parser
 
         public FileParsingResult ParseFiles(string netPath, string specPath)
         {
+            logger.Info("start parsing");
             ParseRuleResponse conditionAndExperiments;
             var links = GetConditionAndExperiments(netPath, specPath, out conditionAndExperiments);
 
@@ -27,6 +28,7 @@ namespace GeneAutomate.Parser
                conditionAndExperiments.Experiments.ToDictionary(s => s.Key,
                    s => new AutomataFromExperimentCreator().CreateAutomata(s.Value));
 
+            logger.Info("start merging");
             var res = new List<GeneNode>();
             var availableNodes = new Stack<GeneNode>(automates.Select(a => a.Value).ToList());
             var backTrackingNode = AutomataMergeLogic.CreateBackTrackingNodeFromStack(availableNodes, 0);

@@ -26,8 +26,6 @@ namespace GeneAutomate.ParserTests
             var res = parser.ParseFiles($"toy_changed.net", $"toy_changed.spec");
 
             Assert.IsTrue(res.Merges.Count > 0);
-
-            
         }
 
 
@@ -83,6 +81,19 @@ namespace GeneAutomate.ParserTests
 
             var data = new ParseRuleResponse();
             var res = parser.ParseFiles($"simple1.net", $"simple1.spec");
+
+            Assert.IsTrue(res.Merges.Count > 0);
+
+        }
+
+
+        [TestMethod]
+        public void TestCanParseKrumsiek()
+        {
+            var parser = new FileParser();
+
+            var data = new ParseRuleResponse();
+            var res = parser.ParseFiles($"Krumsiek.net", $"Krumsiek.spec");
 
             Assert.IsTrue(res.Merges.Count > 0);
 

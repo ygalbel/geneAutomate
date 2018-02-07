@@ -8,6 +8,7 @@ using GeneAutomate.Models;
 using Newtonsoft.Json;
 using GeneAutomate.BDD;
 using NLog;
+using NLog.Fluent;
 
 namespace GeneAutomate.BusinessLogic
 {
@@ -90,6 +91,8 @@ namespace GeneAutomate.BusinessLogic
             List<GeneNode> foundResults,
             BackTrackingNode node)
         {
+            logger.Info("Enter to GetFinalMerges stack length is: " + availableNodes.Count + " and found results are " +
+                     foundResults.Count);
             // search only 2 results
             if (foundResults.Count == 2)
             {
