@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
+using System.Threading;
+using System.Threading.Tasks;
 using GeneAutomate.BusinessLogic;
 using GeneAutomate.Models;
 using GeneAutomate.Parser;
@@ -24,7 +27,7 @@ namespace GeneAutomate.BDD.Tests
         public void TestToyCaseBddSolver()
         {
             var experimentName = "toy";
-            var res = IsExistPath(experimentName);
+            var res = IsExistPath(experimentName, 40);
             Assert.IsTrue(res);
         }
 
@@ -32,19 +35,24 @@ namespace GeneAutomate.BDD.Tests
         public void TestToyYeastBddSolver()
         {
             var experimentName = "yeast";
-            var res = IsExistPath(experimentName);
+            var res = IsExistPath(experimentName, 40);
             Assert.IsTrue(res);
         }
 
         [TestMethod]
+        //   [Timeout(1000 * 120)]
         public void TestKrumsiekBddSolver()
         {
-            var experimentName = "Krumsiek";
-            var res = IsExistPath(experimentName);
+             var experimentName = "Krumsiek";
+            var res = IsExistPath(experimentName, 8);
             Assert.IsTrue(res);
+
+            // Thread.Sleep(240 * 1000);
+            //Assert.IsTrue(true);
+
         }
 
-        private static bool IsExistPath(string experimentName)
+        private static bool IsExistPath(string experimentName, int length)
         {
             var solver = NinjectHelper.Get<IBDDSolver>();
 
@@ -52,7 +60,7 @@ namespace GeneAutomate.BDD.Tests
 
             var data = new ParseRuleResponse();
             var res = parser
-                .GetConditionAndExperiments($"{experimentName}.net", 
+                .GetConditionAndExperiments($"{experimentName}.net",
                     $"{experimentName}.spec", out data);
 
             var automates =
@@ -60,7 +68,23 @@ namespace GeneAutomate.BDD.Tests
                     s => new AutomataFromExperimentCreator()
                         .CreateAutomata(s.Value));
 
-            var sos = solver.IsValidPath(automates.First().Value, res);
+            var automate = automates.First().Value;
+            int i = 0;
+            var temp = automate;
+            while (i < length && temp != null && temp.Transitions != null && temp.Transitions.Any())
+            {
+                i++;
+                temp = temp.Transitions.First().Node;
+            }
+
+            if (temp != null)
+            {
+                // cut the childrens;
+                temp.Transitions = null;
+            }
+
+
+            var sos = solver.IsValidPath(automates.First().Value, res, automates.First().Value.NodeLength + 1);
             return sos;
         }
 
@@ -85,7 +109,7 @@ namespace GeneAutomate.BDD.Tests
 
                 logger.Info("Start " + (i++));
                 sos &= solver.IsValidPath(a.Value, res);
-                
+
             });
 
             Assert.IsFalse(sos);

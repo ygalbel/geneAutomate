@@ -75,7 +75,7 @@ namespace GeneAutomate.BDD.Tests
             var booleanNetwork = CreateBooleanNetwork();
 
             var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { 47 } } };
-            var res = solver.IsValidPath(automata, new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions});
+            var res = solver.IsValidPath(automata, new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions}, 5);
 
             Assert.IsTrue(res);
 
@@ -83,7 +83,7 @@ namespace GeneAutomate.BDD.Tests
             automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
             solver = NinjectHelper.Get<IBDDSolver>();
             res = solver.IsValidPath(automata,
-                new GeneFullRules() {GeneLinks = booleanNetwork, Functions = availableFunctions});
+                new GeneFullRules() {GeneLinks = booleanNetwork, Functions = availableFunctions}, 5);
 
             Assert.IsFalse(res);
         }

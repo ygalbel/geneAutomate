@@ -115,7 +115,7 @@ namespace GeneAutomate.BDD.BDDSharp
             var param = _nodeStore[formatParameter];
 
             var node1 =
-                BDDSharpSolver.CreateNodeBasedOnAutomata(
+                NodeFetcher.CreateNodeBasedOnAutomata(
                     formatParameter, true, _manager,
                     param.Index);
             return node1;

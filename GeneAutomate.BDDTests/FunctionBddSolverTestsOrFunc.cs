@@ -64,7 +64,7 @@ namespace GeneAutomate.BDD.Tests
 
         private static void RunSingle(Condition firstCondition, bool firstValue)
         {
-            var solver = NinjectHelper.Get<IBDDSolver>();
+            var solver = new BDDSharpSolver();
             var secondCondition = new Condition() {{"a", firstValue } };
 
             var automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
@@ -73,14 +73,15 @@ namespace GeneAutomate.BDD.Tests
 
             var availableFunctions = new Dictionary<string, List<int>>() {{"a", new List<int>() {44}}};
             var res = solver.IsValidPath(automata,
-                new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions });
+                new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions }, 5);
 
             Assert.IsTrue(res);
 
+            solver = new BDDSharpSolver();
             secondCondition = new Condition() {{"a", !firstValue}};
             automata = TestHelper.CreateAutomataWithConditions(firstCondition, secondCondition);
             res = solver.IsValidPath(automata,
-                new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions });
+                new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions },5);
 
             Assert.IsFalse(res);
         }

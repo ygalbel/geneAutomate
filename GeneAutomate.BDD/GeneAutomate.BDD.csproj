@@ -66,6 +66,7 @@
     <Compile Include="IFuncHelperInner.cs" />
     <Compile Include="ListGeneNodeExtensions.cs" />
     <Compile Include="FuncAssignmentHelper.cs" />
+    <Compile Include="NodeFetcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

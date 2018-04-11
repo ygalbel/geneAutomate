@@ -132,7 +132,7 @@ namespace GeneAutomate.BDD.Tests
 
                         var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
                         var res = solver.IsValidPath(automata,
-                            new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions });
+                            new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions }, 5);
                         if (res)
                         {
                             fault.Add(new Tuple<int, int>(functionNum, tp.CaseNumber));
@@ -170,7 +170,7 @@ namespace GeneAutomate.BDD.Tests
 
                         var availableFunctions = new Dictionary<string, List<int>>() { { "a", new List<int>() { functionNum } } };
                         var res = solver.IsValidPath(automata,
-                            new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions });
+                            new GeneFullRules() { GeneLinks = booleanNetwork, Functions = availableFunctions }, 5);
                         if (!res)
                         {
                             fault.Add(new Tuple<int, int>(functionNum, tp.CaseNumber));
